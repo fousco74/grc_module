@@ -1,0 +1,19 @@
+{
+ "action": "Create Entry",
+ "creation": "2025-06-19 11:52:06.832899",
+ "docstatus": 0,
+ "doctype": "Onboarding Step",
+ "idx": 0,
+ "is_complete": 0,
+ "is_single": 0,
+ "is_skipped": 0,
+ "modified": "2025-06-19 11:52:06.832899",
+ "modified_by": "Administrator",
+ "name": "D\u00e9finir les points de contr\u00f4le par service",
+ "owner": "Administrator",
+ "reference_document": "Point_de_controle",
+ "show_form_tour": 0,
+ "show_full_form": 0,
+ "title": "D\u00e9finir les points de contr\u00f4le par service",
+ "validate_action": 1
+}

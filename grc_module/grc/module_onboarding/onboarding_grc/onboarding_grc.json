@@ -1,0 +1,62 @@
+{
+ "allow_roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "customer grc"
+  },
+  {
+   "role": "Administrator"
+  }
+ ],
+ "creation": "2025-06-19 12:31:22.054320",
+ "docstatus": 0,
+ "doctype": "Module Onboarding",
+ "documentation_url": "https://votre-doc-grc.com/setup",
+ "idx": 0,
+ "is_complete": 0,
+ "modified": "2025-06-19 12:31:22.054320",
+ "modified_by": "Administrator",
+ "module": "GRC",
+ "name": "Onboarding GRC",
+ "owner": "Administrator",
+ "steps": [
+  {
+   "step": "Ajouter une entreprise (client)"
+  },
+  {
+   "step": "Cr\u00e9er les d\u00e9partements de l\u2019entreprise"
+  },
+  {
+   "step": "Ajouter les services li\u00e9s aux d\u00e9partements"
+  },
+  {
+   "step": "D\u00e9finir les points de contr\u00f4le par service"
+  },
+  {
+   "step": "D\u00e9finir les questions d\u2019\u00e9valuation de conformit\u00e9"
+  },
+  {
+   "step": "Param\u00e9trer les crit\u00e8res de conformit\u00e9 et niveaux d\u2019\u00e9valuation"
+  },
+  {
+   "step": "Cr\u00e9er des fiches de traitements des donn\u00e9es de conformit\u00e9"
+  },
+  {
+   "step": "D\u00e9finir des plans d\u2019action correctifs ou pr\u00e9ventifs"
+  },
+  {
+   "step": "Mettez \u00e0 jour l\u2019\u00e9tat d\u2019avancement global de chaque entreprise."
+  },
+  {
+   "step": "G\u00e9rer les demandes de droit d\u2019acc\u00e8s"
+  },
+  {
+   "step": "Suivre et enregistrer les violations constat\u00e9es"
+  }
+ ],
+ "subtitle": "Mettez en place la structure de Gouvernance, Risque et Conformit\u00e9",
+ "success_message": "\ud83c\udf89 F\u00e9licitations ! Le module GRC est maintenant pr\u00eat \u00e0 \u00eatre utilis\u00e9.",
+ "title": "Bienvenue dans le module GRC"
+}

@@ -1,0 +1,112 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-05-16 18:04:13.868819",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "cr\u00e9ation_de_droit_section",
+  "entreprise",
+  "name_maker",
+  "phone_maker",
+  "updated_at",
+  "statut",
+  "column_break_yxrk",
+  "make_type",
+  "email_maker",
+  "description"
+ ],
+ "fields": [
+  {
+   "fieldname": "cr\u00e9ation_de_droit_section",
+   "fieldtype": "Section Break",
+   "label": "Cr\u00e9ation de droit"
+  },
+  {
+   "fieldname": "entreprise",
+   "fieldtype": "Link",
+   "label": "Entreprise",
+   "options": "customer_grc"
+  },
+  {
+   "fieldname": "name_maker",
+   "fieldtype": "Data",
+   "label": "Nom complet du demandeur "
+  },
+  {
+   "fieldname": "phone_maker",
+   "fieldtype": "Phone",
+   "label": "Num\u00e9ro"
+  },
+  {
+   "fieldname": "updated_at",
+   "fieldtype": "Date",
+   "label": "Date de fin"
+  },
+  {
+   "fieldname": "statut",
+   "fieldtype": "Select",
+   "label": "Statut",
+   "options": "Re\u00e7ue\nV\u00e9rifi\u00e9e\nEn cours\nTermin\u00e9e\nrejet\u00e9e"
+  },
+  {
+   "fieldname": "column_break_yxrk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "make_type",
+   "fieldtype": "Select",
+   "label": "Type de demande",
+   "options": "\nAcc\u00e8s aux donn\u00e9es\nSuppression\nPortabilit\u00e9\nRectification\nOpposition"
+  },
+  {
+   "fieldname": "email_maker",
+   "fieldtype": "Data",
+   "label": "Email"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description "
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-06-19 10:13:02.053678",
+ "modified_by": "Administrator",
+ "module": "GRC",
+ "name": "make_right_grc",
+ "owner": "fkone@amoaman.com",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "customer grc",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

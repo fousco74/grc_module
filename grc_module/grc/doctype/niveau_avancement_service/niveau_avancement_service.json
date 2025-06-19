@@ -1,0 +1,77 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-05-27 17:03:04.544070",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "entreprise",
+  "niveau",
+  "column_break_kity",
+  "service"
+ ],
+ "fields": [
+  {
+   "fieldname": "entreprise",
+   "fieldtype": "Link",
+   "label": "Entreprise",
+   "options": "customer_grc"
+  },
+  {
+   "fieldname": "niveau",
+   "fieldtype": "Select",
+   "label": "Niveau d'avancement ",
+   "options": "\nIniti\u00e9\nEn cours d\u2019avancement\nAvanc\u00e9\nMa\u00eetris\u00e9"
+  },
+  {
+   "fieldname": "column_break_kity",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "service",
+   "fieldtype": "Link",
+   "label": "Service",
+   "link_filters": "[[\"service_grc\",\"entreprise\",\"=\",\"eval:doc.entreprise\"]]",
+   "options": "service_grc"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-06-19 10:14:07.916598",
+ "modified_by": "Administrator",
+ "module": "GRC",
+ "name": "Niveau_avancement_service",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "customer grc",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

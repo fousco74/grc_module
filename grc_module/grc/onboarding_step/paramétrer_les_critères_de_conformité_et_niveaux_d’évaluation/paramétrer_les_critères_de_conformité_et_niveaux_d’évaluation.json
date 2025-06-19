@@ -1,0 +1,19 @@
+{
+ "action": "Create Entry",
+ "creation": "2025-06-19 11:54:08.433530",
+ "docstatus": 0,
+ "doctype": "Onboarding Step",
+ "idx": 0,
+ "is_complete": 0,
+ "is_single": 0,
+ "is_skipped": 0,
+ "modified": "2025-06-19 11:54:08.433530",
+ "modified_by": "Administrator",
+ "name": "Param\u00e9trer les crit\u00e8res de conformit\u00e9 et niveaux d\u2019\u00e9valuation",
+ "owner": "Administrator",
+ "reference_document": "Niveau_avancement_service",
+ "show_form_tour": 0,
+ "show_full_form": 0,
+ "title": "Param\u00e9trer les crit\u00e8res de conformit\u00e9 et niveaux d\u2019\u00e9valuation",
+ "validate_action": 1
+}

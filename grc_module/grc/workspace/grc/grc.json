@@ -1,0 +1,222 @@
+{
+ "charts": [],
+ "content": "[{\"id\":\"PK8-YNrXKn\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"> Gouvernance, Risques et Conformit\u00e9 (GRC)<b></b></span>\",\"col\":12}},{\"id\":\"vx9gYuERhc\",\"type\":\"paragraph\",\"data\":{\"text\":\"Ce module vous permet de piloter efficacement la conformit\u00e9, les violations, les demandes de droits et les plans d'action au sein de vos entit\u00e9s et clients.\",\"col\":12}},{\"id\":\"zOCZw0WdGF\",\"type\":\"onboarding\",\"data\":{\"onboarding_name\":\"Onboarding GRC\",\"col\":12}},{\"id\":\"c-VxRjDSY4\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"c5opHaxdN2\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Nombre d\u2019entreprises\",\"col\":3}},{\"id\":\"1x48QByKOt\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Plans d'action en cours\",\"col\":3}},{\"id\":\"aTvA8uEfN8\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"violations enregistr\u00e9es\",\"col\":3}},{\"id\":\"F9T1MTcY_7\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Fiches de traitement\",\"col\":3}},{\"id\":\"kAsYverqU9\",\"type\":\"card\",\"data\":{\"card_name\":\" Conformit\u00e9\",\"col\":4}},{\"id\":\"RjEiLWwl5i\",\"type\":\"card\",\"data\":{\"card_name\":\"Demandes & Violations\",\"col\":4}},{\"id\":\"F02jnAdXS_\",\"type\":\"card\",\"data\":{\"card_name\":\"Suivi & Avancement\",\"col\":4}},{\"id\":\"ng4hE_7AQK\",\"type\":\"card\",\"data\":{\"card_name\":\"Clients & Organisation\",\"col\":4}},{\"id\":\"dOgqe6_uXA\",\"type\":\"card\",\"data\":{\"card_name\":\"Gestion des documents\",\"col\":4}}]",
+ "creation": "2025-05-18 09:41:20.618431",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "lock",
+ "idx": 0,
+ "indicator_color": "",
+ "is_hidden": 0,
+ "label": "GRC",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Customer",
+   "link_count": 0,
+   "link_to": "customer_grc",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": " Conformit\u00e9",
+   "link_count": 3,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": " Points de Contr\u00f4le",
+   "link_count": 0,
+   "link_to": "Point_de_controle",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Liste de Questions",
+   "link_count": 0,
+   "link_to": "question_score",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": " Fiches de Traitement",
+   "link_count": 0,
+   "link_to": "file_processing_grc",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Demandes & Violations",
+   "link_count": 2,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Demandes de droit",
+   "link_count": 0,
+   "link_to": "make_right_grc",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Violations",
+   "link_count": 0,
+   "link_to": "violation_grc",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Suivi & Avancement",
+   "link_count": 3,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": " Avancement par entreprise",
+   "link_count": 0,
+   "link_to": "avancement",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Niveau d\u2019avancement par service",
+   "link_count": 0,
+   "link_to": "Niveau_avancement_service",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Plans d\u2019action",
+   "link_count": 0,
+   "link_to": "action_plan_grc",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Clients & Organisation",
+   "link_count": 3,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Entreprises",
+   "link_count": 0,
+   "link_to": "customer_grc",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Services des entreprises",
+   "link_count": 0,
+   "link_to": "service_grc",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": " D\u00e9partements ",
+   "link_count": 0,
+   "link_to": "department_grc",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Gestion des documents",
+   "link_count": 1,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Ajouter un Document",
+   "link_count": 0,
+   "link_to": "File",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2025-06-19 14:00:55.999479",
+ "modified_by": "Administrator",
+ "module": "GRC",
+ "name": "GRC",
+ "number_cards": [
+  {
+   "label": "Nombre d\u2019entreprises",
+   "number_card_name": "Nombre d\u2019entreprises"
+  },
+  {
+   "label": "violations enregistr\u00e9es",
+   "number_card_name": "Nombre total de violations enregistr\u00e9es"
+  },
+  {
+   "label": "Fiches de traitement",
+   "number_card_name": "Fiches de traitement"
+  },
+  {
+   "label": "Plans d'action en cours",
+   "number_card_name": "Plans d'action en cours"
+  }
+ ],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [],
+ "sequence_id": 28.0,
+ "shortcuts": [],
+ "title": "GRC"
+}

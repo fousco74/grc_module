@@ -1,0 +1,19 @@
+{
+ "action": "Create Entry",
+ "creation": "2025-06-19 12:29:54.845786",
+ "docstatus": 0,
+ "doctype": "Onboarding Step",
+ "idx": 0,
+ "is_complete": 0,
+ "is_single": 0,
+ "is_skipped": 0,
+ "modified": "2025-06-19 12:29:54.845786",
+ "modified_by": "Administrator",
+ "name": "Mettez \u00e0 jour l\u2019\u00e9tat d\u2019avancement global de chaque entreprise.",
+ "owner": "Administrator",
+ "reference_document": "avancement",
+ "show_form_tour": 0,
+ "show_full_form": 0,
+ "title": "Mettez \u00e0 jour l\u2019\u00e9tat d\u2019avancement global de chaque entreprise.",
+ "validate_action": 1
+}

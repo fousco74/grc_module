@@ -1,0 +1,19 @@
+{
+ "action": "Create Entry",
+ "creation": "2025-06-19 11:53:05.743659",
+ "docstatus": 0,
+ "doctype": "Onboarding Step",
+ "idx": 0,
+ "is_complete": 0,
+ "is_single": 0,
+ "is_skipped": 0,
+ "modified": "2025-06-19 11:53:05.743659",
+ "modified_by": "Administrator",
+ "name": "D\u00e9finir les questions d\u2019\u00e9valuation de conformit\u00e9",
+ "owner": "Administrator",
+ "reference_document": "question_score",
+ "show_form_tour": 0,
+ "show_full_form": 0,
+ "title": "D\u00e9finir les questions d\u2019\u00e9valuation de conformit\u00e9",
+ "validate_action": 1
+}

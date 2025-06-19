@@ -47,6 +47,20 @@ app_license = "mit"
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
+fixtures = [
+    {"dt": "Custom Field", "filters": [["module", "=", "GRC"]]},
+    {"dt": "Property Setter", "filters": [["module", "=", "GRC"]]},
+    {"dt": "Web Page", "filters": [["module", "=", "GRC"]]},
+    {"dt": "Web Form", "filters": [["module", "=", "GRC"]]},
+    {"dt": "DocType", "filters": [["module", "=", "GRC"]]},
+    {"dt": "Module Def", "filters": [["module_name", "=", "GRC"]]},
+    {"dt": "Workspace", "filters": [["module", "=", "GRC"]]},
+    {"dt": "Report", "filters": [["module", "=", "GRC"]]},
+    {"dt": "Print Format", "filters": [["module", "=", "GRC"]]},
+    {"dt": "Client Script", "filters": [["module", "=", "GRC"]]},
+    {"dt": "Server Script", "filters": [["module", "=", "GRC"]]}
+]
+
 
 # Svg Icons
 # ------------------

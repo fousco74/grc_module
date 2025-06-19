@@ -1,0 +1,206 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:Question-{entreprise}",
+ "creation": "2025-05-26 17:57:28.053983",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "entreprise",
+  "formation",
+  "registre",
+  "conservation",
+  "legislative",
+  "principe_securite",
+  "analyse_impact",
+  "donnee_autorise_artci",
+  "clause",
+  "donnee_hors_cedeao",
+  "site_conforme",
+  "column_break_lbyi",
+  "correspondant",
+  "finalite",
+  "proportionnalite",
+  "securite_locaux",
+  "procedure_remonte",
+  "privacy",
+  "habilitation",
+  "charte",
+  "droit_personne",
+  "violationn"
+ ],
+ "fields": [
+  {
+   "fieldname": "entreprise",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Entreprise",
+   "options": "customer_grc"
+  },
+  {
+   "fieldname": "formation",
+   "fieldtype": "Select",
+   "label": "Le personnel a-t-il re\u00e7u une formation sp\u00e9cifique en mati\u00e8re de protection des donn\u00e9es \u00e0 caract\u00e8re personnel ?",
+   "options": "\nOui\nNon\nNon/applicable\nPartiel"
+  },
+  {
+   "fieldname": "registre",
+   "fieldtype": "Select",
+   "label": "Existe-t-il un registre de traitements des donn\u00e9es  ?",
+   "options": "\nOui\nNon\nNon/applicable\nPartiel"
+  },
+  {
+   "fieldname": "conservation",
+   "fieldtype": "Select",
+   "label": "Des dur\u00e9es de conservation des donn\u00e9es ont-elles \u00e9t\u00e9 d\u00e9finies ?",
+   "options": "\nOui\nNon\nNon/applicable\nPartiel"
+  },
+  {
+   "fieldname": "legislative",
+   "fieldtype": "Select",
+   "label": "Les sous-traitants respectent-ils les exigences l\u00e9gislatives ?",
+   "options": "\nOui\nNon\nNon/applicable Partiel"
+  },
+  {
+   "fieldname": "principe_securite",
+   "fieldtype": "Select",
+   "label": "Les principes de s\u00e9curit\u00e9 des donn\u00e9es sont-ils respect\u00e9s (int\u00e9grit\u00e9, confidentialit\u00e9, disponibilit\u00e9) ?",
+   "options": "\nOui\nNon\nNon/applicable\nPartiel"
+  },
+  {
+   "fieldname": "analyse_impact",
+   "fieldtype": "Select",
+   "label": "Une analyse d\u2019impact relative \u00e0 la protection des donn\u00e9es a-t-elle \u00e9t\u00e9 r\u00e9alis\u00e9e pour le traitement des donn\u00e9es sensibles ?",
+   "options": "\nOui\nNon\nNon/applicable\nPartiel"
+  },
+  {
+   "fieldname": "donnee_autorise_artci",
+   "fieldtype": "Select",
+   "label": "Le traitement de donn\u00e9es sensibles est-il autoris\u00e9 par l\u2019ARTCI ?",
+   "options": "\nOui\nNon\nNon/applicable\nPartiel"
+  },
+  {
+   "fieldname": "clause",
+   "fieldtype": "Select",
+   "label": "Existe-t-il une clause de protection des donn\u00e9es dans les contrats des salari\u00e9s ?",
+   "options": "\nOui\nNon\nNon/applicable\nPartiel"
+  },
+  {
+   "fieldname": "donnee_hors_cedeao",
+   "fieldtype": "Select",
+   "label": "Le transfert des donn\u00e9es hors zone CEDEAO est-il autoris\u00e9 par l\u2019ARTCI ?",
+   "options": "\nOui\nNon\nNon/applicable\nPartiel"
+  },
+  {
+   "fieldname": "site_conforme",
+   "fieldtype": "Select",
+   "label": "Le site internet est-il conforme ?",
+   "options": "\nOui\nNon\nNon/applicable\nPartiel"
+  },
+  {
+   "fieldname": "column_break_lbyi",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "correspondant",
+   "fieldtype": "Select",
+   "label": "Un Correspondant \u00e0 la protection des donn\u00e9es a-t-il \u00e9t\u00e9 d\u00e9sign\u00e9 ?",
+   "options": "\nOui\nNon\nNon/applicable\nPartiel"
+  },
+  {
+   "fieldname": "finalite",
+   "fieldtype": "Select",
+   "label": "Les traitements mis en \u0153uvre respectent-ils le principe de finalit\u00e9 ?",
+   "options": "\nOui\nNon\nNon/applicable\nPartiel"
+  },
+  {
+   "fieldname": "proportionnalite",
+   "fieldtype": "Select",
+   "label": "Les donn\u00e9es collect\u00e9es sont-elles proportionnelles \u00e0 la finalit\u00e9 du traitement ?",
+   "options": "\nOui\nNon\nNon/applicable\nPartiel"
+  },
+  {
+   "fieldname": "securite_locaux",
+   "fieldtype": "Select",
+   "label": "La s\u00e9curisation des locaux est-elle satisfaisante ?",
+   "options": "\nOui\nNon\nNon/applicable\nPartiel"
+  },
+  {
+   "fieldname": "procedure_remonte",
+   "fieldtype": "Select",
+   "label": "Existe-t-il une proc\u00e9dure de remont\u00e9e des failles de s\u00e9curit\u00e9 ?",
+   "options": "\nOui\nNon\nNon/applicable\nPartiel"
+  },
+  {
+   "fieldname": "privacy",
+   "fieldtype": "Select",
+   "label": "Existe-t-il une proc\u00e9dure de privacy by design et de privacy by default ?",
+   "options": "\nOui\nNon\nNon/applicable\nPartiel"
+  },
+  {
+   "fieldname": "habilitation",
+   "fieldtype": "Select",
+   "label": "Existe-t-il une politique d\u2019habilitation d\u2019acc\u00e8s aux donn\u00e9es ?",
+   "options": "\nOui\nNon\nNon/applicable\nPartiel"
+  },
+  {
+   "fieldname": "charte",
+   "fieldtype": "Select",
+   "label": "Existe-t-il une charte de protection des donn\u00e9es ?",
+   "options": "\nOui\nNon\nNon/applicable\nPartiel"
+  },
+  {
+   "fieldname": "droit_personne",
+   "fieldtype": "Select",
+   "label": "Le respect des droits des personnes concern\u00e9es est-il garanti ?",
+   "options": "\nOui\nNon\nNon/applicable\nPartiel"
+  },
+  {
+   "fieldname": "violationn",
+   "fieldtype": "Select",
+   "label": "Existe-t-il un processus en cas de violation de donn\u00e9es ?",
+   "options": "\nOui\nNon\nNon/applicable\nPartiel"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-06-19 10:13:11.693225",
+ "modified_by": "Administrator",
+ "module": "GRC",
+ "name": "question_score",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "customer grc",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

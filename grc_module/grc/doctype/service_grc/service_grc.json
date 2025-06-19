@@ -1,0 +1,93 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:{name_service}-{####}",
+ "creation": "2025-05-16 17:59:29.592926",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "cr\u00e9ation_de_service_section",
+  "entreprise",
+  "name_service",
+  "column_break_mtby",
+  "name_department"
+ ],
+ "fields": [
+  {
+   "fieldname": "cr\u00e9ation_de_service_section",
+   "fieldtype": "Section Break",
+   "label": "Cr\u00e9ation de Service"
+  },
+  {
+   "fieldname": "entreprise",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Entreprise ",
+   "options": "customer_grc",
+   "reqd": 1
+  },
+  {
+   "fieldname": "name_service",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Nom du Service",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_mtby",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "name_department",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "D\u00e9partement",
+   "link_filters": "[[\"department_grc\",\"entreprise\",\"=\",\"eval:doc.entreprise\"]]",
+   "options": "department_grc",
+   "reqd": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-06-19 10:13:59.892182",
+ "modified_by": "Administrator",
+ "module": "GRC",
+ "name": "service_grc",
+ "naming_rule": "Expression",
+ "owner": "fkone@amoaman.com",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "customer grc",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
