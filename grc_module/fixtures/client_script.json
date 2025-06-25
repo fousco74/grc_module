@@ -2,78 +2,12 @@
  {
   "docstatus": 0,
   "doctype": "Client Script",
-  "dt": "department_grc",
-  "enabled": 0,
-  "modified": "2025-05-26 19:58:29.780026",
+  "dt": "customer_grc",
+  "enabled": 1,
+  "modified": "2025-06-23 15:07:31.443749",
   "module": "GRC",
-  "name": "options",
-  "script": "frappe.ui.form.on('department_grc', {\n\t onload: function(frm) {\n    frappe.call({\n      method: \"frappe.client.get_list\",\n      args: {\n        doctype: \"customer_grc\",\n        fields: [\"name_company\"]\n      },\n      callback: function(r) {\n        if (r.message) {\n          let options = r.message.map(row => row.name_company);\n          frm.set_df_property(\"entreprise\", \"options\", [\"\", ...options]);\n        }\n      }\n    });\n  }\n})",
-  "view": "Form"
- },
- {
-  "docstatus": 0,
-  "doctype": "Client Script",
-  "dt": "service_grc",
-  "enabled": 0,
-  "modified": "2025-05-26 19:58:23.128589",
-  "module": "GRC",
-  "name": "options service",
-  "script": "frappe.ui.form.on('service_grc', {\r\n  onload: function(frm) {\r\n    // Charger dynamiquement les entreprises dans le champ company\r\n    frappe.call({\r\n      method: \"frappe.client.get_list\",\r\n      args: {\r\n        doctype: \"customer_grc\",\r\n        fields: [\"name_company\"]\r\n      },\r\n      callback: function(r) {\r\n        if (r.message) {\r\n          let options = r.message.map(row => row.name_company);\r\n          frm.set_df_property(\"company\", \"options\", [\"\", ...options]);\r\n        }\r\n      }\r\n    });\r\n  },\r\n\r\n  company: function(frm) {\r\n    const selected_company = frm.doc.company;\r\n\r\n    if (!selected_company) return;\r\n\r\n    // Charger les départements liés à l'entreprise sélectionnée\r\n    frappe.call({\r\n      method: \"frappe.client.get_list\",\r\n      args: {\r\n        doctype: \"department_grc\",\r\n        fields: [\"nom_du_département\"],\r\n        filters: {\r\n          entreprise: selected_company\r\n        }\r\n      },\r\n      callback: function(r) {\r\n        if (r.message) {\r\n          let options = r.message.map(row => row.nom_du_département);\r\n          frm.set_df_property(\"name_department\", \"options\", [\"\", ...options]);\r\n        }\r\n      }\r\n    });\r\n  }\r\n});\r\n",
-  "view": "Form"
- },
- {
-  "docstatus": 0,
-  "doctype": "Client Script",
-  "dt": "violation_grc",
-  "enabled": 0,
-  "modified": "2025-05-26 19:58:15.147862",
-  "module": "GRC",
-  "name": "options violation",
-  "script": "frappe.ui.form.on('violation_grc', {\n\t onload: function(frm) {\n    frappe.call({\n      method: \"frappe.client.get_list\",\n      args: {\n        doctype: \"customer_grc\",\n        fields: [\"name_company\"]\n      },\n      callback: function(r) {\n        if (r.message) {\n          let options = r.message.map(row => row.name_company);\n          frm.set_df_property(\"company\", \"options\", [\"\", ...options]);\n        }\n      }\n    });\n  }\n})",
-  "view": "Form"
- },
- {
-  "docstatus": 0,
-  "doctype": "Client Script",
-  "dt": "action_plan_grc",
-  "enabled": 0,
-  "modified": "2025-05-26 19:58:08.517982",
-  "module": "GRC",
-  "name": "options  action plan",
-  "script": "frappe.ui.form.on('action_plan_grc', {\n onload: function(frm) {\n    frappe.call({\n      method: \"frappe.client.get_list\",\n      args: {\n        doctype: \"customer_grc\",\n        fields: [\"name_company\"]\n      },\n      callback: function(r) {\n        if (r.message) {\n          let options = r.message.map(row => row.name_company);\n          frm.set_df_property(\"company\", \"options\", [\"\", ...options]);\n        }\n      }\n    });\n  }\n})",
-  "view": "Form"
- },
- {
-  "docstatus": 0,
-  "doctype": "Client Script",
-  "dt": "make_right_grc",
-  "enabled": 0,
-  "modified": "2025-05-26 19:58:00.979495",
-  "module": "GRC",
-  "name": "options make right",
-  "script": "frappe.ui.form.on('make_right_grc', {\n\tonload: function(frm) {\n    frappe.call({\n      method: \"frappe.client.get_list\",\n      args: {\n        doctype: \"customer_grc\",\n        fields: [\"name_company\"]\n      },\n      callback: function(r) {\n        if (r.message) {\n          let options = r.message.map(row => row.name_company);\n          frm.set_df_property(\"company\", \"options\", [\"\", ...options]);\n        }\n      }\n    });\n  }\n})",
-  "view": "Form"
- },
- {
-  "docstatus": 0,
-  "doctype": "Client Script",
-  "dt": "file_processing_grc",
-  "enabled": 0,
-  "modified": "2025-05-26 19:57:55.689071",
-  "module": "GRC",
-  "name": "options file processing",
-  "script": "frappe.ui.form.on('file_processing_grc', {\n    onload: function(frm) {\n    // Charger dynamiquement les entreprises dans le champ company\n    frappe.call({\n      method: \"frappe.client.get_list\",\n      args: {\n        doctype: \"customer_grc\",\n        fields: [\"name_company\"]\n      },\n      callback: function(r) {\n        if (r.message) {\n          let options = r.message.map(row => row.name_company);\n          frm.set_df_property(\"company\", \"options\", [\"\", ...options]);\n        }\n      }\n    });\n  },\n\n  company: function(frm) {\n    const selected_company = frm.doc.company;\n\n    if (!selected_company) return;\n\n    // Charger les départements liés à l'entreprise sélectionnée\n    frappe.call({\n      method: \"frappe.client.get_list\",\n      args: {\n        doctype: \"service_grc\",\n        fields: [\"name_service\"],\n        filters: {\n          company: selected_company\n        }\n      },\n      callback: function(r) {\n        if (r.message) {\n          let options = r.message.map(row => row.name_service);\n          frm.set_df_property(\"service_concerner\", \"options\", [\"\", ...options]);\n        }\n      }\n    });\n  }\n})",
-  "view": "Form"
- },
- {
-  "docstatus": 0,
-  "doctype": "Client Script",
-  "dt": "question_score",
-  "enabled": 0,
-  "modified": "2025-05-26 19:57:49.881628",
-  "module": "GRC",
-  "name": "score",
-  "script": "frappe.ui.form.on('question_score', {\n\tonload: function(frm) {\n    frappe.call({\n      method: \"frappe.client.get_list\",\n      args: {\n        doctype: \"customer_grc\",\n        fields: [\"name_company\"]\n      },\n      callback: function(r) {\n        if (r.message) {\n          let options = r.message.map(row => row.name_company);\n          frm.set_df_property(\"entreprise\", \"options\", [\"\", ...options]);\n        }\n      }\n    });\n  }\n})",
+  "name": "Customer",
+  "script": "frappe.ui.form.on('customer_grc', {\r\n\tafter_save: function(frm) {\r\n\r\n\t\t    // Vérifie si un avancement existe déjà pour cette entreprise\r\n            frappe.call({\r\n                method: 'frappe.client.get_list',\r\n                args: {\r\n                    doctype: 'avancement',\r\n                    filters: {'entreprise': frm.doc.name},\r\n                    fields: ['name']\r\n                },\r\n                callback: function(r) {\r\n                    if(!r.exc && r.message.length === 0) {\r\n                        // Crée le nouveau document avancement\r\n                        frappe.call({\r\n                            method: 'frappe.client.insert',\r\n                            args: {\r\n                                doc: {\r\n                                    doctype: 'avancement',\r\n                                    entreprise: frm.doc.name,\r\n                                    etape: 'Formation'\r\n                                }\r\n                            },\r\n                            callback: function(response) {\r\n                                if(!response.exc) {\r\n                                    // Affiche un message de confirmation\r\n                                    frappe.show_alert({\r\n                                        message: __('Document avancement créé'),\r\n                                        indicator: 'green'\r\n                                    }, 5);\r\n                                    \r\n                                    // Actualise le formulaire\r\n                                    frm.reload_doc();\r\n                                }\r\n                            }\r\n                        });\r\n                    }\r\n                }\r\n            });\r\n        \r\n\t\t    \r\n\r\n\t}\r\n})",
   "view": "Form"
  }
 ]
