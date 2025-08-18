@@ -1,0 +1,103 @@
+:root {
+            --primary: #007bff;
+            --secondary: #6c757d;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --info: #17a2b8;
+            --light: #f8f9fa;
+            --dark: #343a40;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(10px); }
+            to { transform: translateY(0); }
+        }
+
+        .animate-fade {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .animate-slide {
+            animation: slideIn 0.3s ease-in-out;
+        }
+
+        .dropzone {
+            border: 2px dashed var(--primary);
+            transition: all 0.3s ease-in-out;
+        }
+
+        .dropzone.active {
+            border-color: var(--success);
+            background-color: rgba(0, 123, 255, 0.05);
+        }
+
+        .document-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .context-menu {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+        }
+
+        .context-menu.visible {
+            display: block;
+            opacity: 1;
+        }
+
+        .pdf-preview {
+            height: 0;
+            overflow: hidden;
+            transition: height 0.3s ease-in-out;
+        }
+
+        .pdf-preview.active {
+            height: 500px;
+        }
+
+        .version-history {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-in-out;
+        }
+
+        .version-history.active {
+            max-height: 300px;
+        }
+
+        .progress-bar {
+            width: 0%;
+            transition: width 0.3s ease-in-out;
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 80px !important;
+            }
+            .sidebar-label {
+                display: none !important;
+            }
+            .sidebar-icon {
+                margin-right: 0 !important;
+            }
+            .main-content {
+                margin-left: 80px !important;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .document-card {
+                width: 100% !important;
+            }
+            .view-toggle {
+                display: none !important;
+            }
+        }

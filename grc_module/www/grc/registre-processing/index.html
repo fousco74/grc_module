@@ -1,0 +1,645 @@
+{% extends 'templates/layout.html' %}
+
+{% block title %} Audit - Score de Conformité{% endblock %}
+
+{% block link %}
+
+<link rel="stylesheet" href="/assets/grc_module/css/file-processing.css">
+    
+{% endblock %}
+
+        <!-- Main Content -->
+        {% block content %}
+           <main class="p-4">
+            <!-- Filters Bar -->
+            <div class="bg-white rounded-lg shadow-sm p-4 mb-6 sticky top-0 z-10">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Service</label>
+                        <select class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+                            <option>Tous les services</option>
+                            <option>RH</option>
+                            <option>IT</option>
+                            <option>Marketing</option>
+                            <option>Finance</option>
+                            <option>Commercial</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Statut juridique</label>
+                        <select class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+                            <option>Tous les statuts</option>
+                            <option>Actif</option>
+                            <option>Inactif</option>
+                            <option>En cours de validation</option>
+                            <option>À archiver</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Date de création</label>
+                        <div class="flex space-x-2">
+                            <input type="date" class="flex-1 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+                            <span class="flex items-center">à</span>
+                            <input type="date" class="flex-1 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+                    <div class="flex items-end">
+                        <button class="w-full bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700 transition flex items-center justify-center">
+                            <i data-feather="filter" class="w-4 h-4 mr-2"></i>
+                            Filtrer
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View Toggle and Search -->
+            <div class="flex justify-between items-center mb-6">
+                <div class="flex space-x-2">
+                    <button id="card-view-btn" class="p-2 rounded-md bg-blue-100 text-blue-600">
+                        <i data-feather="grid" class="w-5 h-5"></i>
+                    </button>
+                    <button id="list-view-btn" class="p-2 rounded-md bg-gray-100 text-gray-600">
+                        <i data-feather="list" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                <div class="relative w-64">
+                    <input type="text" placeholder="Rechercher un traitement..." class="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+                    <i data-feather="search" class="absolute left-3 top-2.5 text-gray-400 w-4 h-4"></i>
+                </div>
+            </div>
+
+            <!-- Treatments Grid -->
+            <div id="treatments-container" class="grid-view grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Treatments will be added here by JavaScript -->
+            </div>
+
+            <!-- Pagination -->
+            <div class="mt-8 flex justify-center">
+                <nav class="inline-flex rounded-md shadow-sm">
+                    <button class="px-3 py-1 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                        Précédent
+                    </button>
+                    <button class="px-3 py-1 border-t border-b border-gray-300 bg-white text-sm font-medium text-blue-600 hover:bg-blue-50">
+                        1
+                    </button>
+                    <button class="px-3 py-1 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                        2
+                    </button>
+                    <button class="px-3 py-1 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                        3
+                    </button>
+                    <button class="px-3 py-1 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                        Suivant
+                    </button>
+                </nav>
+            </div>
+        </main>
+        {% endblock %}
+        
+
+    {% block script %}
+
+     <!-- Overlay Panel -->
+    <div class="overlay-backdrop" id="overlay-backdrop"></div>
+    <div class="overlay-panel" id="overlay-panel">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-semibold text-gray-800" id="treatment-title">Détails du traitement</h3>
+                <button class="close-overlay p-1 rounded-full hover:bg-gray-100">
+                    <i data-feather="x" class="w-5 h-5 text-gray-500"></i>
+                </button>
+            </div>
+            
+            <div class="flex items-center mb-4">
+                <span id="treatment-status" class="px-2 py-1 text-xs font-semibold rounded-full mr-2">Actif</span>
+                <span class="text-sm text-gray-600" id="treatment-service">RH</span>
+            </div>
+            
+            <!-- Tabs -->
+            <div class="border-b border-gray-200 mb-4">
+                <nav class="-mb-px flex space-x-8">
+                    <button class="tab-btn border-b-2 border-blue-500 text-blue-600 px-1 py-2 text-sm font-medium" data-tab="details">
+                        Détails
+                    </button>
+                    <button class="tab-btn border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 px-1 py-2 text-sm font-medium" data-tab="documents">
+                        Documents liés
+                    </button>
+                    <button class="tab-btn border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 px-1 py-2 text-sm font-medium" data-tab="history">
+                        Historique
+                    </button>
+                </nav>
+            </div>
+            
+            <!-- Tab Contents -->
+            <div class="tab-content active" id="details-tab">
+                <div class="mb-4">
+                    <h4 class="text-sm font-medium text-gray-700 mb-1">Description</h4>
+                    <p class="text-sm text-gray-600" id="treatment-description">Description du traitement...</p>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-700 mb-1">Responsable</h4>
+                        <p class="text-sm text-gray-600" id="treatment-responsable">John Doe</p>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-700 mb-1">Délégué à la protection</h4>
+                        <p class="text-sm text-gray-600" id="treatment-dpo">Jane Smith</p>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-700 mb-1">Date de création</h4>
+                        <p class="text-sm text-gray-600" id="treatment-created">15/03/2023</p>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-700 mb-1">Dernière mise à jour</h4>
+                        <p class="text-sm text-gray-600" id="treatment-updated">22/05/2023</p>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <h4 class="text-sm font-medium text-gray-700 mb-1">Finalité</h4>
+                    <p class="text-sm text-gray-600" id="treatment-purpose">Gestion des employés et paie</p>
+                </div>
+                
+                <div class="mb-4">
+                    <h4 class="text-sm font-medium text-gray-700 mb-1">Catégories de données</h4>
+                    <div class="flex flex-wrap gap-1 mt-1" id="treatment-categories">
+                        <!-- Categories will be added here -->
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-sm font-medium text-gray-700 mb-1">Progression</h4>
+                    <div class="flex items-center">
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 mr-2">
+                            <div class="bg-blue-600 h-2.5 rounded-full" id="treatment-progress-bar" style="width: 75%"></div>
+                        </div>
+                        <span class="text-xs text-gray-600" id="treatment-progress-text">75%</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="documents-tab">
+                <div class="border border-gray-200 rounded-md divide-y divide-gray-200">
+                    <div class="p-3 flex items-center justify-between hover:bg-gray-50">
+                        <div class="flex items-center">
+                            <i data-feather="file-text" class="text-gray-500 w-5 h-5 mr-3"></i>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">Analyse d'impact</p>
+                                <p class="text-xs text-gray-500">PDF • 250 Ko</p>
+                            </div>
+                        </div>
+                        <button class="text-blue-600 text-sm font-medium hover:text-blue-800">Télécharger</button>
+                    </div>
+                    <div class="p-3 flex items-center justify-between hover:bg-gray-50">
+                        <div class="flex items-center">
+                            <i data-feather="file-text" class="text-gray-500 w-5 h-5 mr-3"></i>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">Contrat sous-traitant</p>
+                                <p class="text-xs text-gray-500">DOCX • 180 Ko</p>
+                            </div>
+                        </div>
+                        <button class="text-blue-600 text-sm font-medium hover:text-blue-800">Télécharger</button>
+                    </div>
+                    <div class="p-3 flex items-center justify-between hover:bg-gray-50">
+                        <div class="flex items-center">
+                            <i data-feather="file-text" class="text-gray-500 w-5 h-5 mr-3"></i>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">Preuve de consentement</p>
+                                <p class="text-xs text-gray-500">PDF • 320 Ko</p>
+                            </div>
+                        </div>
+                        <button class="text-blue-600 text-sm font-medium hover:text-blue-800">Télécharger</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="history-tab">
+                <div class="space-y-4">
+                    <div class="border-l-2 pl-4 py-1 border-blue-500">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm font-medium">22/05/2023</span>
+                            <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-800">Mise à jour</span>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-1">Modification des catégories de données par John Doe</p>
+                    </div>
+                    <div class="border-l-2 pl-4 py-1 border-green-500">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm font-medium">15/04/2023</span>
+                            <span class="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-800">Validation</span>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-1">Validation par le DPO Jane Smith</p>
+                    </div>
+                    <div class="border-l-2 pl-4 py-1 border-yellow-500">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm font-medium">05/04/2023</span>
+                            <span class="text-xs px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-800">Révision</span>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-1">Demande de modifications par Jane Smith</p>
+                    </div>
+                    <div class="border-l-2 pl-4 py-1 border-gray-400">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm font-medium">15/03/2023</span>
+                            <span class="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-800">Création</span>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-1">Création initiale par John Doe</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize feather icons
+        feather.replace();
+        
+        // Toggle sidebar on mobile
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('active');
+        }
+        
+        // Sample data for treatments
+        const treatmentsData = [
+            {
+                id: 1,
+                title: "Gestion des employés",
+                service: "RH",
+                status: "active",
+                description: "Traitement des données des employés pour la gestion des contrats, paie et avantages sociaux.",
+                responsable: "John Doe",
+                dpo: "Jane Smith",
+                created: "15/03/2023",
+                updated: "22/05/2023",
+                purpose: "Gestion des ressources humaines",
+                categories: ["Identité", "Coordonnées", "Situation familiale", "Rémunération"],
+                progress: 90,
+                documents: 3,
+                evaluations: 2,
+                inactive: false
+            },
+            {
+                id: 2,
+                title: "Campagnes marketing",
+                service: "Marketing",
+                status: "active",
+                description: "Traitement des données clients pour les campagnes de marketing direct et publicité ciblée.",
+                responsable: "Alice Martin",
+                dpo: "Jane Smith",
+                created: "10/02/2023",
+                updated: "18/05/2023",
+                purpose: "Marketing et prospection",
+                categories: ["Coordonnées", "Comportement d'achat", "Préférences"],
+                progress: 75,
+                documents: 2,
+                evaluations: 1,
+                inactive: false
+            },
+            {
+                id: 3,
+                title: "Support client",
+                service: "Commercial",
+                status: "active",
+                description: "Traitement des demandes clients et gestion des tickets de support.",
+                responsable: "Bob Johnson",
+                dpo: "Jane Smith",
+                created: "05/01/2023",
+                updated: "12/05/2023",
+                purpose: "Relation client",
+                categories: ["Coordonnées", "Historique des demandes", "Satisfaction"],
+                progress: 100,
+                documents: 4,
+                evaluations: 3,
+                inactive: false
+            },
+            {
+                id: 4,
+                title: "Analyse financière",
+                service: "Finance",
+                status: "validation",
+                description: "Analyse des données financières pour les rapports et prévisions.",
+                responsable: "Charles Brown",
+                dpo: "Jane Smith",
+                created: "20/04/2023",
+                updated: "20/05/2023",
+                purpose: "Analyse financière",
+                categories: ["Données financières", "Transactions", "Comptes"],
+                progress: 50,
+                documents: 1,
+                evaluations: 0,
+                inactive: false
+            },
+            {
+                id: 5,
+                title: "Gestion des accès",
+                service: "IT",
+                status: "active",
+                description: "Gestion des comptes utilisateurs et des droits d'accès aux systèmes.",
+                responsable: "David Wilson",
+                dpo: "Jane Smith",
+                created: "12/03/2023",
+                updated: "15/05/2023",
+                purpose: "Sécurité des systèmes",
+                categories: ["Identifiants", "Droits d'accès", "Journaux de connexion"],
+                progress: 85,
+                documents: 3,
+                evaluations: 2,
+                inactive: false
+            },
+            {
+                id: 6,
+                title: "Ancien système CRM",
+                service: "Commercial",
+                status: "inactive",
+                description: "Ancien système de gestion de la relation client remplacé en 2022.",
+                responsable: "Bob Johnson",
+                dpo: "Jane Smith",
+                created: "15/06/2020",
+                updated: "30/11/2022",
+                purpose: "Ancienne relation client",
+                categories: ["Coordonnées", "Historique des interactions"],
+                progress: 100,
+                documents: 5,
+                evaluations: 4,
+                inactive: true
+            },
+            {
+                id: 7,
+                title: "Enquête satisfaction",
+                service: "Marketing",
+                status: "active",
+                description: "Collecte et analyse des enquêtes de satisfaction clients.",
+                responsable: "Alice Martin",
+                dpo: "Jane Smith",
+                created: "01/05/2023",
+                updated: "10/05/2023",
+                purpose: "Amélioration qualité",
+                categories: ["Opinions", "Satisfaction", "Suggestions"],
+                progress: 65,
+                documents: 2,
+                evaluations: 1,
+                inactive: false
+            },
+            {
+                id: 8,
+                title: "Recrutement",
+                service: "RH",
+                status: "archive",
+                description: "Traitement des candidatures et gestion du processus de recrutement.",
+                responsable: "John Doe",
+                dpo: "Jane Smith",
+                created: "10/01/2023",
+                updated: "05/05/2023",
+                purpose: "Recrutement",
+                categories: ["CV", "Compétences", "Évaluations"],
+                progress: 100,
+                documents: 4,
+                evaluations: 3,
+                inactive: false
+            },
+            {
+                id: 9,
+                title: "Gestion des fournisseurs",
+                service: "Finance",
+                status: "active",
+                description: "Traitement des données des fournisseurs pour la gestion des contrats et paiements.",
+                responsable: "Charles Brown",
+                dpo: "Jane Smith",
+                created: "15/02/2023",
+                updated: "20/05/2023",
+                purpose: "Gestion fournisseurs",
+                categories: ["Coordonnées", "Contrats", "Paiements"],
+                progress: 80,
+                documents: 3,
+                evaluations: 2,
+                inactive: false
+            },
+            {
+                id: 10,
+                title: "Analyse web",
+                service: "Marketing",
+                status: "active",
+                description: "Collecte et analyse des données de navigation sur le site web.",
+                responsable: "Alice Martin",
+                dpo: "Jane Smith",
+                created: "05/03/2023",
+                updated: "15/05/2023",
+                purpose: "Optimisation web",
+                categories: ["Cookies", "Comportement navigation", "Pages vues"],
+                progress: 70,
+                documents: 2,
+                evaluations: 1,
+                inactive: false
+            }
+        ];
+
+        // Get service color
+        function getServiceColor(service) {
+            const colors = {
+                'RH': 'bg-purple-100 text-purple-800',
+                'Marketing': 'bg-pink-100 text-pink-800',
+                'Commercial': 'bg-blue-100 text-blue-800',
+                'Finance': 'bg-green-100 text-green-800',
+                'IT': 'bg-orange-100 text-orange-800'
+            };
+            return colors[service] || 'bg-gray-100 text-gray-800';
+        }
+
+        // Get status color
+        function getStatusColor(status) {
+            const colors = {
+                'active': 'bg-green-100 text-green-800',
+                'inactive': 'bg-red-100 text-red-800',
+                'validation': 'bg-yellow-100 text-yellow-800',
+                'archive': 'bg-gray-100 text-gray-800'
+            };
+            return colors[status] || 'bg-gray-100 text-gray-800';
+        }
+
+        // Get status text
+        function getStatusText(status) {
+            const texts = {
+                'active': 'Actif',
+                'inactive': 'Inactif',
+                'validation': 'En validation',
+                'archive': 'À archiver'
+            };
+            return texts[status] || status;
+        }
+
+        // Render treatments list
+        function renderTreatmentsList(view = 'grid') {
+            const container = document.getElementById('treatments-container');
+            container.innerHTML = '';
+            
+            container.className = view === 'grid' ? 
+                'grid-view grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 
+                'list-view space-y-4';
+            
+            treatmentsData.forEach(treatment => {
+                const treatmentCard = document.createElement('div');
+                treatmentCard.className = `treatment-card bg-white rounded-lg p-4 cursor-pointer ${treatment.inactive ? 'inactive' : ''}`;
+                treatmentCard.dataset.id = treatment.id;
+                
+                if (view === 'grid') {
+                    treatmentCard.innerHTML = `
+                        <div class="card-body">
+                            <div class="flex justify-between items-start mb-3">
+                                <span class="text-xs px-2 py-1 rounded-full ${getServiceColor(treatment.service)}">${treatment.service}</span>
+                                <span class="text-xs px-2 py-1 rounded-full ${getStatusColor(treatment.status)}">${getStatusText(treatment.status)}</span>
+                            </div>
+                            <h3 class="title text-lg font-semibold text-gray-900 mb-3">${treatment.title}</h3>
+                            <div class="flex justify-between mb-4">
+                                <div class="circular-badge bg-blue-100 text-blue-600">${treatment.documents}</div>
+                                <div class="circular-badge bg-green-100 text-green-600">${treatment.evaluations}</div>
+                                <div class="circular-badge bg-purple-100 text-purple-600">${treatment.categories.length}</div>
+                            </div>
+                            <div class="mini-progress">
+                                <div class="mini-progress-fill" style="width: ${treatment.progress}%"></div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    treatmentCard.innerHTML = `
+                        <div class="flex items-start">
+                            <div class="flex-1">
+                                <div class="flex items-center mb-1">
+                                    <h3 class="title text-lg font-semibold text-gray-900 mr-2">${treatment.title}</h3>
+                                    <span class="text-xs px-2 py-1 rounded-full ${getStatusColor(treatment.status)}">${getStatusText(treatment.status)}</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-2">${treatment.description.substring(0, 80)}...</p>
+                                <div class="flex items-center text-xs text-gray-500">
+                                    <span class="mr-3">Service: ${treatment.service}</span>
+                                    <span class="mr-3">Documents: ${treatment.documents}</span>
+                                    <span>Évaluations: ${treatment.evaluations}</span>
+                                </div>
+                            </div>
+                            <div class="ml-4 w-24">
+                                <div class="mini-progress mb-1">
+                                    <div class="mini-progress-fill" style="width: ${treatment.progress}%"></div>
+                                </div>
+                                <span class="text-xs text-gray-600">${treatment.progress}% complet</span>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                treatmentCard.addEventListener('click', () => openTreatmentDetails(treatment.id));
+                container.appendChild(treatmentCard);
+            });
+            
+            feather.replace();
+        }
+
+        // Open treatment details in overlay
+        function openTreatmentDetails(treatmentId) {
+            const treatment = treatmentsData.find(t => t.id === treatmentId);
+            if (!treatment) return;
+            
+            // Update overlay content
+            document.getElementById('treatment-title').textContent = treatment.title;
+            document.getElementById('treatment-description').textContent = treatment.description;
+            document.getElementById('treatment-service').textContent = treatment.service;
+            document.getElementById('treatment-responsable').textContent = treatment.responsable;
+            document.getElementById('treatment-dpo').textContent = treatment.dpo;
+            document.getElementById('treatment-created').textContent = treatment.created;
+            document.getElementById('treatment-updated').textContent = treatment.updated;
+            document.getElementById('treatment-purpose').textContent = treatment.purpose;
+            document.getElementById('treatment-progress-bar').style.width = `${treatment.progress}%`;
+            document.getElementById('treatment-progress-text').textContent = `${treatment.progress}%`;
+            
+            // Update status
+            const statusBadge = document.getElementById('treatment-status');
+            statusBadge.className = `px-2 py-1 text-xs font-semibold rounded-full mr-2 ${getStatusColor(treatment.status)}`;
+            statusBadge.textContent = getStatusText(treatment.status);
+            
+            // Update categories
+            const categoriesContainer = document.getElementById('treatment-categories');
+            categoriesContainer.innerHTML = '';
+            treatment.categories.forEach(cat => {
+                const span = document.createElement('span');
+                span.className = 'text-xs px-2 py-1 bg-gray-100 text-gray-800 rounded-full';
+                span.textContent = cat;
+                categoriesContainer.appendChild(span);
+            });
+            
+            // Show overlay
+            document.getElementById('overlay-panel').classList.add('active');
+            document.getElementById('overlay-backdrop').classList.add('active');
+            
+            // Close button
+            document.querySelector('.close-overlay').addEventListener('click', closeTreatmentDetails);
+            document.getElementById('overlay-backdrop').addEventListener('click', closeTreatmentDetails);
+            
+            // Set first tab as active
+            switchTab('details');
+        }
+
+        // Close treatment details
+        function closeTreatmentDetails() {
+            document.getElementById('overlay-panel').classList.remove('active');
+            document.getElementById('overlay-backdrop').classList.remove('active');
+        }
+
+        // Switch tabs in overlay
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                if (btn.dataset.tab === tabName) {
+                    btn.classList.add('border-blue-500', 'text-blue-600');
+                    btn.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+                } else {
+                    btn.classList.remove('border-blue-500', 'text-blue-600');
+                    btn.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
+                }
+            });
+        }
+
+        // Setup tab buttons
+        function setupTabButtons() {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    switchTab(btn.dataset.tab);
+                });
+            });
+        }
+
+        // Setup view toggle buttons
+        function setupViewToggleButtons() {
+            document.getElementById('card-view-btn').addEventListener('click', () => {
+                renderTreatmentsList('grid');
+                document.getElementById('card-view-btn').classList.add('bg-blue-100', 'text-blue-600');
+                document.getElementById('card-view-btn').classList.remove('bg-gray-100', 'text-gray-600');
+                document.getElementById('list-view-btn').classList.add('bg-gray-100', 'text-gray-600');
+                document.getElementById('list-view-btn').classList.remove('bg-blue-100', 'text-blue-600');
+            });
+            
+            document.getElementById('list-view-btn').addEventListener('click', () => {
+                renderTreatmentsList('list');
+                document.getElementById('list-view-btn').classList.add('bg-blue-100', 'text-blue-600');
+                document.getElementById('list-view-btn').classList.remove('bg-gray-100', 'text-gray-600');
+                document.getElementById('card-view-btn').classList.add('bg-gray-100', 'text-gray-600');
+                document.getElementById('card-view-btn').classList.remove('bg-blue-100', 'text-blue-600');
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTreatmentsList();
+            setupTabButtons();
+            setupViewToggleButtons();
+            
+            // Set card view as active by default
+            document.getElementById('card-view-btn').classList.add('bg-blue-100', 'text-blue-600');
+            document.getElementById('card-view-btn').classList.remove('bg-gray-100', 'text-gray-600');
+        });
+    </script>
+        
+{% endblock %}

@@ -1,0 +1,94 @@
+.sidebar {
+            width: 200px;
+            height: 100vh;
+            transition: all 0.3s;
+        }
+        .content {
+            margin-left: 200px;
+            transition: all 0.3s;
+        }
+        .priority-badge {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        .action-row {
+            transition: all 0.2s;
+            max-height: 72px;
+            overflow: hidden;
+        }
+        .action-row.expanded {
+            max-height: 300px;
+        }
+        .timeline-bar {
+            height: 6px;
+            border-radius: 3px;
+            position: relative;
+        }
+        .timeline-progress {
+            height: 100%;
+            border-radius: 3px;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .action-card {
+            transition: all 0.2s;
+        }
+        .action-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background-color: white;
+            border-radius: 0.375rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            z-index: 20;
+        }
+        .dropdown-trigger:hover .dropdown-menu {
+            display: block;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-200px);
+            }
+            .content {
+                margin-left: 0;
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .desktop-only {
+                display: none;
+            }
+            .mobile-action-card {
+                display: block;
+            }
+            .action-row {
+                display: none;
+            }
+        }
+        @media (min-width: 769px) {
+            .mobile-action-card {
+                display: none;
+            }
+            .action-row {
+                display: table-row;
+            }
+        }

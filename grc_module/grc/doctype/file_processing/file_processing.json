@@ -1,0 +1,223 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-08-05 09:38:26.938938",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "entreprise",
+  "fonction",
+  "email",
+  "column_break_bsjg",
+  "service_concerner",
+  "traitement",
+  "nom",
+  "section_break_bkdw",
+  "statut_de_la_personne_concerner",
+  "finalit\u00e9",
+  "column_break_vlil",
+  "origine_de_la_collecte",
+  "base_l\u00e9gal_de_traitement",
+  "donn\u00e9es_tab",
+  "cat\u00e9gorie_de_donn\u00e9e",
+  "description_cat\u00e9gorie",
+  "column_break_dyju",
+  "destinataire_des_donn\u00e9es",
+  "description_destinataire",
+  "section_break_ciaw",
+  "dur\u00e9e_de_conservation",
+  "valeur_de_la_dur\u00e9e",
+  "support_de_collecte",
+  "application_logiciel",
+  "column_break_syhv",
+  "mesure_de_s\u00e9curit\u00e9",
+  "description_mesure_de_s\u00e9curit\u00e9",
+  "sous_traitance",
+  "status"
+ ],
+ "fields": [
+  {
+   "fieldname": "entreprise",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Entreprise",
+   "options": "customer_grc",
+   "reqd": 1
+  },
+  {
+   "fieldname": "fonction",
+   "fieldtype": "Data",
+   "label": "Fonction"
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email"
+  },
+  {
+   "fieldname": "service_concerner",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Service concern\u00e9",
+   "link_filters": "[[\"service_grc\",\"entreprise\",\"=\",\"eval:doc.entreprise\"]]",
+   "options": "service_grc",
+   "reqd": 1
+  },
+  {
+   "fieldname": "traitement",
+   "fieldtype": "Link",
+   "label": "Traitement",
+   "link_filters": "[[\"traitement_grc\",\"service\",\"=\",\"eval:doc.service_concerner\"]]",
+   "options": "traitement_grc"
+  },
+  {
+   "fieldname": "column_break_bsjg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "nom",
+   "fieldtype": "Data",
+   "label": "Nom"
+  },
+  {
+   "fieldname": "section_break_bkdw",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "statut_de_la_personne_concerner",
+   "fieldtype": "Select",
+   "label": "Statut de la personne concern\u00e9",
+   "options": "\nCandidat\nStagiaire\nAlternant\nSalari\u00e9\nVisiteur\nClients\nPrestataire\nClients/Prestataire\nInternautes"
+  },
+  {
+   "fieldname": "finalit\u00e9",
+   "fieldtype": "Data",
+   "label": "Finalit\u00e9s"
+  },
+  {
+   "fieldname": "column_break_vlil",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "origine_de_la_collecte",
+   "fieldtype": "Select",
+   "label": "Origine de la collecte ",
+   "options": "\nDirect\nIndirect\nDirect & Indirect"
+  },
+  {
+   "fieldname": "base_l\u00e9gal_de_traitement",
+   "fieldtype": "Select",
+   "label": "Base l\u00e9gal de traitement",
+   "options": "\nMesure contract/precontract\nObligation l\u00e9gal\nMission IP/exercice de AP\nSauvegarde de I/DLF\nRecueil de consentement"
+  },
+  {
+   "fieldname": "donn\u00e9es_tab",
+   "fieldtype": "Tab Break",
+   "label": "Donn\u00e9es"
+  },
+  {
+   "fieldname": "cat\u00e9gorie_de_donn\u00e9e",
+   "fieldtype": "Select",
+   "label": "Cat\u00e9gorie de donn\u00e9e",
+   "options": "\nDonn\u00e9e d'Identification\nVie personnelle\nVie professionnelle\nInformations d'ordre \u00e9conomique et financi\u00e8re\nDonn\u00e9es de connexion\nDonn\u00e9es de localisation\nNum\u00e9ro d'Identification national\nDonn\u00e9es biom\u00e9triques\ninfractions, condamnations, mesure de suret\u00e9\nAutres donn\u00e9es sensibles"
+  },
+  {
+   "fieldname": "description_cat\u00e9gorie",
+   "fieldtype": "Small Text",
+   "label": "Description cat\u00e9gorie "
+  },
+  {
+   "fieldname": "column_break_dyju",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "destinataire_des_donn\u00e9es",
+   "fieldtype": "Select",
+   "label": "Destinataire des donn\u00e9es",
+   "options": "\nDestinataire interne\nDestinataire externe\nInterne & externe"
+  },
+  {
+   "fieldname": "description_destinataire",
+   "fieldtype": "Small Text",
+   "label": "Description destinataire "
+  },
+  {
+   "fieldname": "section_break_ciaw",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "dur\u00e9e_de_conservation",
+   "fieldtype": "Select",
+   "label": "Dur\u00e9e de conservation ",
+   "options": "\nJour\nMois\nAnn\u00e9e"
+  },
+  {
+   "fieldname": "valeur_de_la_dur\u00e9e",
+   "fieldtype": "Data",
+   "label": "Valeur de la dur\u00e9e"
+  },
+  {
+   "fieldname": "support_de_collecte",
+   "fieldtype": "Select",
+   "label": "Support de collecte",
+   "options": "\nNum\u00e9rique\nPapier\nNum\u00e9rique et Papier"
+  },
+  {
+   "fieldname": "application_logiciel",
+   "fieldtype": "Small Text",
+   "label": "Application/Logiciel"
+  },
+  {
+   "fieldname": "column_break_syhv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "mesure_de_s\u00e9curit\u00e9",
+   "fieldtype": "Select",
+   "label": "Mesure de s\u00e9curit\u00e9",
+   "options": "\nMesures Organisationnelles\nMesures techniques\nMesure techniques & Organisationnelles"
+  },
+  {
+   "fieldname": "description_mesure_de_s\u00e9curit\u00e9",
+   "fieldtype": "Small Text",
+   "label": "Description mesure de s\u00e9curit\u00e9"
+  },
+  {
+   "fieldname": "sous_traitance",
+   "fieldtype": "Data",
+   "label": "Sous-traitance"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "status",
+   "options": "En cours\nTerminer"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-08-05 10:38:38.228965",
+ "modified_by": "Administrator",
+ "module": "GRC",
+ "name": "file_processing",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

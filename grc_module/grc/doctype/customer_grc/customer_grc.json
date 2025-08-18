@@ -1,20 +1,20 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
- "autoname": "format:{name_company}-{#####}",
- "creation": "2025-05-16 13:59:24.806794",
+ "autoname": "format:{entreprise}-{#####}",
+ "creation": "2025-08-05 09:34:25.867973",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
   "company_information_section",
-  "entreprise",
   "number_company",
+  "entreprise",
   "column_break_aiwa",
   "email_company",
   "informations_du_representant_legal_section",
   "first_name_legal",
   "email_legal",
-  "password",
   "column_break_rnns",
   "last_name_legal",
   "num\u00e9ro"
@@ -32,29 +32,29 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Nom",
-   "link_filters": "{\"customer_type\": \"Company\"}",
+   "link_filters": "[[\"Customer\",\"customer_type\",\"=\",\"Company\"]]",
    "options": "Customer",
    "reqd": 1,
    "set_only_once": 1,
    "unique": 1
   },
   {
-   "fetch_from": "name_company.mobile_no",
+   "fetch_from": "entreprise.mobile_no",
    "fieldname": "number_company",
    "fieldtype": "Data",
    "label": "Num\u00e9ro",
-   "read_only": 1
+   "reqd": 1
   },
   {
    "fieldname": "column_break_aiwa",
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "name_company.email_id",
+   "fetch_from": "entreprise.email_id",
    "fieldname": "email_company",
    "fieldtype": "Data",
    "label": "Email",
-   "read_only": 1
+   "reqd": 1
   },
   {
    "fieldname": "informations_du_representant_legal_section",
@@ -65,19 +65,13 @@
    "fieldname": "first_name_legal",
    "fieldtype": "Data",
    "label": "Nom",
-   "read_only": 1
+   "reqd": 1
   },
   {
    "fetch_from": "name_company.email_rep",
    "fieldname": "email_legal",
    "fieldtype": "Data",
    "label": "Email",
-   "read_only": 1
-  },
-  {
-   "fieldname": "password",
-   "fieldtype": "Password",
-   "label": "Mot de passe",
    "reqd": 1
   },
   {
@@ -89,25 +83,25 @@
    "fieldname": "last_name_legal",
    "fieldtype": "Data",
    "label": "Pr\u00e9nom",
-   "read_only": 1
+   "reqd": 1
   },
   {
    "fetch_from": "name_company.phone_rep",
    "fieldname": "num\u00e9ro",
    "fieldtype": "Phone",
    "label": "Num\u00e9ro",
-   "read_only": 1
+   "reqd": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-19 10:13:42.527513",
+ "modified": "2025-08-06 09:28:19.990877",
  "modified_by": "Administrator",
  "module": "GRC",
  "name": "customer_grc",
  "naming_rule": "Expression",
- "owner": "fkone@amoaman.com",
+ "owner": "Administrator",
  "permissions": [
   {
    "create": 1,
@@ -122,8 +116,6 @@
    "write": 1
   },
   {
-   "create": 1,
-   "delete": 1,
    "email": 1,
    "export": 1,
    "print": 1,

@@ -1,0 +1,659 @@
+{% extends 'templates/layout.html' %}
+
+{% block title %} Gestion Documentaire {% endblock %}
+
+{% block link %}
+
+<link rel="stylesheet" href="/assets/grc_module/css/documents.css">
+    
+{% endblock %}
+
+        <!-- Main Content -->
+        {% block content %}
+           <main class="p-6">
+                <!-- Dropzone -->
+                <div class="dropzone mb-8 rounded-lg bg-white p-8 text-center cursor-pointer transition-all duration-300" id="dropzone">
+                    <div class="flex flex-col items-center justify-center">
+                        <i class="fas fa-cloud-upload-alt text-4xl text-blue-500 mb-4"></i>
+                        <h3 class="text-lg font-medium text-gray-700 mb-2">Glissez-déposez vos fichiers ici</h3>
+                        <p class="text-gray-500 mb-4">ou cliquez pour sélectionner des fichiers</p>
+                        <input type="file" id="file-input" class="hidden" multiple>
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors duration-300">
+                            <i class="fas fa-upload mr-2"></i> Parcourir
+                        </button>
+                    </div>
+                    <div class="progress-container mt-4 hidden">
+                        <div class="flex justify-between text-sm text-gray-600 mb-1">
+                            <span>Téléversement en cours...</span>
+                            <span class="progress-percentage">0%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="progress-bar bg-blue-600 h-2 rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filters and Search -->
+                <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+                    <div class="flex flex-wrap items-center justify-between gap-4">
+                        <div class="flex items-center space-x-2">
+                            <div class="relative">
+                                <input type="text" placeholder="Rechercher..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <select class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option>Trier par</option>
+                                <option>Date de modification</option>
+                                <option>Nom</option>
+                                <option>Taille</option>
+                            </select>
+                            <select class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option>Filtrer par</option>
+                                <option>Documents</option>
+                                <option>Images</option>
+                                <option>PDF</option>
+                                <option>Non validés</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Document Grid -->
+                <div class="documents-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="documents-container">
+                    <!-- Document cards will be added here dynamically -->
+                </div>
+
+                <!-- Empty State -->
+                <div class="empty-state hidden bg-white rounded-lg shadow-sm p-8 text-center" id="empty-state">
+                    <i class="fas fa-folder-open text-4xl text-gray-400 mb-4"></i>
+                    <h3 class="text-lg font-medium text-gray-700 mb-2">Aucun document trouvé</h3>
+                    <p class="text-gray-500 mb-4">Commencez par ajouter des documents en les glissant-déposant ou en cliquant sur le bouton "Parcourir"</p>
+                </div>
+
+                <!-- Pagination -->
+                <div class="mt-8 flex justify-center">
+                    <nav class="inline-flex rounded-md shadow-sm">
+                        <button class="px-3 py-1 rounded-l-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="px-3 py-1 border-t border-b border-gray-300 bg-white text-blue-600 font-medium">1</button>
+                        <button class="px-3 py-1 border border-gray-300 bg-white text-gray-500 hover:bg-gray-50">2</button>
+                        <button class="px-3 py-1 border border-gray-300 bg-white text-gray-500 hover:bg-gray-50">3</button>
+                        <button class="px-3 py-1 rounded-r-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </nav>
+                </div>
+            </main>
+        {% endblock %}
+        
+
+    {% block script %}
+
+   <!-- Context Menu Template -->
+    <div class="context-menu fixed bg-white shadow-lg rounded-md py-1 z-50 hidden" id="context-menu">
+        <button class="context-menu-item px-4 py-2 text-gray-700 hover:bg-gray-100 w-full text-left flex items-center">
+            <i class="fas fa-eye mr-2 text-gray-500"></i> Aperçu
+        </button>
+        <button class="context-menu-item px-4 py-2 text-gray-700 hover:bg-gray-100 w-full text-left flex items-center">
+            <i class="fas fa-download mr-2 text-gray-500"></i> Télécharger
+        </button>
+        <button class="context-menu-item px-4 py-2 text-gray-700 hover:bg-gray-100 w-full text-left flex items-center">
+            <i class="fas fa-share-alt mr-2 text-gray-500"></i> Partager
+        </button>
+        <button class="context-menu-item px-4 py-2 text-gray-700 hover:bg-gray-100 w-full text-left flex items-center">
+            <i class="fas fa-history mr-2 text-gray-500"></i> Historique des versions
+        </button>
+        <div class="border-t border-gray-200 my-1"></div>
+        <button class="context-menu-item px-4 py-2 text-red-600 hover:bg-gray-100 w-full text-left flex items-center">
+            <i class="fas fa-trash mr-2 text-red-500"></i> Supprimer
+        </button>
+    </div>
+
+    <!-- PDF Preview Modal -->
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden" id="pdf-preview-modal">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-6xl max-h-screen overflow-auto animate-slide">
+            <div class="flex justify-between items-center border-b border-gray-200 p-4">
+                <h3 class="text-lg font-medium text-gray-900">Aperçu du document</h3>
+                <button class="text-gray-500 hover:text-gray-700" id="close-pdf-preview">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-4">
+                <iframe src="" class="w-full h-[80vh] border border-gray-200" id="pdf-iframe"></iframe>
+            </div>
+            <div class="border-t border-gray-200 p-4 flex justify-end">
+                <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors duration-300 flex items-center">
+                    <i class="fas fa-download mr-2"></i> Télécharger
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Version History Modal -->
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden" id="version-history-modal">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-screen overflow-auto animate-slide">
+            <div class="flex justify-between items-center border-b border-gray-200 p-4">
+                <h3 class="text-lg font-medium text-gray-900">Historique des versions</h3>
+                <button class="text-gray-500 hover:text-gray-700" id="close-version-history">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-4">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Version</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Auteur</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Taille</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200" id="version-history-body">
+                            <!-- Version history rows will be added here dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-4 border-t border-gray-200 pt-4 hidden" id="version-comparison">
+                    <h4 class="text-md font-medium text-gray-900 mb-2">Comparaison des versions</h4>
+                    <div class="bg-gray-50 p-4 rounded-md">
+                        <div class="flex justify-between mb-4">
+                            <div class="w-1/2 pr-2">
+                                <h5 class="text-sm font-medium text-gray-700 mb-2">Version 1.2</h5>
+                                <div class="bg-white p-3 border border-gray-200 h-64 overflow-auto">
+                                    <p class="text-red-500 line-through">Ancien contenu supprimé</p>
+                                    <p class="text-green-500">Nouveau contenu ajouté</p>
+                                </div>
+                            </div>
+                            <div class="w-1/2 pl-2">
+                                <h5 class="text-sm font-medium text-gray-700 mb-2">Version 1.3</h5>
+                                <div class="bg-white p-3 border border-gray-200 h-64 overflow-auto">
+                                    <p>Contenu actuel du document</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex justify-end">
+                            <button class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-md transition-colors duration-300 mr-2">
+                                Annuler
+                            </button>
+                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors duration-300">
+                                Restaurer cette version
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample document data
+        const documents = [
+            {
+                id: 1,
+                name: "Rapport annuel 2023.pdf",
+                type: "pdf",
+                size: "2.4 MB",
+                modified: "2023-05-15",
+                author: "Jean Dupont",
+                validated: true,
+                tags: ["Finance", "Rapport"],
+                thumbnail: "https://cdn-icons-png.flaticon.com/512/337/337946.png",
+                versions: [
+                    { version: "1.3", date: "2023-05-15", author: "Jean Dupont", size: "2.4 MB" },
+                    { version: "1.2", date: "2023-04-28", author: "Jean Dupont", size: "2.1 MB" },
+                    { version: "1.1", date: "2023-03-10", author: "Jean Dupont", size: "1.8 MB" }
+                ]
+            },
+            {
+                id: 2,
+                name: "Présentation stratégie.pptx",
+                type: "ppt",
+                size: "5.7 MB",
+                modified: "2023-06-02",
+                author: "Marie Lambert",
+                validated: false,
+                tags: ["Marketing", "Présentation"],
+                thumbnail: "https://cdn-icons-png.flaticon.com/512/337/337953.png",
+                versions: [
+                    { version: "2.1", date: "2023-06-02", author: "Marie Lambert", size: "5.7 MB" },
+                    { version: "2.0", date: "2023-05-20", author: "Marie Lambert", size: "4.9 MB" }
+                ]
+            },
+            {
+                id: 3,
+                name: "Budget Q3.xlsx",
+                type: "xls",
+                size: "1.2 MB",
+                modified: "2023-07-10",
+                author: "Pierre Martin",
+                validated: true,
+                tags: ["Finance", "Budget"],
+                thumbnail: "https://cdn-icons-png.flaticon.com/512/337/337932.png",
+                versions: [
+                    { version: "3.2", date: "2023-07-10", author: "Pierre Martin", size: "1.2 MB" },
+                    { version: "3.1", date: "2023-06-25", author: "Pierre Martin", size: "1.1 MB" }
+                ]
+            },
+            {
+                id: 4,
+                name: "Contrat client.docx",
+                type: "doc",
+                size: "850 KB",
+                modified: "2023-06-28",
+                author: "Sophie Bernard",
+                validated: true,
+                tags: ["Juridique", "Client"],
+                thumbnail: "https://cdn-icons-png.flaticon.com/512/337/337949.png",
+                versions: [
+                    { version: "4.5", date: "2023-06-28", author: "Sophie Bernard", size: "850 KB" },
+                    { version: "4.4", date: "2023-06-20", author: "Sophie Bernard", size: "820 KB" }
+                ]
+            },
+            {
+                id: 5,
+                name: "Logo entreprise.png",
+                type: "img",
+                size: "320 KB",
+                modified: "2023-01-15",
+                author: "Thomas Leroy",
+                validated: true,
+                tags: ["Design", "Branding"],
+                thumbnail: "https://cdn-icons-png.flaticon.com/512/337/337943.png",
+                versions: [
+                    { version: "1.0", date: "2023-01-15", author: "Thomas Leroy", size: "320 KB" }
+                ]
+            },
+            {
+                id: 6,
+                name: "Procédure RH.pdf",
+                type: "pdf",
+                size: "1.8 MB",
+                modified: "2023-05-30",
+                author: "Laura Petit",
+                validated: false,
+                tags: ["RH", "Process"],
+                thumbnail: "https://cdn-icons-png.flaticon.com/512/337/337946.png",
+                versions: [
+                    { version: "2.0", date: "2023-05-30", author: "Laura Petit", size: "1.8 MB" },
+                    { version: "1.5", date: "2023-04-12", author: "Laura Petit", size: "1.6 MB" }
+                ]
+            }
+        ];
+
+        // DOM Elements
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('file-input');
+        const documentsContainer = document.getElementById('documents-container');
+        const emptyState = document.getElementById('empty-state');
+        const contextMenu = document.getElementById('context-menu');
+        const pdfPreviewModal = document.getElementById('pdf-preview-modal');
+        const pdfIframe = document.getElementById('pdf-iframe');
+        const closePdfPreview = document.getElementById('close-pdf-preview');
+        const versionHistoryModal = document.getElementById('version-history-modal');
+        const versionHistoryBody = document.getElementById('version-history-body');
+        const closeVersionHistory = document.getElementById('close-version-history');
+        const userMenuButton = document.getElementById('user-menu-button');
+        const userMenu = document.getElementById('user-menu');
+        const viewToggles = document.querySelectorAll('.view-toggle');
+
+        // Current state
+        let currentView = 'grid';
+        let selectedDocumentId = null;
+
+        // Initialize the app
+        function init() {
+            renderDocuments();
+            setupEventListeners();
+        }
+
+        // Render documents based on current view
+        function renderDocuments() {
+            documentsContainer.innerHTML = '';
+            
+            if (documents.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            
+            emptyState.classList.add('hidden');
+            
+            documents.forEach(doc => {
+                const docElement = createDocumentElement(doc);
+                documentsContainer.appendChild(docElement);
+            });
+        }
+
+        // Create a document element based on current view
+        function createDocumentElement(doc) {
+            const docElement = document.createElement('div');
+            docElement.className = `document-card bg-white rounded-lg shadow-sm overflow-hidden transition-all duration-300 ${currentView === 'grid' ? 'h-80' : 'flex h-24'}`;
+            docElement.dataset.id = doc.id;
+            
+            if (currentView === 'grid') {
+                docElement.innerHTML = `
+                    <div class="relative h-40 bg-gray-100 flex items-center justify-center">
+                        <img src="${doc.thumbnail}" alt="${doc.name}" class="max-h-full max-w-full">
+                        ${!doc.validated ? '<div class="absolute top-2 right-2 w-3 h-3 bg-orange-500 rounded-full" title="Document non validé"></div>' : ''}
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-medium text-gray-800 truncate" title="${doc.name}">${doc.name}</h3>
+                            <button class="text-gray-400 hover:text-gray-600 document-more" data-id="${doc.id}">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                        </div>
+                        <div class="text-sm text-gray-500 mb-1">${doc.size}</div>
+                        <div class="text-sm text-gray-500 mb-2">Modifié le ${formatDate(doc.modified)}</div>
+                        <div class="flex flex-wrap gap-1">
+                            ${doc.tags.map(tag => `<span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+            } else {
+                docElement.innerHTML = `
+                    <div class="flex items-center p-4 w-16">
+                        <img src="${doc.thumbnail}" alt="${doc.name}" class="max-h-full max-w-full">
+                    </div>
+                    <div class="flex-1 p-4 flex flex-col justify-center">
+                        <div class="flex justify-between items-center mb-1">
+                            <h3 class="font-medium text-gray-800 truncate" title="${doc.name}">${doc.name}</h3>
+                            <button class="text-gray-400 hover:text-gray-600 document-more" data-id="${doc.id}">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                        </div>
+                        <div class="text-sm text-gray-500">${doc.size} • Modifié le ${formatDate(doc.modified)} • ${doc.author}</div>
+                    </div>
+                    <div class="p-4 flex items-center">
+                        ${!doc.validated ? '<div class="w-3 h-3 bg-orange-500 rounded-full mr-3" title="Document non validé"></div>' : ''}
+                        <div class="flex flex-wrap gap-1">
+                            ${doc.tags.map(tag => `<span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            return docElement;
+        }
+
+        // Format date for display
+        function formatDate(dateString) {
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            return new Date(dateString).toLocaleDateString('fr-FR', options);
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Dropzone events
+            dropzone.addEventListener('click', () => fileInput.click());
+            dropzone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropzone.classList.add('active');
+            });
+            dropzone.addEventListener('dragleave', () => {
+                dropzone.classList.remove('active');
+            });
+            dropzone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropzone.classList.remove('active');
+                handleFiles(e.dataTransfer.files);
+            });
+            
+            // File input change
+            fileInput.addEventListener('change', () => {
+                if (fileInput.files.length > 0) {
+                    handleFiles(fileInput.files);
+                }
+            });
+            
+            // Context menu events
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.document-more') && !e.target.closest('#context-menu')) {
+                    contextMenu.classList.remove('visible');
+                }
+            });
+            
+            // PDF preview events
+            closePdfPreview.addEventListener('click', () => {
+                pdfPreviewModal.classList.add('hidden');
+                pdfIframe.src = '';
+            });
+            
+            // Version history events
+            closeVersionHistory.addEventListener('click', () => {
+                versionHistoryModal.classList.add('hidden');
+            });
+            
+            // User menu events
+            userMenuButton.addEventListener('click', () => {
+                userMenu.classList.toggle('hidden');
+            });
+            
+            // View toggle events
+            viewToggles.forEach(toggle => {
+                toggle.addEventListener('click', () => {
+                    currentView = toggle.dataset.view;
+                    renderDocuments();
+                    
+                    // Update active state
+                    viewToggles.forEach(t => t.classList.remove('bg-blue-100', 'text-blue-600'));
+                    toggle.classList.add('bg-blue-100', 'text-blue-600');
+                });
+            });
+            
+            // Set grid view as active by default
+            document.querySelector('.view-toggle[data-view="grid"]').classList.add('bg-blue-100', 'text-blue-600');
+        }
+
+        // Handle file uploads
+        function handleFiles(files) {
+            const progressContainer = dropzone.querySelector('.progress-container');
+            const progressBar = dropzone.querySelector('.progress-bar');
+            const progressPercentage = dropzone.querySelector('.progress-percentage');
+            
+            progressContainer.classList.remove('hidden');
+            
+            // Simulate upload progress
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 10;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    
+                    // Add a small delay before hiding the progress bar
+                    setTimeout(() => {
+                        progressContainer.classList.add('hidden');
+                        progressBar.style.width = '0%';
+                        progressPercentage.textContent = '0%';
+                        
+                        // Add the new document to the list
+                        Array.from(files).forEach((file, index) => {
+                            const newDoc = {
+                                id: documents.length + index + 1,
+                                name: file.name,
+                                type: file.name.split('.').pop(),
+                                size: formatFileSize(file.size),
+                                modified: new Date().toISOString().split('T')[0],
+                                author: "Utilisateur actuel",
+                                validated: false,
+                                tags: ["Nouveau"],
+                                thumbnail: getThumbnailForType(file.name.split('.').pop()),
+                                versions: [
+                                    { version: "1.0", date: new Date().toISOString().split('T')[0], author: "Utilisateur actuel", size: formatFileSize(file.size) }
+                                ]
+                            };
+                            
+                            documents.unshift(newDoc);
+                        });
+                        
+                        renderDocuments();
+                    }, 500);
+                }
+                
+                progressBar.style.width = `${progress}%`;
+                progressPercentage.textContent = `${Math.round(progress)}%`;
+            }, 200);
+        }
+
+        // Format file size
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+        }
+
+        // Get thumbnail based on file type
+        function getThumbnailForType(type) {
+            const typeMap = {
+                pdf: "https://cdn-icons-png.flaticon.com/512/337/337946.png",
+                doc: "https://cdn-icons-png.flaticon.com/512/337/337949.png",
+                docx: "https://cdn-icons-png.flaticon.com/512/337/337949.png",
+                xls: "https://cdn-icons-png.flaticon.com/512/337/337932.png",
+                xlsx: "https://cdn-icons-png.flaticon.com/512/337/337932.png",
+                ppt: "https://cdn-icons-png.flaticon.com/512/337/337953.png",
+                pptx: "https://cdn-icons-png.flaticon.com/512/337/337953.png",
+                png: "https://cdn-icons-png.flaticon.com/512/337/337943.png",
+                jpg: "https://cdn-icons-png.flaticon.com/512/337/337943.png",
+                jpeg: "https://cdn-icons-png.flaticon.com/512/337/337943.png",
+                gif: "https://cdn-icons-png.flaticon.com/512/337/337943.png"
+            };
+            
+            return typeMap[type.toLowerCase()] || "https://cdn-icons-png.flaticon.com/512/337/337958.png";
+        }
+
+        // Show context menu
+        function showContextMenu(e, docId) {
+            e.preventDefault();
+            selectedDocumentId = docId;
+            
+            contextMenu.style.left = `${e.clientX}px`;
+            contextMenu.style.top = `${e.clientY}px`;
+            contextMenu.classList.add('visible');
+            
+            // Setup context menu item click handlers
+            const menuItems = contextMenu.querySelectorAll('.context-menu-item');
+            menuItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    contextMenu.classList.remove('visible');
+                    
+                    const text = item.textContent.trim();
+                    if (text.includes('Aperçu')) {
+                        showPdfPreview(docId);
+                    } else if (text.includes('Télécharger')) {
+                        downloadDocument(docId);
+                    } else if (text.includes('Partager')) {
+                        shareDocument(docId);
+                    } else if (text.includes('Historique')) {
+                        showVersionHistory(docId);
+                    } else if (text.includes('Supprimer')) {
+                        deleteDocument(docId);
+                    }
+                });
+            });
+        }
+
+        // Show PDF preview
+        function showPdfPreview(docId) {
+            const doc = documents.find(d => d.id === docId);
+            if (doc && doc.type.toLowerCase() === 'pdf') {
+                pdfIframe.src = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(doc.thumbnail)}`;
+                pdfPreviewModal.classList.remove('hidden');
+            } else {
+                alert("L'aperçu n'est disponible que pour les fichiers PDF.");
+            }
+        }
+
+        // Show version history
+        function showVersionHistory(docId) {
+            const doc = documents.find(d => d.id === docId);
+            if (doc) {
+                versionHistoryBody.innerHTML = '';
+                
+                doc.versions.forEach((version, index) => {
+                    const row = document.createElement('tr');
+                    row.className = index % 2 === 0 ? 'bg-gray-50' : 'bg-white';
+                    row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${version.version}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatDate(version.date)}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${version.author}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${version.size}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <button class="text-blue-600 hover:text-blue-800 mr-3 compare-version" data-version="${version.version}">
+                                Comparer
+                            </button>
+                            <button class="text-blue-600 hover:text-blue-800 restore-version" data-version="${version.version}">
+                                Restaurer
+                            </button>
+                        </td>
+                    `;
+                    versionHistoryBody.appendChild(row);
+                });
+                
+                // Add event listeners for version actions
+                document.querySelectorAll('.compare-version').forEach(button => {
+                    button.addEventListener('click', () => {
+                        document.getElementById('version-comparison').classList.remove('hidden');
+                    });
+                });
+                
+                document.querySelectorAll('.restore-version').forEach(button => {
+                    button.addEventListener('click', () => {
+                        if (confirm(`Voulez-vous vraiment restaurer cette version ?`)) {
+                            alert('Version restaurée avec succès !');
+                            versionHistoryModal.classList.add('hidden');
+                        }
+                    });
+                });
+                
+                versionHistoryModal.classList.remove('hidden');
+            }
+        }
+
+        // Download document
+        function downloadDocument(docId) {
+            const doc = documents.find(d => d.id === docId);
+            if (doc) {
+                alert(`Téléchargement de "${doc.name}" en cours...`);
+            }
+        }
+
+        // Share document
+        function shareDocument(docId) {
+            const doc = documents.find(d => d.id === docId);
+            if (doc) {
+                alert(`Partage de "${doc.name}" en cours...`);
+            }
+        }
+
+        // Delete document
+        function deleteDocument(docId) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer ce document ?')) {
+                const index = documents.findIndex(d => d.id === docId);
+                if (index !== -1) {
+                    documents.splice(index, 1);
+                    renderDocuments();
+                }
+            }
+        }
+
+        // Delegate events for dynamically created elements
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.document-more')) {
+                const docId = parseInt(e.target.closest('.document-more').dataset.id);
+                showContextMenu(e, docId);
+            }
+        });
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+{% endblock %}

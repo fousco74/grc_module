@@ -1,0 +1,50 @@
+.sidebar {
+            width: 200px;
+            height: 100vh;
+            transition: all 0.3s;
+        }
+        .content {
+            margin-left: 200px;
+            transition: all 0.3s;
+        }
+        .compliance-score {
+            font-size: 88px;
+            background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .heatmap-cell {
+            transition: all 0.2s;
+        }
+        .heatmap-cell:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .alert-badge {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-200px);
+            }
+            .content {
+                margin-left: 0;
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
