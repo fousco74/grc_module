@@ -337,7 +337,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2025-06-20 15:42:22.446130",
+  "modified": "2025-12-23 14:58:42.429844",
   "module": "GRC",
   "name": "GRC",
   "number_cards": [
@@ -370,12 +370,12 @@
     "parenttype": "Workspace"
    }
   ],
-  "parent_page": "",
+  "parent_page": "Projects",
   "public": 1,
   "quick_lists": [],
   "restrict_to_domain": null,
   "roles": [],
-  "sequence_id": 28.0,
+  "sequence_id": 21.0,
   "shortcuts": [],
   "title": "GRC"
  }

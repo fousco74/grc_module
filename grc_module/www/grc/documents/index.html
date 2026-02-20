@@ -1,659 +1,1074 @@
-{% extends 'templates/layout.html' %}
+{% extends base_template %}
 
-{% block title %} Gestion Documentaire {% endblock %}
+{% block title %}Gestion documentaire{% endblock %}
 
 {% block link %}
-
 <link rel="stylesheet" href="/assets/grc_module/css/documents.css">
-    
 {% endblock %}
 
-        <!-- Main Content -->
-        {% block content %}
-           <main class="p-6">
-                <!-- Dropzone -->
-                <div class="dropzone mb-8 rounded-lg bg-white p-8 text-center cursor-pointer transition-all duration-300" id="dropzone">
-                    <div class="flex flex-col items-center justify-center">
-                        <i class="fas fa-cloud-upload-alt text-4xl text-blue-500 mb-4"></i>
-                        <h3 class="text-lg font-medium text-gray-700 mb-2">Glissez-déposez vos fichiers ici</h3>
-                        <p class="text-gray-500 mb-4">ou cliquez pour sélectionner des fichiers</p>
-                        <input type="file" id="file-input" class="hidden" multiple>
-                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors duration-300">
-                            <i class="fas fa-upload mr-2"></i> Parcourir
-                        </button>
-                    </div>
-                    <div class="progress-container mt-4 hidden">
-                        <div class="flex justify-between text-sm text-gray-600 mb-1">
-                            <span>Téléversement en cours...</span>
-                            <span class="progress-percentage">0%</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="progress-bar bg-blue-600 h-2 rounded-full"></div>
-                        </div>
-                    </div>
-                </div>
+{% block content %}
 
-                <!-- Filters and Search -->
-                <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
-                    <div class="flex flex-wrap items-center justify-between gap-4">
-                        <div class="flex items-center space-x-2">
-                            <div class="relative">
-                                <input type="text" placeholder="Rechercher..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
-                            </div>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <select class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                <option>Trier par</option>
-                                <option>Date de modification</option>
-                                <option>Nom</option>
-                                <option>Taille</option>
-                            </select>
-                            <select class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                <option>Filtrer par</option>
-                                <option>Documents</option>
-                                <option>Images</option>
-                                <option>PDF</option>
-                                <option>Non validés</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
+<main class="doc-page max-w-6xl mx-auto px-4 py-6 space-y-6">
 
-                <!-- Document Grid -->
-                <div class="documents-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="documents-container">
-                    <!-- Document cards will be added here dynamically -->
-                </div>
-
-                <!-- Empty State -->
-                <div class="empty-state hidden bg-white rounded-lg shadow-sm p-8 text-center" id="empty-state">
-                    <i class="fas fa-folder-open text-4xl text-gray-400 mb-4"></i>
-                    <h3 class="text-lg font-medium text-gray-700 mb-2">Aucun document trouvé</h3>
-                    <p class="text-gray-500 mb-4">Commencez par ajouter des documents en les glissant-déposant ou en cliquant sur le bouton "Parcourir"</p>
-                </div>
-
-                <!-- Pagination -->
-                <div class="mt-8 flex justify-center">
-                    <nav class="inline-flex rounded-md shadow-sm">
-                        <button class="px-3 py-1 rounded-l-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="px-3 py-1 border-t border-b border-gray-300 bg-white text-blue-600 font-medium">1</button>
-                        <button class="px-3 py-1 border border-gray-300 bg-white text-gray-500 hover:bg-gray-50">2</button>
-                        <button class="px-3 py-1 border border-gray-300 bg-white text-gray-500 hover:bg-gray-50">3</button>
-                        <button class="px-3 py-1 rounded-r-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                    </nav>
-                </div>
-            </main>
-        {% endblock %}
-        
-
-    {% block script %}
-
-   <!-- Context Menu Template -->
-    <div class="context-menu fixed bg-white shadow-lg rounded-md py-1 z-50 hidden" id="context-menu">
-        <button class="context-menu-item px-4 py-2 text-gray-700 hover:bg-gray-100 w-full text-left flex items-center">
-            <i class="fas fa-eye mr-2 text-gray-500"></i> Aperçu
-        </button>
-        <button class="context-menu-item px-4 py-2 text-gray-700 hover:bg-gray-100 w-full text-left flex items-center">
-            <i class="fas fa-download mr-2 text-gray-500"></i> Télécharger
-        </button>
-        <button class="context-menu-item px-4 py-2 text-gray-700 hover:bg-gray-100 w-full text-left flex items-center">
-            <i class="fas fa-share-alt mr-2 text-gray-500"></i> Partager
-        </button>
-        <button class="context-menu-item px-4 py-2 text-gray-700 hover:bg-gray-100 w-full text-left flex items-center">
-            <i class="fas fa-history mr-2 text-gray-500"></i> Historique des versions
-        </button>
-        <div class="border-t border-gray-200 my-1"></div>
-        <button class="context-menu-item px-4 py-2 text-red-600 hover:bg-gray-100 w-full text-left flex items-center">
-            <i class="fas fa-trash mr-2 text-red-500"></i> Supprimer
-        </button>
-    </div>
-
-    <!-- PDF Preview Modal -->
-    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden" id="pdf-preview-modal">
-        <div class="bg-white rounded-lg shadow-xl w-full max-w-6xl max-h-screen overflow-auto animate-slide">
-            <div class="flex justify-between items-center border-b border-gray-200 p-4">
-                <h3 class="text-lg font-medium text-gray-900">Aperçu du document</h3>
-                <button class="text-gray-500 hover:text-gray-700" id="close-pdf-preview">
-                    <i class="fas fa-times"></i>
-                </button>
+    <!-- 1. Section upload / dropzone -->
+    <section class="space-y-3">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <div>
+                <h1 class="text-lg font-semibold text-slate-900">Gestion documentaire</h1>
+                <p class="text-xs text-slate-500">
+                    Centralisez vos documents RGPD, contrats, rapports et supports internes.
+                </p>
             </div>
-            <div class="p-4">
-                <iframe src="" class="w-full h-[80vh] border border-gray-200" id="pdf-iframe"></iframe>
-            </div>
-            <div class="border-t border-gray-200 p-4 flex justify-end">
-                <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors duration-300 flex items-center">
-                    <i class="fas fa-download mr-2"></i> Télécharger
-                </button>
-            </div>
+            <p class="text-[11px] text-slate-500">
+                Formats : PDF, DOCX, XLSX, PPTX, PNG, JPG • Max 20 Mo / fichier
+            </p>
         </div>
-    </div>
 
-    <!-- Version History Modal -->
-    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden" id="version-history-modal">
-        <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-screen overflow-auto animate-slide">
-            <div class="flex justify-between items-center border-b border-gray-200 p-4">
-                <h3 class="text-lg font-medium text-gray-900">Historique des versions</h3>
-                <button class="text-gray-500 hover:text-gray-700" id="close-version-history">
-                    <i class="fas fa-times"></i>
+        <!-- Dropzone -->
+        <div id="dropzone"
+             class="dropzone bg-white rounded-xl px-6 py-8 text-center cursor-pointer">
+            <div class="flex flex-col items-center justify-center gap-2">
+                <i class="fas fa-cloud-upload-alt text-4xl text-blue-500 mb-2"></i>
+                <h3 class="text-sm font-medium text-slate-800">
+                    Glissez-déposez vos fichiers ici
+                </h3>
+                <p class="text-xs text-slate-500">
+                    … ou cliquez pour sélectionner des fichiers
+                </p>
+                <input type="file" id="file-input" class="hidden" multiple>
+                <button type="button"
+                        class="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium px-3 py-2 rounded-md transition-colors duration-200">
+                    <i class="fas fa-upload mr-2 text-[11px]"></i>
+                    Parcourir
                 </button>
             </div>
-            <div class="p-4">
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Version</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Auteur</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Taille</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200" id="version-history-body">
-                            <!-- Version history rows will be added here dynamically -->
-                        </tbody>
-                    </table>
+
+            <!-- Barre de progression upload -->
+            <div class="progress-container mt-4 hidden">
+                <div class="flex justify-between text-[11px] text-slate-600 mb-1">
+                    <span>Téléversement en cours…</span>
+                    <span class="progress-percentage">0%</span>
                 </div>
-                <div class="mt-4 border-t border-gray-200 pt-4 hidden" id="version-comparison">
-                    <h4 class="text-md font-medium text-gray-900 mb-2">Comparaison des versions</h4>
-                    <div class="bg-gray-50 p-4 rounded-md">
-                        <div class="flex justify-between mb-4">
-                            <div class="w-1/2 pr-2">
-                                <h5 class="text-sm font-medium text-gray-700 mb-2">Version 1.2</h5>
-                                <div class="bg-white p-3 border border-gray-200 h-64 overflow-auto">
-                                    <p class="text-red-500 line-through">Ancien contenu supprimé</p>
-                                    <p class="text-green-500">Nouveau contenu ajouté</p>
-                                </div>
-                            </div>
-                            <div class="w-1/2 pl-2">
-                                <h5 class="text-sm font-medium text-gray-700 mb-2">Version 1.3</h5>
-                                <div class="bg-white p-3 border border-gray-200 h-64 overflow-auto">
-                                    <p>Contenu actuel du document</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex justify-end">
-                            <button class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-md transition-colors duration-300 mr-2">
-                                Annuler
-                            </button>
-                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors duration-300">
-                                Restaurer cette version
-                            </button>
-                        </div>
-                    </div>
+                <div class="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+                    <div class="progress-bar bg-blue-600 h-1.5 rounded-full"></div>
                 </div>
             </div>
         </div>
+    </section>
+
+    <!-- 2. Filtres + vue -->
+    <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 space-y-4">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <!-- Recherche -->
+            <div class="relative w-full md:max-w-sm">
+                <input
+                    id="search-input"
+                    type="text"
+                    placeholder="Rechercher par nom, auteur, tag…"
+                    class="w-full pl-9 pr-3 py-2 border border-slate-300 rounded-md text-xs
+                           focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500
+                           placeholder:text-slate-400">
+                <i class="fas fa-search text-slate-400 absolute left-3 top-2.5 text-xs"></i>
+            </div>
+
+            <!-- Vue grille / liste -->
+            <div class="inline-flex rounded-md border border-slate-200 overflow-hidden bg-slate-50">
+                <button type="button"
+                        id="grid-view-btn"
+                        class="view-toggle view-toggle--active">
+                    <i class="fas fa-th-large text-[11px] mr-1"></i>
+                    Grille
+                </button>
+                <button type="button"
+                        id="list-view-btn"
+                        class="view-toggle">
+                    <i class="fas fa-list text-[11px] mr-1"></i>
+                    Liste
+                </button>
+            </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3 text-xs">
+            <!-- Tri -->
+            <div>
+                <label class="block text-[11px] font-semibold text-slate-600 mb-1">
+                    Trier par
+                </label>
+                <select id="sort-select"
+                        class="border border-slate-300 rounded-md px-2 py-1.5 text-xs
+                               focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="date" selected>Date de modification</option>
+                    <option value="name">Nom (A → Z)</option>
+                    <option value="size">Taille</option>
+                </select>
+            </div>
+
+            <!-- Filtre type -->
+            <div>
+                <label class="block text-[11px] font-semibold text-slate-600 mb-1">
+                    Type de fichier
+                </label>
+                <select id="type-filter"
+                        class="border border-slate-300 rounded-md px-2 py-1.5 text-xs
+                               focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="all" selected>Tous les types</option>
+                    <option value="documents">Documents Office</option>
+                    <option value="images">Images</option>
+                    <option value="pdf">PDF</option>
+                    <option value="non-valides">Non validés</option>
+                </select>
+            </div>
+
+            <!-- Résumé -->
+            <div class="ml-auto text-[11px] text-slate-500">
+                <span id="docs-count">6</span> documents •
+                vue <span id="current-view-label">grille</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Liste de documents -->
+    <section>
+        <!-- Conteneur des cartes -->
+        <div id="documents-container"
+             class="documents-grid grid-view gap-4">
+            <!-- Cartes ajoutées en JS -->
+        </div>
+
+        <!-- Etat vide -->
+        <div id="empty-state"
+             class="empty-state hidden bg-white rounded-xl border border-dashed border-slate-300 text-center px-6 py-8 mt-4">
+            <i class="fas fa-folder-open text-3xl text-slate-300 mb-2"></i>
+            <h3 class="text-sm font-semibold text-slate-800 mb-1">
+                Aucun document trouvé
+            </h3>
+            <p class="text-xs text-slate-500">
+                Ajoutez des documents via la zone de dépôt ci-dessus
+                ou ajustez vos filtres de recherche.
+            </p>
+        </div>
+    </section>
+
+    <!-- 4. Pagination -->
+    <section class="flex justify-center">
+        <nav class="inline-flex items-center gap-1 rounded-md bg-white border border-slate-200 px-1 py-1 shadow-sm"
+             aria-label="Pagination">
+            <button type="button"
+                    id="prev-page"
+                    class="page-arrow px-2 py-1 text-slate-500 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed">
+                <i class="fas fa-chevron-left text-[11px]"></i>
+            </button>
+
+            <div id="page-numbers" class="inline-flex items-center gap-1">
+                <!-- Boutons de pages ajoutés en JS -->
+            </div>
+
+            <button type="button"
+                    id="next-page"
+                    class="page-arrow px-2 py-1 text-slate-500 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed">
+                <i class="fas fa-chevron-right text-[11px]"></i>
+            </button>
+        </nav>
+    </section>
+
+</main>
+
+<!-- 5. Menu contextuel -->
+<div id="context-menu"
+     class="context-menu hidden fixed z-40 bg-white rounded-md shadow-lg border border-slate-200 py-1 text-xs">
+    <button class="context-menu-item px-3 py-1.5 w-full text-left text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+            data-action="preview">
+        <i class="fas fa-eye text-slate-500 text-[11px]"></i>
+        Aperçu
+    </button>
+    <button class="context-menu-item px-3 py-1.5 w-full text-left text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+            data-action="download">
+        <i class="fas fa-download text-slate-500 text-[11px]"></i>
+        Télécharger
+    </button>
+    <button class="context-menu-item px-3 py-1.5 w-full text-left text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+            data-action="share">
+        <i class="fas fa-share-alt text-slate-500 text-[11px]"></i>
+        Partager
+    </button>
+    <button class="context-menu-item px-3 py-1.5 w-full text-left text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+            data-action="history">
+        <i class="fas fa-history text-slate-500 text-[11px]"></i>
+        Historique des versions
+    </button>
+    <div class="border-t my-1 border-slate-200"></div>
+    <button class="context-menu-item px-3 py-1.5 w-full text-left text-red-600 hover:bg-slate-50 flex items-center gap-2"
+            data-action="delete">
+        <i class="fas fa-trash text-red-500 text-[11px]"></i>
+        Supprimer
+    </button>
+</div>
+
+<!-- 6. Modale d’aperçu (PDF + images) -->
+<div id="pdf-preview-modal" class="modal-overlay hidden">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-5xl max-h-screen overflow-auto animate-slide">
+        <div class="flex items-center justify-between border-b border-slate-200 px-4 py-3">
+            <h3 class="text-sm font-semibold text-slate-900">Aperçu du document</h3>
+            <button type="button"
+                    id="close-pdf-preview"
+                    class="text-slate-500 hover:text-slate-700 text-sm">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="p-4">
+            <iframe id="pdf-iframe"
+                    src=""
+                    class="w-full h-[70vh] border border-slate-200 rounded-md bg-slate-50"></iframe>
+        </div>
+        <div class="flex justify-end gap-2 border-t border-slate-200 px-4 py-3">
+            <button type="button"
+                    id="pdf-download-btn"
+                    class="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium px-3 py-2 rounded-md">
+                <i class="fas fa-download mr-2 text-[11px]"></i>
+                Télécharger
+            </button>
+        </div>
     </div>
+</div>
 
-    <script>
-        // Sample document data
-        const documents = [
-            {
-                id: 1,
-                name: "Rapport annuel 2023.pdf",
-                type: "pdf",
-                size: "2.4 MB",
-                modified: "2023-05-15",
-                author: "Jean Dupont",
-                validated: true,
-                tags: ["Finance", "Rapport"],
-                thumbnail: "https://cdn-icons-png.flaticon.com/512/337/337946.png",
-                versions: [
-                    { version: "1.3", date: "2023-05-15", author: "Jean Dupont", size: "2.4 MB" },
-                    { version: "1.2", date: "2023-04-28", author: "Jean Dupont", size: "2.1 MB" },
-                    { version: "1.1", date: "2023-03-10", author: "Jean Dupont", size: "1.8 MB" }
-                ]
-            },
-            {
-                id: 2,
-                name: "Présentation stratégie.pptx",
-                type: "ppt",
-                size: "5.7 MB",
-                modified: "2023-06-02",
-                author: "Marie Lambert",
-                validated: false,
-                tags: ["Marketing", "Présentation"],
-                thumbnail: "https://cdn-icons-png.flaticon.com/512/337/337953.png",
-                versions: [
-                    { version: "2.1", date: "2023-06-02", author: "Marie Lambert", size: "5.7 MB" },
-                    { version: "2.0", date: "2023-05-20", author: "Marie Lambert", size: "4.9 MB" }
-                ]
-            },
-            {
-                id: 3,
-                name: "Budget Q3.xlsx",
-                type: "xls",
-                size: "1.2 MB",
-                modified: "2023-07-10",
-                author: "Pierre Martin",
-                validated: true,
-                tags: ["Finance", "Budget"],
-                thumbnail: "https://cdn-icons-png.flaticon.com/512/337/337932.png",
-                versions: [
-                    { version: "3.2", date: "2023-07-10", author: "Pierre Martin", size: "1.2 MB" },
-                    { version: "3.1", date: "2023-06-25", author: "Pierre Martin", size: "1.1 MB" }
-                ]
-            },
-            {
-                id: 4,
-                name: "Contrat client.docx",
-                type: "doc",
-                size: "850 KB",
-                modified: "2023-06-28",
-                author: "Sophie Bernard",
-                validated: true,
-                tags: ["Juridique", "Client"],
-                thumbnail: "https://cdn-icons-png.flaticon.com/512/337/337949.png",
-                versions: [
-                    { version: "4.5", date: "2023-06-28", author: "Sophie Bernard", size: "850 KB" },
-                    { version: "4.4", date: "2023-06-20", author: "Sophie Bernard", size: "820 KB" }
-                ]
-            },
-            {
-                id: 5,
-                name: "Logo entreprise.png",
-                type: "img",
-                size: "320 KB",
-                modified: "2023-01-15",
-                author: "Thomas Leroy",
-                validated: true,
-                tags: ["Design", "Branding"],
-                thumbnail: "https://cdn-icons-png.flaticon.com/512/337/337943.png",
-                versions: [
-                    { version: "1.0", date: "2023-01-15", author: "Thomas Leroy", size: "320 KB" }
-                ]
-            },
-            {
-                id: 6,
-                name: "Procédure RH.pdf",
-                type: "pdf",
-                size: "1.8 MB",
-                modified: "2023-05-30",
-                author: "Laura Petit",
-                validated: false,
-                tags: ["RH", "Process"],
-                thumbnail: "https://cdn-icons-png.flaticon.com/512/337/337946.png",
-                versions: [
-                    { version: "2.0", date: "2023-05-30", author: "Laura Petit", size: "1.8 MB" },
-                    { version: "1.5", date: "2023-04-12", author: "Laura Petit", size: "1.6 MB" }
-                ]
-            }
-        ];
+<!-- 7. Modale historique des versions -->
+<div id="version-history-modal" class="modal-overlay hidden">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-screen overflow-auto animate-slide">
+        <div class="flex items-center justify-between border-b border-slate-200 px-4 py-3">
+            <h3 class="text-sm font-semibold text-slate-900">Historique des versions</h3>
+            <button type="button"
+                    id="close-version-history"
+                    class="text-slate-500 hover:text-slate-700 text-sm">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="p-4 space-y-4">
+            <div class="overflow-x-auto border border-slate-200 rounded-lg">
+                <table class="min-w-full text-xs">
+                    <thead class="bg-slate-50 border-b border-slate-200">
+                        <tr>
+                            <th class="px-4 py-2 text-left font-semibold text-slate-500 uppercase tracking-wide text-[10px]">
+                                Version
+                            </th>
+                            <th class="px-4 py-2 text-left font-semibold text-slate-500 uppercase tracking-wide text-[10px]">
+                                Date
+                            </th>
+                            <th class="px-4 py-2 text-left font-semibold text-slate-500 uppercase tracking-wide text-[10px]">
+                                Auteur
+                            </th>
+                            <th class="px-4 py-2 text-left font-semibold text-slate-500 uppercase tracking-wide text-[10px]">
+                                Taille
+                            </th>
+                            <th class="px-4 py-2 text-left font-semibold text-slate-500 uppercase tracking-wide text-[10px]">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="version-history-body" class="divide-y divide-slate-100">
+                        <!-- Lignes injectées en JS -->
+                    </tbody>
+                </table>
+            </div>
 
-        // DOM Elements
-        const dropzone = document.getElementById('dropzone');
-        const fileInput = document.getElementById('file-input');
-        const documentsContainer = document.getElementById('documents-container');
-        const emptyState = document.getElementById('empty-state');
-        const contextMenu = document.getElementById('context-menu');
-        const pdfPreviewModal = document.getElementById('pdf-preview-modal');
-        const pdfIframe = document.getElementById('pdf-iframe');
-        const closePdfPreview = document.getElementById('close-pdf-preview');
-        const versionHistoryModal = document.getElementById('version-history-modal');
-        const versionHistoryBody = document.getElementById('version-history-body');
-        const closeVersionHistory = document.getElementById('close-version-history');
-        const userMenuButton = document.getElementById('user-menu-button');
-        const userMenu = document.getElementById('user-menu');
-        const viewToggles = document.querySelectorAll('.view-toggle');
-
-        // Current state
-        let currentView = 'grid';
-        let selectedDocumentId = null;
-
-        // Initialize the app
-        function init() {
-            renderDocuments();
-            setupEventListeners();
-        }
-
-        // Render documents based on current view
-        function renderDocuments() {
-            documentsContainer.innerHTML = '';
-            
-            if (documents.length === 0) {
-                emptyState.classList.remove('hidden');
-                return;
-            }
-            
-            emptyState.classList.add('hidden');
-            
-            documents.forEach(doc => {
-                const docElement = createDocumentElement(doc);
-                documentsContainer.appendChild(docElement);
-            });
-        }
-
-        // Create a document element based on current view
-        function createDocumentElement(doc) {
-            const docElement = document.createElement('div');
-            docElement.className = `document-card bg-white rounded-lg shadow-sm overflow-hidden transition-all duration-300 ${currentView === 'grid' ? 'h-80' : 'flex h-24'}`;
-            docElement.dataset.id = doc.id;
-            
-            if (currentView === 'grid') {
-                docElement.innerHTML = `
-                    <div class="relative h-40 bg-gray-100 flex items-center justify-center">
-                        <img src="${doc.thumbnail}" alt="${doc.name}" class="max-h-full max-w-full">
-                        ${!doc.validated ? '<div class="absolute top-2 right-2 w-3 h-3 bg-orange-500 rounded-full" title="Document non validé"></div>' : ''}
+            <!-- Zone de comparaison simple (démo) -->
+            <div id="version-comparison" class="hidden border-t border-slate-200 pt-4">
+                <h4 class="text-xs font-semibold text-slate-800 mb-2">
+                    Comparaison (démo)
+                </h4>
+                <div class="bg-slate-50 rounded-lg p-3 text-[11px] text-slate-600">
+                    <p class="mb-1">
+                        <span class="font-semibold text-slate-700">Version précédente :</span>
+                        <span class="text-rose-500 line-through">Ancienne clause de confidentialité</span>
+                    </p>
+                    <p>
+                        <span class="font-semibold text-slate-700">Version sélectionnée :</span>
+                        <span class="text-emerald-600">Nouvelle clause conforme au RGPD</span>
+                    </p>
+                    <div class="flex justify-end gap-2 mt-3">
+                        <button type="button"
+                                id="cancel-comparison-btn"
+                                class="px-3 py-1.5 rounded-md border border-slate-300 text-[11px] text-slate-600 hover:bg-slate-100">
+                            Fermer
+                        </button>
+                        <button type="button"
+                                id="restore-comparison-btn"
+                                class="px-3 py-1.5 rounded-md bg-blue-600 text-white text-[11px] hover:bg-blue-700">
+                            Restaurer cette version (démo)
+                        </button>
                     </div>
-                    <div class="p-4">
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="font-medium text-gray-800 truncate" title="${doc.name}">${doc.name}</h3>
-                            <button class="text-gray-400 hover:text-gray-600 document-more" data-id="${doc.id}">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </button>
-                        </div>
-                        <div class="text-sm text-gray-500 mb-1">${doc.size}</div>
-                        <div class="text-sm text-gray-500 mb-2">Modifié le ${formatDate(doc.modified)}</div>
-                        <div class="flex flex-wrap gap-1">
-                            ${doc.tags.map(tag => `<span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">${tag}</span>`).join('')}
-                        </div>
-                    </div>
-                `;
-            } else {
-                docElement.innerHTML = `
-                    <div class="flex items-center p-4 w-16">
-                        <img src="${doc.thumbnail}" alt="${doc.name}" class="max-h-full max-w-full">
-                    </div>
-                    <div class="flex-1 p-4 flex flex-col justify-center">
-                        <div class="flex justify-between items-center mb-1">
-                            <h3 class="font-medium text-gray-800 truncate" title="${doc.name}">${doc.name}</h3>
-                            <button class="text-gray-400 hover:text-gray-600 document-more" data-id="${doc.id}">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </button>
-                        </div>
-                        <div class="text-sm text-gray-500">${doc.size} • Modifié le ${formatDate(doc.modified)} • ${doc.author}</div>
-                    </div>
-                    <div class="p-4 flex items-center">
-                        ${!doc.validated ? '<div class="w-3 h-3 bg-orange-500 rounded-full mr-3" title="Document non validé"></div>' : ''}
-                        <div class="flex flex-wrap gap-1">
-                            ${doc.tags.map(tag => `<span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">${tag}</span>`).join('')}
-                        </div>
-                    </div>
-                `;
-            }
-            
-            return docElement;
-        }
+                </div>
+            </div>
 
-        // Format date for display
-        function formatDate(dateString) {
-            const options = { day: 'numeric', month: 'long', year: 'numeric' };
-            return new Date(dateString).toLocaleDateString('fr-FR', options);
-        }
+        </div>
+    </div>
+</div>
 
-        // Setup event listeners
-        function setupEventListeners() {
-            // Dropzone events
-            dropzone.addEventListener('click', () => fileInput.click());
-            dropzone.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                dropzone.classList.add('active');
-            });
-            dropzone.addEventListener('dragleave', () => {
-                dropzone.classList.remove('active');
-            });
-            dropzone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                dropzone.classList.remove('active');
-                handleFiles(e.dataTransfer.files);
-            });
-            
-            // File input change
-            fileInput.addEventListener('change', () => {
-                if (fileInput.files.length > 0) {
-                    handleFiles(fileInput.files);
-                }
-            });
-            
-            // Context menu events
-            document.addEventListener('click', (e) => {
-                if (!e.target.closest('.document-more') && !e.target.closest('#context-menu')) {
-                    contextMenu.classList.remove('visible');
-                }
-            });
-            
-            // PDF preview events
-            closePdfPreview.addEventListener('click', () => {
-                pdfPreviewModal.classList.add('hidden');
-                pdfIframe.src = '';
-            });
-            
-            // Version history events
-            closeVersionHistory.addEventListener('click', () => {
-                versionHistoryModal.classList.add('hidden');
-            });
-            
-            // User menu events
-            userMenuButton.addEventListener('click', () => {
-                userMenu.classList.toggle('hidden');
-            });
-            
-            // View toggle events
-            viewToggles.forEach(toggle => {
-                toggle.addEventListener('click', () => {
-                    currentView = toggle.dataset.view;
-                    renderDocuments();
-                    
-                    // Update active state
-                    viewToggles.forEach(t => t.classList.remove('bg-blue-100', 'text-blue-600'));
-                    toggle.classList.add('bg-blue-100', 'text-blue-600');
-                });
-            });
-            
-            // Set grid view as active by default
-            document.querySelector('.view-toggle[data-view="grid"]').classList.add('bg-blue-100', 'text-blue-600');
-        }
+{% endblock %}
 
-        // Handle file uploads
-        function handleFiles(files) {
-            const progressContainer = dropzone.querySelector('.progress-container');
-            const progressBar = dropzone.querySelector('.progress-bar');
-            const progressPercentage = dropzone.querySelector('.progress-percentage');
-            
-            progressContainer.classList.remove('hidden');
-            
-            // Simulate upload progress
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += Math.random() * 10;
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(interval);
-                    
-                    // Add a small delay before hiding the progress bar
-                    setTimeout(() => {
-                        progressContainer.classList.add('hidden');
-                        progressBar.style.width = '0%';
-                        progressPercentage.textContent = '0%';
-                        
-                        // Add the new document to the list
-                        Array.from(files).forEach((file, index) => {
-                            const newDoc = {
-                                id: documents.length + index + 1,
-                                name: file.name,
-                                type: file.name.split('.').pop(),
-                                size: formatFileSize(file.size),
-                                modified: new Date().toISOString().split('T')[0],
-                                author: "Utilisateur actuel",
-                                validated: false,
-                                tags: ["Nouveau"],
-                                thumbnail: getThumbnailForType(file.name.split('.').pop()),
-                                versions: [
-                                    { version: "1.0", date: new Date().toISOString().split('T')[0], author: "Utilisateur actuel", size: formatFileSize(file.size) }
-                                ]
-                            };
-                            
-                            documents.unshift(newDoc);
-                        });
-                        
-                        renderDocuments();
-                    }, 500);
-                }
-                
-                progressBar.style.width = `${progress}%`;
-                progressPercentage.textContent = `${Math.round(progress)}%`;
-            }, 200);
+{% block script %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // =========================
+    // Données d'exemple
+    // =========================
+    let documents = [
+        {
+            id: 1,
+            name: "Rapport annuel 2023.pdf",
+            type: "pdf",
+            size: "2.4 MB",
+            modified: "2023-05-15",
+            author: "Jean Dupont",
+            validated: true,
+            tags: ["Finance", "Rapport"],
+            thumbnail: "https://cdn-icons-png.flaticon.com/512/337/337946.png",
+            url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+            versions: [
+                { version: "1.3", date: "2023-05-15", author: "Jean Dupont", size: "2.4 MB" },
+                { version: "1.2", date: "2023-04-28", author: "Jean Dupont", size: "2.1 MB" },
+                { version: "1.1", date: "2023-03-10", author: "Jean Dupont", size: "1.8 MB" }
+            ]
+        },
+        {
+            id: 2,
+            name: "Présentation stratégie.pptx",
+            type: "pptx",
+            size: "5.7 MB",
+            modified: "2023-06-02",
+            author: "Marie Lambert",
+            validated: false,
+            tags: ["Marketing", "Présentation"],
+            thumbnail: "https://cdn-icons-png.flaticon.com/512/337/337953.png",
+            url: "#",
+            versions: [
+                { version: "2.1", date: "2023-06-02", author: "Marie Lambert", size: "5.7 MB" },
+                { version: "2.0", date: "2023-05-20", author: "Marie Lambert", size: "4.9 MB" }
+            ]
+        },
+        {
+            id: 3,
+            name: "Budget Q3.xlsx",
+            type: "xlsx",
+            size: "1.2 MB",
+            modified: "2023-07-10",
+            author: "Pierre Martin",
+            validated: true,
+            tags: ["Finance", "Budget"],
+            thumbnail: "https://cdn-icons-png.flaticon.com/512/337/337932.png",
+            url: "#",
+            versions: [
+                { version: "3.2", date: "2023-07-10", author: "Pierre Martin", size: "1.2 MB" },
+                { version: "3.1", date: "2023-06-25", author: "Pierre Martin", size: "1.1 MB" }
+            ]
+        },
+        {
+            id: 4,
+            name: "Contrat client.docx",
+            type: "docx",
+            size: "850 KB",
+            modified: "2023-06-28",
+            author: "Sophie Bernard",
+            validated: true,
+            tags: ["Juridique", "Client"],
+            thumbnail: "https://cdn-icons-png.flaticon.com/512/337/337949.png",
+            url: "#",
+            versions: [
+                { version: "4.5", date: "2023-06-28", author: "Sophie Bernard", size: "850 KB" },
+                { version: "4.4", date: "2023-06-20", author: "Sophie Bernard", size: "820 KB" }
+            ]
+        },
+        {
+            id: 5,
+            name: "Logo entreprise.png",
+            type: "png",
+            size: "320 KB",
+            modified: "2023-01-15",
+            author: "Thomas Leroy",
+            validated: true,
+            tags: ["Design", "Branding"],
+            thumbnail: "https://cdn-icons-png.flaticon.com/512/337/337943.png",
+            url: "https://via.placeholder.com/600x400.png",
+            versions: [
+                { version: "1.0", date: "2023-01-15", author: "Thomas Leroy", size: "320 KB" }
+            ]
+        },
+        {
+            id: 6,
+            name: "Procédure RH.pdf",
+            type: "pdf",
+            size: "1.8 MB",
+            modified: "2023-05-30",
+            author: "Laura Petit",
+            validated: false,
+            tags: ["RH", "Process"],
+            thumbnail: "https://cdn-icons-png.flaticon.com/512/337/337946.png",
+            url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+            versions: [
+                { version: "2.0", date: "2023-05-30", author: "Laura Petit", size: "1.8 MB" },
+                { version: "1.5", date: "2023-04-12", author: "Laura Petit", size: "1.6 MB" }
+            ]
         }
+    ];
 
-        // Format file size
-        function formatFileSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
-        }
+    // =========================
+    // Sélection des éléments
+    // =========================
+    const dropzone           = document.getElementById('dropzone');
+    const fileInput          = document.getElementById('file-input');
+    const documentsContainer = document.getElementById('documents-container');
+    const emptyState         = document.getElementById('empty-state');
+    const docsCount          = document.getElementById('docs-count');
+    const currentViewLabel   = document.getElementById('current-view-label');
 
-        // Get thumbnail based on file type
-        function getThumbnailForType(type) {
-            const typeMap = {
-                pdf: "https://cdn-icons-png.flaticon.com/512/337/337946.png",
-                doc: "https://cdn-icons-png.flaticon.com/512/337/337949.png",
-                docx: "https://cdn-icons-png.flaticon.com/512/337/337949.png",
-                xls: "https://cdn-icons-png.flaticon.com/512/337/337932.png",
-                xlsx: "https://cdn-icons-png.flaticon.com/512/337/337932.png",
-                ppt: "https://cdn-icons-png.flaticon.com/512/337/337953.png",
-                pptx: "https://cdn-icons-png.flaticon.com/512/337/337953.png",
-                png: "https://cdn-icons-png.flaticon.com/512/337/337943.png",
-                jpg: "https://cdn-icons-png.flaticon.com/512/337/337943.png",
-                jpeg: "https://cdn-icons-png.flaticon.com/512/337/337943.png",
-                gif: "https://cdn-icons-png.flaticon.com/512/337/337943.png"
-            };
-            
-            return typeMap[type.toLowerCase()] || "https://cdn-icons-png.flaticon.com/512/337/337958.png";
-        }
+    const searchInput  = document.getElementById('search-input');
+    const sortSelect   = document.getElementById('sort-select');
+    const typeFilter   = document.getElementById('type-filter');
+    const gridViewBtn  = document.getElementById('grid-view-btn');
+    const listViewBtn  = document.getElementById('list-view-btn');
 
-        // Show context menu
-        function showContextMenu(e, docId) {
-            e.preventDefault();
-            selectedDocumentId = docId;
-            
-            contextMenu.style.left = `${e.clientX}px`;
-            contextMenu.style.top = `${e.clientY}px`;
-            contextMenu.classList.add('visible');
-            
-            // Setup context menu item click handlers
-            const menuItems = contextMenu.querySelectorAll('.context-menu-item');
-            menuItems.forEach(item => {
-                item.addEventListener('click', () => {
-                    contextMenu.classList.remove('visible');
-                    
-                    const text = item.textContent.trim();
-                    if (text.includes('Aperçu')) {
-                        showPdfPreview(docId);
-                    } else if (text.includes('Télécharger')) {
-                        downloadDocument(docId);
-                    } else if (text.includes('Partager')) {
-                        shareDocument(docId);
-                    } else if (text.includes('Historique')) {
-                        showVersionHistory(docId);
-                    } else if (text.includes('Supprimer')) {
-                        deleteDocument(docId);
+    const prevPageBtn  = document.getElementById('prev-page');
+    const nextPageBtn  = document.getElementById('next-page');
+    const pageNumbers  = document.getElementById('page-numbers');
+
+    const contextMenu  = document.getElementById('context-menu');
+
+    const pdfPreviewModal = document.getElementById('pdf-preview-modal');
+    const pdfIframe       = document.getElementById('pdf-iframe');
+    const closePdfPreview = document.getElementById('close-pdf-preview');
+    const pdfDownloadBtn  = document.getElementById('pdf-download-btn');
+
+    const versionHistoryModal = document.getElementById('version-history-modal');
+    const versionHistoryBody  = document.getElementById('version-history-body');
+    const closeVersionHistory = document.getElementById('close-version-history');
+    const versionComparison   = document.getElementById('version-comparison');
+    const cancelComparisonBtn = document.getElementById('cancel-comparison-btn');
+    const restoreComparisonBtn = document.getElementById('restore-comparison-btn');
+
+    const progressContainer   = dropzone.querySelector('.progress-container');
+    const progressBar         = dropzone.querySelector('.progress-bar');
+    const progressPercentage  = dropzone.querySelector('.progress-percentage');
+
+    // =========================
+    // Etat courant
+    // =========================
+    let currentView = 'grid';
+    let currentPage = 1;
+    const pageSize  = 8;
+    let filteredDocs = [...documents];
+    let selectedDocumentId = null;
+    let currentPreviewDoc = null;
+
+    // =========================
+    // Utilitaires
+    // =========================
+    function formatDate(dateString) {
+        const options = { day: 'numeric', month: 'long', year: 'numeric' };
+        return new Date(dateString).toLocaleDateString('fr-FR', options);
+    }
+
+    function parseSize(sizeStr) {
+        const [num, unit] = sizeStr.split(' ');
+        const value = parseFloat(num) || 0;
+        const u = (unit || '').toUpperCase();
+        const factor =
+            u === 'KB' ? 1024 :
+            u === 'MB' ? 1024 * 1024 :
+            u === 'GB' ? 1024 * 1024 * 1024 : 1;
+        return value * factor;
+    }
+
+    function formatFileSize(bytes) {
+        if (!bytes || bytes <= 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    }
+
+    function getThumbnailForType(type) {
+        const t = (type || '').toLowerCase();
+        const map = {
+            pdf:  "https://cdn-icons-png.flaticon.com/512/337/337946.png",
+            doc:  "https://cdn-icons-png.flaticon.com/512/337/337949.png",
+            docx: "https://cdn-icons-png.flaticon.com/512/337/337949.png",
+            xls:  "https://cdn-icons-png.flaticon.com/512/337/337932.png",
+            xlsx: "https://cdn-icons-png.flaticon.com/512/337/337932.png",
+            ppt:  "https://cdn-icons-png.flaticon.com/512/337/337953.png",
+            pptx: "https://cdn-icons-png.flaticon.com/512/337/337953.png",
+            png:  "https://cdn-icons-png.flaticon.com/512/337/337943.png",
+            jpg:  "https://cdn-icons-png.flaticon.com/512/337/337943.png",
+            jpeg: "https://cdn-icons-png.flaticon.com/512/337/337943.png",
+            gif:  "https://cdn-icons-png.flaticon.com/512/337/337943.png"
+        };
+        return map[t] || "https://cdn-icons-png.flaticon.com/512/337/337958.png";
+    }
+
+    // =========================
+    // Construction d'une carte
+    // =========================
+    function createDocumentElement(doc) {
+        const card = document.createElement('article');
+        card.className = currentView === 'grid'
+            ? 'document-card h-64 flex flex-col'
+            : 'document-card flex h-24';
+        card.dataset.id = String(doc.id);
+
+        if (currentView === 'grid') {
+            card.innerHTML = `
+                <div class="flex-1 flex items-center justify-center bg-slate-50 relative">
+                    <img src="${doc.thumbnail}" alt="${doc.name}" class="max-h-16 max-w-[70%] object-contain">
+                    ${!doc.validated
+                        ? '<span class="absolute top-2 right-2 inline-flex w-3 h-3 rounded-full bg-amber-500" title="Document non validé"></span>'
+                        : ''
                     }
-                });
-            });
+                </div>
+                <div class="px-3 py-3 space-y-1">
+                    <div class="flex items-start justify-between gap-2">
+                        <h3 class="text-xs font-semibold text-slate-900 truncate" title="${doc.name}">
+                            ${doc.name}
+                        </h3>
+                        <button type="button"
+                                class="document-more text-slate-400 hover:text-slate-600 text-[11px]"
+                                data-id="${doc.id}">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                    </div>
+                    <p class="text-[11px] text-slate-500">
+                        ${doc.size} • Modifié le ${formatDate(doc.modified)}
+                    </p>
+                    <p class="text-[11px] text-slate-500 truncate">
+                        ${doc.author}
+                    </p>
+                    <div class="flex flex-wrap gap-1 mt-1">
+                        ${doc.tags.map(tag => `
+                            <span class="inline-flex items-center px-2 py-[2px] rounded-full bg-blue-50 text-blue-700 text-[10px]">
+                                ${tag}
+                            </span>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        } else {
+            // Vue liste
+            card.innerHTML = `
+                <div class="flex items-center justify-center w-16 bg-slate-50">
+                    <img src="${doc.thumbnail}" alt="${doc.name}" class="max-h-10 max-w-full object-contain">
+                </div>
+                <div class="flex-1 px-3 py-2 flex flex-col justify-center">
+                    <div class="flex items-center justify-between gap-2 mb-1">
+                        <h3 class="text-xs font-semibold text-slate-900 truncate" title="${doc.name}">
+                            ${doc.name}
+                        </h3>
+                        <button type="button"
+                                class="document-more text-slate-400 hover:text-slate-600 text-[11px]"
+                                data-id="${doc.id}">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                    </div>
+                    <p class="text-[11px] text-slate-500 truncate">
+                        ${doc.size} • Modifié le ${formatDate(doc.modified)} • ${doc.author}
+                    </p>
+                </div>
+                <div class="px-3 py-2 flex items-center gap-2">
+                    ${!doc.validated
+                        ? '<span class="inline-flex w-3 h-3 rounded-full bg-amber-500" title="Document non validé"></span>'
+                        : ''
+                    }
+                    <div class="flex flex-wrap gap-1">
+                        ${doc.tags.map(tag => `
+                            <span class="inline-flex items-center px-2 py-[2px] rounded-full bg-blue-50 text-blue-700 text-[10px]">
+                                ${tag}
+                            </span>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
         }
 
-        // Show PDF preview
-        function showPdfPreview(docId) {
-            const doc = documents.find(d => d.id === docId);
-            if (doc && doc.type.toLowerCase() === 'pdf') {
-                pdfIframe.src = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(doc.thumbnail)}`;
-                pdfPreviewModal.classList.remove('hidden');
-            } else {
-                alert("L'aperçu n'est disponible que pour les fichiers PDF.");
-            }
-        }
+        return card;
+    }
 
-        // Show version history
-        function showVersionHistory(docId) {
-            const doc = documents.find(d => d.id === docId);
-            if (doc) {
-                versionHistoryBody.innerHTML = '';
-                
-                doc.versions.forEach((version, index) => {
-                    const row = document.createElement('tr');
-                    row.className = index % 2 === 0 ? 'bg-gray-50' : 'bg-white';
-                    row.innerHTML = `
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${version.version}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatDate(version.date)}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${version.author}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${version.size}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            <button class="text-blue-600 hover:text-blue-800 mr-3 compare-version" data-version="${version.version}">
-                                Comparer
-                            </button>
-                            <button class="text-blue-600 hover:text-blue-800 restore-version" data-version="${version.version}">
-                                Restaurer
-                            </button>
-                        </td>
-                    `;
-                    versionHistoryBody.appendChild(row);
-                });
-                
-                // Add event listeners for version actions
-                document.querySelectorAll('.compare-version').forEach(button => {
-                    button.addEventListener('click', () => {
-                        document.getElementById('version-comparison').classList.remove('hidden');
-                    });
-                });
-                
-                document.querySelectorAll('.restore-version').forEach(button => {
-                    button.addEventListener('click', () => {
-                        if (confirm(`Voulez-vous vraiment restaurer cette version ?`)) {
-                            alert('Version restaurée avec succès !');
-                            versionHistoryModal.classList.add('hidden');
-                        }
-                    });
-                });
-                
-                versionHistoryModal.classList.remove('hidden');
+    // =========================
+    // Filtres + tri
+    // =========================
+    function applySort() {
+        const value = sortSelect.value;
+        filteredDocs.sort((a, b) => {
+            if (value === 'name') {
+                return a.name.localeCompare(b.name, 'fr', { sensitivity: 'base' });
             }
-        }
+            if (value === 'size') {
+                return parseSize(b.size) - parseSize(a.size);
+            }
+            // Tri par date (défaut)
+            return new Date(b.modified) - new Date(a.modified);
+        });
+    }
 
-        // Download document
-        function downloadDocument(docId) {
-            const doc = documents.find(d => d.id === docId);
-            if (doc) {
-                alert(`Téléchargement de "${doc.name}" en cours...`);
-            }
-        }
+    function applyFilters() {
+        const query = (searchInput.value || '').trim().toLowerCase();
+        const typeVal = typeFilter.value;
 
-        // Share document
-        function shareDocument(docId) {
-            const doc = documents.find(d => d.id === docId);
-            if (doc) {
-                alert(`Partage de "${doc.name}" en cours...`);
-            }
-        }
+        filteredDocs = documents.filter(doc => {
+            let ok = true;
 
-        // Delete document
-        function deleteDocument(docId) {
-            if (confirm('Êtes-vous sûr de vouloir supprimer ce document ?')) {
-                const index = documents.findIndex(d => d.id === docId);
-                if (index !== -1) {
-                    documents.splice(index, 1);
-                    renderDocuments();
-                }
+            if (query) {
+                const text = (doc.name + ' ' + doc.author + ' ' + doc.tags.join(' ')).toLowerCase();
+                if (!text.includes(query)) ok = false;
             }
-        }
 
-        // Delegate events for dynamically created elements
-        document.addEventListener('click', (e) => {
-            if (e.target.closest('.document-more')) {
-                const docId = parseInt(e.target.closest('.document-more').dataset.id);
-                showContextMenu(e, docId);
+            if (typeVal && typeVal !== 'all') {
+                const t = (doc.type || '').toLowerCase();
+                const docTypes = ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'];
+                const imgTypes = ['png', 'jpg', 'jpeg', 'gif'];
+
+                if (typeVal === 'documents' && !docTypes.includes(t)) ok = false;
+                if (typeVal === 'images' && !imgTypes.includes(t)) ok = false;
+                if (typeVal === 'pdf' && t !== 'pdf') ok = false;
+                if (typeVal === 'non-valides' && doc.validated) ok = false;
             }
+
+            return ok;
         });
 
-        // Initialize the app
-        document.addEventListener('DOMContentLoaded', init);
-    </script>
+        applySort();
+        currentPage = 1;
+        render();
+    }
+
+    // =========================
+    // Pagination
+    // =========================
+    function updatePagination(totalPages) {
+        pageNumbers.innerHTML = '';
+
+        for (let i = 1; i <= totalPages; i++) {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.textContent = i;
+            btn.className = 'page-number';
+            if (i === currentPage) {
+                btn.classList.add('is-active');
+            }
+            btn.addEventListener('click', () => {
+                currentPage = i;
+                render();
+            });
+            pageNumbers.appendChild(btn);
+        }
+
+        prevPageBtn.disabled = currentPage <= 1;
+        nextPageBtn.disabled = currentPage >= totalPages;
+    }
+
+    // =========================
+    // Rendu principal
+    // =========================
+    function render() {
+        documentsContainer.innerHTML = '';
+
+        docsCount.textContent = filteredDocs.length.toString();
+
+        if (!filteredDocs.length) {
+            emptyState.classList.remove('hidden');
+            updatePagination(1);
+            return;
+        } else {
+            emptyState.classList.add('hidden');
+        }
+
+        const totalPages = Math.max(1, Math.ceil(filteredDocs.length / pageSize));
+        if (currentPage > totalPages) currentPage = totalPages;
+
+        const start = (currentPage - 1) * pageSize;
+        const end   = start + pageSize;
+        const slice = filteredDocs.slice(start, end);
+
+        slice.forEach(doc => {
+            const card = createDocumentElement(doc);
+            documentsContainer.appendChild(card);
+        });
+
+        updatePagination(totalPages);
+    }
+
+    // =========================
+    // Vue grille / liste
+    // =========================
+    function setView(view) {
+        currentView = view;
+        if (view === 'list') {
+            documentsContainer.classList.remove('grid-view');
+            documentsContainer.classList.add('list-view');
+            gridViewBtn.classList.remove('view-toggle--active');
+            listViewBtn.classList.add('view-toggle--active');
+            currentViewLabel.textContent = 'liste';
+        } else {
+            documentsContainer.classList.add('grid-view');
+            documentsContainer.classList.remove('list-view');
+            listViewBtn.classList.remove('view-toggle--active');
+            gridViewBtn.classList.add('view-toggle--active');
+            currentViewLabel.textContent = 'grille';
+        }
+        render();
+    }
+
+    // =========================
+    // Upload (simulation, avec vrai téléchargement via blob)
+    // =========================
+    function handleFiles(files) {
+        if (!files || !files.length) return;
+
+        progressContainer.classList.remove('hidden');
+        let progress = 0;
+
+        const interval = setInterval(() => {
+            progress += Math.random() * 18;
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(interval);
+
+                setTimeout(() => {
+                    progressContainer.classList.add('hidden');
+                    progressBar.style.width = '0%';
+                    progressPercentage.textContent = '0%';
+
+                    Array.from(files).forEach((file, index) => {
+                        const ext = (file.name.split('.').pop() || '').toLowerCase();
+                        const blobUrl = URL.createObjectURL(file);
+
+                        const newDoc = {
+                            id: documents.length + index + 1,
+                            name: file.name,
+                            type: ext,
+                            size: formatFileSize(file.size),
+                            modified: new Date().toISOString().slice(0, 10),
+                            author: "Utilisateur actuel",
+                            validated: false,
+                            tags: ["Nouveau"],
+                            thumbnail: getThumbnailForType(ext),
+                            url: blobUrl,
+                            versions: [
+                                {
+                                    version: "1.0",
+                                    date: new Date().toISOString().slice(0, 10),
+                                    author: "Utilisateur actuel",
+                                    size: formatFileSize(file.size)
+                                }
+                            ]
+                        };
+                        documents.unshift(newDoc);
+                    });
+
+                    applyFilters();
+                }, 400);
+            }
+
+            progressBar.style.width = progress + '%';
+            progressPercentage.textContent = Math.round(progress) + '%';
+        }, 200);
+    }
+
+    // =========================
+    // Menu contextuel
+    // =========================
+    function hideContextMenu() {
+        contextMenu.classList.add('hidden');
+        contextMenu.classList.remove('visible');
+        contextMenu.style.left = '-9999px';
+        contextMenu.style.top  = '-9999px';
+    }
+
+    function showContextMenu(event, docId) {
+        event.preventDefault();
+        selectedDocumentId = docId;
+
+        const menuWidth  = 220;
+        const menuHeight = 220;
+        let x = event.clientX;
+        let y = event.clientY;
+
+        if (x + menuWidth > window.innerWidth) {
+            x = window.innerWidth - menuWidth - 12;
+        }
+        if (y + menuHeight > window.innerHeight) {
+            y = window.innerHeight - menuHeight - 12;
+        }
+
+        contextMenu.style.left = x + 'px';
+        contextMenu.style.top  = y + 'px';
+        contextMenu.classList.remove('hidden');
+        contextMenu.classList.add('visible');
+    }
+
+    function showPreview(docId) {
+        const doc = documents.find(d => d.id === docId);
+        if (!doc) return;
+
+        const ext = (doc.type || '').toLowerCase();
+        const canEmbed = ext === 'pdf' || ['png', 'jpg', 'jpeg', 'gif'].includes(ext);
+
+        if (!doc.url || doc.url === '#') {
+            alert("Ce document n'a pas encore d'URL de prévisualisation (exemple statique).");
+            return;
+        }
+
+        if (canEmbed) {
+            currentPreviewDoc = doc;
+            pdfIframe.src = doc.url;
+            pdfPreviewModal.classList.remove('hidden');
+        } else {
+            // Pour docx, xlsx, pptx → ouverture dans un nouvel onglet
+            window.open(doc.url, '_blank');
+        }
+    }
+
+    function showVersionHistory(docId) {
+        const doc = documents.find(d => d.id === docId);
+        if (!doc) return;
+
+        versionHistoryBody.innerHTML = '';
+        if (versionComparison) versionComparison.classList.add('hidden');
+
+        doc.versions.forEach((v, index) => {
+            const tr = document.createElement('tr');
+            tr.className = index % 2 === 0 ? 'bg-white' : 'bg-slate-50';
+            tr.innerHTML = `
+                <td class="px-4 py-2 whitespace-nowrap text-[11px] font-semibold text-slate-800">
+                    ${v.version}
+                </td>
+                <td class="px-4 py-2 whitespace-nowrap text-[11px] text-slate-600">
+                    ${formatDate(v.date)}
+                </td>
+                <td class="px-4 py-2 whitespace-nowrap text-[11px] text-slate-600">
+                    ${v.author}
+                </td>
+                <td class="px-4 py-2 whitespace-nowrap text-[11px] text-slate-600">
+                    ${v.size}
+                </td>
+                <td class="px-4 py-2 whitespace-nowrap text-[11px] text-slate-600">
+                    <button type="button"
+                            class="text-blue-600 hover:text-blue-800 mr-2 compare-version"
+                            data-version="${v.version}">
+                        Comparer
+                    </button>
+                    <button type="button"
+                            class="text-blue-600 hover:text-blue-800 restore-version"
+                            data-version="${v.version}">
+                        Restaurer
+                    </button>
+                </td>
+            `;
+            versionHistoryBody.appendChild(tr);
+        });
+
+        versionHistoryModal.classList.remove('hidden');
+    }
+
+    function downloadDocument(docId) {
+        const doc = documents.find(d => d.id === docId);
+        if (!doc) return;
+
+        if (!doc.url || doc.url === '#') {
+            alert("Aucune URL de téléchargement configurée pour ce document (exemple statique).");
+            return;
+        }
+
+        const link = document.createElement('a');
+        link.href = doc.url;
+        link.download = doc.name || '';
+        link.target = '_blank';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    function shareDocument(docId) {
+        const doc = documents.find(d => d.id === docId);
+        if (!doc) return;
+        alert(`Lien de partage généré pour "${doc.name}" (démo).`);
+    }
+
+    function deleteDocument(docId) {
+        if (!confirm('Êtes-vous sûr de vouloir supprimer ce document ?')) return;
+        documents = documents.filter(d => d.id !== docId);
+        applyFilters();
+    }
+
+    // =========================
+    // LISTENERS
+    // =========================
+
+    // Dropzone
+    dropzone.addEventListener('click', () => fileInput.click());
+
+    dropzone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropzone.classList.add('active');
+    });
+
+    ['dragleave', 'dragend'].forEach(evt => {
+        dropzone.addEventListener(evt, () => dropzone.classList.remove('active'));
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('active');
+        handleFiles(e.dataTransfer.files);
+    });
+
+    fileInput.addEventListener('change', () => {
+        if (fileInput.files && fileInput.files.length) {
+            handleFiles(fileInput.files);
+            fileInput.value = '';
+        }
+    });
+
+    // Recherche + filtres
+    searchInput.addEventListener('input', () => applyFilters());
+    sortSelect.addEventListener('change', () => applyFilters());
+    typeFilter.addEventListener('change', () => applyFilters());
+
+    // Vue grille / liste
+    gridViewBtn.addEventListener('click', () => setView('grid'));
+    listViewBtn.addEventListener('click', () => setView('list'));
+
+    // Pagination boutons
+    prevPageBtn.addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            render();
+        }
+    });
+
+    nextPageBtn.addEventListener('click', () => {
+        const totalPages = Math.max(1, Math.ceil(filteredDocs.length / pageSize));
+        if (currentPage < totalPages) {
+            currentPage++;
+            render();
+        }
+    });
+
+    // Délégation : menu "..."
+    documentsContainer.addEventListener('click', (e) => {
+        const moreBtn = e.target.closest('.document-more');
+        if (!moreBtn) return;
+        const id = parseInt(moreBtn.dataset.id, 10);
+        if (isNaN(id)) return;
+        showContextMenu(e, id);
+    });
+
+    // Double clic sur carte → aperçu
+    documentsContainer.addEventListener('dblclick', (e) => {
+        const card = e.target.closest('.document-card');
+        if (!card) return;
+        const id = parseInt(card.dataset.id, 10);
+        if (isNaN(id)) return;
+        showPreview(id);
+    });
+
+    // Clic global : fermer menu contextuel
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('#context-menu') && !e.target.closest('.document-more')) {
+            hideContextMenu();
+        }
+    });
+
+    // Clic sur menu contextuel
+    contextMenu.addEventListener('click', (e) => {
+        const item = e.target.closest('.context-menu-item');
+        if (!item) return;
+        const action = item.dataset.action;
+        hideContextMenu();
+        if (!selectedDocumentId) return;
+        const id = selectedDocumentId;
+
+        switch (action) {
+            case 'preview':
+                showPreview(id);
+                break;
+            case 'download':
+                downloadDocument(id);
+                break;
+            case 'share':
+                shareDocument(id);
+                break;
+            case 'history':
+                showVersionHistory(id);
+                break;
+            case 'delete':
+                deleteDocument(id);
+                break;
+        }
+    });
+
+    // Modale preview
+    closePdfPreview.addEventListener('click', () => {
+        pdfPreviewModal.classList.add('hidden');
+        pdfIframe.src = '';
+        currentPreviewDoc = null;
+    });
+
+    pdfPreviewModal.addEventListener('click', (e) => {
+        if (e.target === pdfPreviewModal) {
+            pdfPreviewModal.classList.add('hidden');
+            pdfIframe.src = '';
+            currentPreviewDoc = null;
+        }
+    });
+
+    // Bouton télécharger dans la modale
+    pdfDownloadBtn.addEventListener('click', () => {
+        if (!currentPreviewDoc) return;
+        downloadDocument(currentPreviewDoc.id);
+    });
+
+    // Modale historique
+    closeVersionHistory.addEventListener('click', () => {
+        versionHistoryModal.classList.add('hidden');
+    });
+
+    versionHistoryModal.addEventListener('click', (e) => {
+        if (e.target === versionHistoryModal) {
+            versionHistoryModal.classList.add('hidden');
+        }
+    });
+
+    versionHistoryBody.addEventListener('click', (e) => {
+        const compareBtn = e.target.closest('.compare-version');
+        const restoreBtn = e.target.closest('.restore-version');
+
+        if (compareBtn) {
+            if (versionComparison) versionComparison.classList.remove('hidden');
+        }
+
+        if (restoreBtn) {
+            const v = restoreBtn.dataset.version;
+            if (confirm(`Restaurer la version ${v} ? (démo)`)) {
+                alert(`Version ${v} restaurée (simulation).`);
+                versionHistoryModal.classList.add('hidden');
+            }
+        }
+    });
+
+    if (cancelComparisonBtn) {
+        cancelComparisonBtn.addEventListener('click', () => {
+            versionComparison.classList.add('hidden');
+        });
+    }
+
+    if (restoreComparisonBtn) {
+        restoreComparisonBtn.addEventListener('click', () => {
+            alert('Cette version serait restaurée en vrai backend (démo).');
+            versionComparison.classList.add('hidden');
+            versionHistoryModal.classList.add('hidden');
+        });
+    }
+
+    // =========================
+    // Initialisation
+    // =========================
+    applyFilters();
+});
+</script>
 {% endblock %}

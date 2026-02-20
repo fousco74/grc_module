@@ -1,0 +1,141 @@
+/* Cards de stats */
+.stat-card {
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 15px -10px rgba(15, 23, 42, 0.35);
+}
+
+/* En-tête sticky de la liste */
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: #ffffff;
+}
+
+/* Lignes du tableau */
+.request-row {
+  transition: background-color 120ms ease, box-shadow 120ms ease;
+}
+
+.request-row:hover {
+  background-color: #f9fafb;
+}
+
+.request-row--urgent {
+  background-color: #fff7f7;
+  box-shadow: inset 3px 0 0 #f97373;
+}
+
+/* Cartes mobile */
+.request-card-mobile {
+  padding: 1rem;
+  background-color: #ffffff;
+}
+
+.request-card-mobile--urgent {
+  background-color: #fff7f7;
+  box-shadow: inset 3px 0 0 #f97373;
+}
+
+/* Pastilles de priorité */
+.priority-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.priority-dot--high {
+  background-color: #dc2626; /* red-600 */
+}
+
+.priority-dot--medium {
+  background-color: #f59e0b; /* amber-500 */
+}
+
+.priority-dot--low {
+  background-color: #4ade80; /* emerald-400 */
+}
+
+/* Statuts */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.status-pill--a-faire {
+  background-color: #f9fafb;
+  color: #4b5563;
+  border: 1px solid #e5e7eb;
+}
+
+.status-pill--en-cours {
+  background-color: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+.status-pill--terminee {
+  background-color: #ecfdf5;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+/* Barre d'avancement */
+.timeline-bar {
+  width: 100%;
+  height: 6px;
+  border-radius: 9999px;
+  background-color: #e5e7eb;
+  overflow: hidden;
+}
+
+.timeline-progress {
+  height: 100%;
+  border-radius: 9999px;
+}
+
+.timeline-progress--danger {
+  background-color: #f97373;
+}
+
+.timeline-progress--warning {
+  background-color: #fbbf24;
+}
+
+.timeline-progress--success {
+  background-color: #4ade80;
+}
+
+/* Boutons icône */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  border-radius: 9999px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  background-color: #f3f4f6;
+}
+
+/* Responsive léger */
+@media (max-width: 767px) {
+  .stat-card {
+    padding: 0.75rem;
+  }
+}

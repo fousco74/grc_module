@@ -1,581 +1,1035 @@
-{% extends 'templates/layout.html' %}
+{% extends base_template %}
 
-{% block title %} Plan d'Action Conformité {% endblock %}
+{% block title %}Plan d'action{% endblock %}
 
 {% block link %}
-
-<link rel="stylesheet" href="/assets/grc_module/css/action-plan.css">
-    
+<link rel="stylesheet" href="/assets/grc_module/css/action_plan.css">
 {% endblock %}
 
-        <!-- Main Content -->
-        {% block content %}
-           <main class="p-4">
-            <!-- Stats Summary -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <div class="flex items-center">
-                        <div class="p-3 bg-green-100 rounded-lg mr-4">
-                            <i data-feather="check-circle" class="w-6 h-6 text-green-600"></i>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500">Actions complétées</p>
-                            <p class="text-2xl font-bold text-gray-800">64%</p>
-                        </div>
-                    </div>
+{% block content %}
+
+<main class="space-y-6">
+
+    <!-- 1. Statistiques globales -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Actions complétées -->
+        <article class="stat-card bg-white rounded-xl shadow-sm border border-slate-200 p-4 flex items-center gap-3">
+            <div class="p-2.5 rounded-lg bg-emerald-50">
+                <i data-feather="check-circle" class="w-5 h-5 text-emerald-600"></i>
+            </div>
+            <div class="flex flex-col">
+                <span class="text-xs font-medium text-slate-500 uppercase tracking-wide">
+                    Actions complétées
+                </span>
+                <span class="text-2xl font-semibold text-slate-900 leading-none mt-1">
+                    60%
+                </span>
+                <span class="text-[11px] text-slate-500 mt-1">
+                    3 actions sur 5 réalisées
+                </span>
+            </div>
+        </article>
+
+        <!-- En cours -->
+        <article class="stat-card bg-white rounded-xl shadow-sm border border-slate-200 p-4 flex items-center gap-3">
+            <div class="p-2.5 rounded-lg bg-blue-50">
+                <i data-feather="clock" class="w-5 h-5 text-blue-600"></i>
+            </div>
+            <div class="flex flex-col">
+                <span class="text-xs font-medium text-slate-500 uppercase tracking-wide">
+                    En cours
+                </span>
+                <span class="text-2xl font-semibold text-slate-900 leading-none mt-1">
+                    2
+                </span>
+                <span class="text-[11px] text-blue-700 mt-1">
+                    Principalement IT & RH
+                </span>
+            </div>
+        </article>
+
+        <!-- À faire -->
+        <article class="stat-card bg-white rounded-xl shadow-sm border border-slate-200 p-4 flex items-center gap-3">
+            <div class="p-2.5 rounded-lg bg-amber-50">
+                <i data-feather="alert-circle" class="w-5 h-5 text-amber-600"></i>
+            </div>
+            <div class="flex flex-col">
+                <span class="text-xs font-medium text-slate-500 uppercase tracking-wide">
+                    Actions à faire
+                </span>
+                <span class="text-2xl font-semibold text-slate-900 leading-none mt-1">
+                    1
+                </span>
+                <span class="text-[11px] text-amber-700 mt-1">
+                    Prioriser les plus proches échéances
+                </span>
+            </div>
+        </article>
+
+        <!-- En retard -->
+        <article class="stat-card bg-white rounded-xl shadow-sm border border-rose-200 p-4 flex items-center gap-3">
+            <div class="p-2.5 rounded-lg bg-rose-50">
+                <i data-feather="alert-triangle" class="w-5 h-5 text-rose-600"></i>
+            </div>
+            <div class="flex flex-col">
+                <span class="text-xs font-medium text-slate-500 uppercase tracking-wide">
+                    En retard
+                </span>
+                <span class="text-2xl font-semibold text-slate-900 leading-none mt-1">
+                    1
+                </span>
+                <span class="text-[11px] text-rose-700 mt-1">
+                    1 action dépasse le délai légal
+                </span>
+            </div>
+        </article>
+    </section>
+
+    <!-- 2. Liste + filtres -->
+    <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+
+        <!-- En-tête sticky + filtres -->
+        <div class="sticky-header border-b border-slate-200 px-4 py-3">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                <div>
+                    <h3 class="text-base font-semibold text-slate-800">
+                        Plan d’action de conformité
+                    </h3>
+                    <p class="text-xs text-slate-500">
+                        5 actions suivies – filtrage par statut, responsable et échéance.
+                    </p>
                 </div>
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <div class="flex items-center">
-                        <div class="p-3 bg-blue-100 rounded-lg mr-4">
-                            <i data-feather="clock" class="w-6 h-6 text-blue-600"></i>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500">En cours</p>
-                            <p class="text-2xl font-bold text-gray-800">24</p>
-                        </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 w-full md:w-auto">
+
+                    <!-- Filtre statut -->
+                    <div class="relative">
+                        <select
+                            id="status-filter"
+                            class="w-full appearance-none bg-slate-50 border border-slate-200 rounded-md pl-3 pr-8 py-2 text-xs md:text-sm text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                            <option value="all">Tous statuts</option>
+                            <option value="A faire">À faire</option>
+                            <option value="En cours">En cours</option>
+                            <option value="Terminé">Terminé</option>
+                        </select>
+                        <i data-feather="chevron-down"
+                           class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
                     </div>
-                </div>
-                <div class="bg-white rounded-lg shadow-sm p-6 border-2 border-red-200">
-                    <div class="flex items-center">
-                        <div class="p-3 bg-red-100 rounded-lg mr-4">
-                            <i data-feather="alert-triangle" class="w-6 h-6 text-red-600"></i>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500">Actions en retard</p>
-                            <p class="text-2xl font-bold text-gray-800">7</p>
-                        </div>
+
+                    <!-- Filtre responsable -->
+                    <div class="relative">
+                        <select
+                            id="responsible-filter"
+                            class="w-full appearance-none bg-slate-50 border border-slate-200 rounded-md pl-3 pr-8 py-2 text-xs md:text-sm text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                            <option value="all">Tous responsables</option>
+                            <option value="Responsable RH">Responsable RH</option>
+                            <option value="DPO">DPO</option>
+                            <option value="IT Manager">IT Manager</option>
+                            <option value="Responsable Marketing">Responsable Marketing</option>
+                        </select>
+                        <i data-feather="chevron-down"
+                           class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                    </div>
+
+                    <!-- Filtre échéance -->
+                    <div class="relative">
+                        <select
+                            id="date-filter"
+                            class="w-full appearance-none bg-slate-50 border border-slate-200 rounded-md pl-3 pr-8 py-2 text-xs md:text-sm text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                            <option value="all">Toutes échéances</option>
+                            <option value="this_week">Cette semaine</option>
+                            <option value="this_month">Ce mois</option>
+                            <option value="overdue">En retard</option>
+                        </select>
+                        <i data-feather="chevron-down"
+                           class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- View Toggle -->
-            <div class="flex justify-between items-center mb-4">
-                <div class="flex space-x-2">
-                    <button id="list-view-btn" class="px-4 py-2 bg-green-600 text-white rounded-md">
-                        <i data-feather="list" class="w-4 h-4 mr-2 inline"></i> Liste
+        <!-- TABLE DESKTOP -->
+        <div class="hidden md:block">
+            <table class="min-w-full text-sm">
+                <thead class="bg-slate-50 border-b border-slate-200">
+                    <tr>
+                        <th class="px-4 py-2 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wide">
+                            Action
+                        </th>
+                        <th class="px-4 py-2 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wide">
+                            Principe RGPD
+                        </th>
+                        <th class="px-4 py-2 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wide">
+                            Responsable
+                        </th>
+                        <th class="px-4 py-2 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wide">
+                            Statut
+                        </th>
+                        <th class="px-4 py-2 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wide">
+                            Échéance
+                        </th>
+                        <th class="px-4 py-2 text-right text-[11px] font-semibold text-slate-500 uppercase tracking-wide">
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+
+                    <!-- ACTION 1 – OVERDUE -->
+                    <tr
+                        class="request-row request-row--urgent"
+                        data-action-item
+                        data-action-id="ACT-2025-001"
+                        data-status="A faire"
+                        data-responsible="Responsable RH"
+                        data-date-bucket="overdue">
+                        <td class="px-4 py-3 align-top">
+                            <div class="flex items-start gap-2">
+                                <span class="priority-dot priority-dot--high mt-1"></span>
+                                <div>
+                                    <div class="font-medium text-slate-900 text-xs">
+                                        Mettre à jour le registre des traitements RH
+                                    </div>
+                                    <p class="text-[11px] text-slate-500 mt-1">
+                                        Ajouter les nouveaux traitements liés à la paie et aux évaluations annuelles.
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 align-top text-xs text-slate-700">
+                            Responsabilité (Accountability)
+                        </td>
+                        <td class="px-4 py-3 align-top text-xs text-slate-700">
+                            Responsable RH
+                        </td>
+                        <td class="px-4 py-3 align-top">
+                            <span class="status-pill status-pill--a-faire">
+                                À faire
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 align-top text-xs">
+                            <div class="text-slate-700">
+                                10/02/2025
+                            </div>
+                            <div class="text-[11px] text-rose-600">
+                                En retard de 5 jours
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 align-top text-right">
+                            <div class="inline-flex items-center gap-1">
+                                <button
+                                    type="button"
+                                    class="btn-details text-xs px-2 py-1 rounded border border-emerald-500 text-emerald-700 hover:bg-emerald-50"
+                                    data-action-id="ACT-2025-001">
+                                    Détails
+                                </button>
+                                <button
+                                    type="button"
+                                    class="btn-edit icon-btn"
+                                    data-action-id="ACT-2025-001"
+                                    title="Modifier l'action">
+                                    <i data-feather="edit" class="w-4 h-4 text-slate-500"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- ACTION 2 – THIS WEEK -->
+                    <tr
+                        class="request-row"
+                        data-action-item
+                        data-action-id="ACT-2025-002"
+                        data-status="En cours"
+                        data-responsible="DPO"
+                        data-date-bucket="this_week">
+                        <td class="px-4 py-3 align-top">
+                            <div class="flex items-start gap-2">
+                                <span class="priority-dot priority-dot--medium mt-1"></span>
+                                <div>
+                                    <div class="font-medium text-slate-900 text-xs">
+                                        Finaliser la charte de confidentialité interne
+                                    </div>
+                                    <p class="text-[11px] text-slate-500 mt-1">
+                                        Valider la charte avec les managers puis la diffuser à l’ensemble des équipes.
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 align-top text-xs text-slate-700">
+                            Transparence
+                        </td>
+                        <td class="px-4 py-3 align-top text-xs text-slate-700">
+                            DPO
+                        </td>
+                        <td class="px-4 py-3 align-top">
+                            <span class="status-pill status-pill--en-cours">
+                                En cours
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 align-top text-xs">
+                            <div class="timeline-bar mb-1">
+                                <div class="timeline-progress timeline-progress--warning" style="width: 70%;"></div>
+                            </div>
+                            <div class="text-[11px] text-amber-600">
+                                Échéance : 28/02/2025 – 3 jours restants
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 align-top text-right">
+                            <div class="inline-flex items-center gap-1">
+                                <button
+                                    type="button"
+                                    class="btn-details text-xs px-2 py-1 rounded border border-emerald-500 text-emerald-700 hover:bg-emerald-50"
+                                    data-action-id="ACT-2025-002">
+                                    Détails
+                                </button>
+                                <button
+                                    type="button"
+                                    class="btn-edit icon-btn"
+                                    data-action-id="ACT-2025-002"
+                                    title="Modifier l'action">
+                                    <i data-feather="edit" class="w-4 h-4 text-slate-500"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- ACTION 3 – THIS MONTH -->
+                    <tr
+                        class="request-row"
+                        data-action-item
+                        data-action-id="ACT-2025-003"
+                        data-status="En cours"
+                        data-responsible="IT Manager"
+                        data-date-bucket="this_month">
+                        <td class="px-4 py-3 align-top">
+                            <div class="flex items-start gap-2">
+                                <span class="priority-dot priority-dot--medium mt-1"></span>
+                                <div>
+                                    <div class="font-medium text-slate-900 text-xs">
+                                        Activer le chiffrement des postes nomades
+                                    </div>
+                                    <p class="text-[11px] text-slate-500 mt-1">
+                                        Déployer le chiffrement disque complet sur les laptops des collaborateurs.
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 align-top text-xs text-slate-700">
+                            Intégrité & confidentialité
+                        </td>
+                        <td class="px-4 py-3 align-top text-xs text-slate-700">
+                            IT Manager
+                        </td>
+                        <td class="px-4 py-3 align-top">
+                            <span class="status-pill status-pill--en-cours">
+                                En cours
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 align-top text-xs">
+                            <div class="timeline-bar mb-1">
+                                <div class="timeline-progress timeline-progress--warning" style="width: 40%;"></div>
+                            </div>
+                            <div class="text-[11px] text-slate-600">
+                                Échéance : 20/03/2025
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 align-top text-right">
+                            <div class="inline-flex items-center gap-1">
+                                <button
+                                    type="button"
+                                    class="btn-details text-xs px-2 py-1 rounded border border-emerald-500 text-emerald-700 hover:bg-emerald-50"
+                                    data-action-id="ACT-2025-003">
+                                    Détails
+                                </button>
+                                <button
+                                    type="button"
+                                    class="btn-edit icon-btn"
+                                    data-action-id="ACT-2025-003"
+                                    title="Modifier l'action">
+                                    <i data-feather="edit" class="w-4 h-4 text-slate-500"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- ACTION 4 – LATER -->
+                    <tr
+                        class="request-row"
+                        data-action-item
+                        data-action-id="ACT-2025-004"
+                        data-status="A faire"
+                        data-responsible="Responsable Marketing"
+                        data-date-bucket="later">
+                        <td class="px-4 py-3 align-top">
+                            <div class="flex items-start gap-2">
+                                <span class="priority-dot priority-dot--low mt-1"></span>
+                                <div>
+                                    <div class="font-medium text-slate-900 text-xs">
+                                        Documenter les bases légales des campagnes emailing
+                                    </div>
+                                    <p class="text-[11px] text-slate-500 mt-1">
+                                        Associer chaque scénario marketing à une base légale claire et documentée.
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 align-top text-xs text-slate-700">
+                            Licéité du traitement
+                        </td>
+                        <td class="px-4 py-3 align-top text-xs text-slate-700">
+                            Responsable Marketing
+                        </td>
+                        <td class="px-4 py-3 align-top">
+                            <span class="status-pill status-pill--a-faire">
+                                À faire
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 align-top text-xs">
+                            <div class="text-slate-700">
+                                30/04/2025
+                            </div>
+                            <div class="text-[11px] text-slate-500">
+                                Prévu après les priorités IT
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 align-top text-right">
+                            <div class="inline-flex items-center gap-1">
+                                <button
+                                    type="button"
+                                    class="btn-details text-xs px-2 py-1 rounded border border-emerald-500 text-emerald-700 hover:bg-emerald-50"
+                                    data-action-id="ACT-2025-004">
+                                    Détails
+                                </button>
+                                <button
+                                    type="button"
+                                    class="btn-edit icon-btn"
+                                    data-action-id="ACT-2025-004"
+                                    title="Modifier l'action">
+                                    <i data-feather="edit" class="w-4 h-4 text-slate-500"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- ACTION 5 – TERMINÉE -->
+                    <tr
+                        class="request-row"
+                        data-action-item
+                        data-action-id="ACT-2024-010"
+                        data-status="Terminé"
+                        data-responsible="DPO"
+                        data-date-bucket="this_month">
+                        <td class="px-4 py-3 align-top">
+                            <div class="flex items-start gap-2">
+                                <span class="priority-dot priority-dot--low mt-1"></span>
+                                <div>
+                                    <div class="font-medium text-slate-900 text-xs">
+                                        Mettre à jour les mentions d’information sur le site web
+                                    </div>
+                                    <p class="text-[11px] text-slate-500 mt-1">
+                                        Ajouter les nouvelles finalités liées au compte client et à la newsletter.
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 align-top text-xs text-slate-700">
+                            Transparence
+                        </td>
+                        <td class="px-4 py-3 align-top text-xs text-slate-700">
+                            DPO
+                        </td>
+                        <td class="px-4 py-3 align-top">
+                            <span class="status-pill status-pill--terminee">
+                                Terminé
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 align-top text-xs">
+                            <div class="timeline-bar mb-1">
+                                <div class="timeline-progress timeline-progress--success" style="width: 100%;"></div>
+                            </div>
+                            <div class="text-[11px] text-emerald-600">
+                                Clôturée le 15/01/2025
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 align-top text-right">
+                            <div class="inline-flex items-center gap-1">
+                                <button
+                                    type="button"
+                                    class="btn-details text-xs px-2 py-1 rounded border border-slate-300 text-slate-700 hover:bg-slate-50"
+                                    data-action-id="ACT-2024-010">
+                                    Détails
+                                </button>
+                                <button
+                                    type="button"
+                                    class="btn-edit icon-btn"
+                                    data-action-id="ACT-2024-010"
+                                    title="Modifier l'action">
+                                    <i data-feather="edit" class="w-4 h-4 text-slate-500"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+        <!-- CARTES MOBILE -->
+        <div class="md:hidden divide-y divide-slate-100">
+
+            <!-- Les 5 mêmes actions, en version carte -->
+
+            <!-- Carte ACT-2025-001 -->
+            <article
+                class="request-card-mobile request-card-mobile--urgent"
+                data-action-item
+                data-action-id="ACT-2025-001"
+                data-status="A faire"
+                data-responsible="Responsable RH"
+                data-date-bucket="overdue">
+                <div class="flex justify-between items-start gap-3">
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="priority-dot priority-dot--high"></span>
+                            <span class="text-xs font-semibold text-slate-900">
+                                Mettre à jour le registre des traitements RH
+                            </span>
+                        </div>
+                        <p class="text-[11px] text-slate-500">
+                            Responsabilité (Accountability) • Responsable RH
+                        </p>
+                        <p class="text-[11px] text-rose-700 mt-1">
+                            Échéance : 10/02/2025 – En retard de 5 jours
+                        </p>
+                    </div>
+                    <span class="status-pill status-pill--a-faire">
+                        À faire
+                    </span>
+                </div>
+                <div class="mt-3 flex justify-end gap-2">
+                    <button
+                        type="button"
+                        class="btn-details text-xs px-2 py-1 rounded border border-emerald-500 text-emerald-700 hover:bg-emerald-50"
+                        data-action-id="ACT-2025-001">
+                        Détails
                     </button>
-                    <button id="calendar-view-btn" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md">
-                        <i data-feather="calendar" class="w-4 h-4 mr-2 inline"></i> Calendrier
+                    <button
+                        type="button"
+                        class="btn-edit icon-btn"
+                        data-action-id="ACT-2025-001">
+                        <i data-feather="edit" class="w-4 h-4 text-slate-500"></i>
                     </button>
                 </div>
-                <button class="px-4 py-2 bg-white border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
-                    <i data-feather="plus" class="w-4 h-4 mr-2 inline"></i> Nouvelle action
+            </article>
+
+            <!-- Carte ACT-2025-002 -->
+            <article
+                class="request-card-mobile"
+                data-action-item
+                data-action-id="ACT-2025-002"
+                data-status="En cours"
+                data-responsible="DPO"
+                data-date-bucket="this_week">
+                <div class="flex justify-between items-start gap-3">
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="priority-dot priority-dot--medium"></span>
+                            <span class="text-xs font-semibold text-slate-900">
+                                Finaliser la charte de confidentialité interne
+                            </span>
+                        </div>
+                        <p class="text-[11px] text-slate-500">
+                            Transparence • DPO
+                        </p>
+                        <p class="text-[11px] text-amber-700 mt-1">
+                            Échéance : 28/02/2025 – 3 jours restants
+                        </p>
+                    </div>
+                    <span class="status-pill status-pill--en-cours">
+                        En cours
+                    </span>
+                </div>
+                <div class="mt-3 flex justify-end gap-2">
+                    <button
+                        type="button"
+                        class="btn-details text-xs px-2 py-1 rounded border border-emerald-500 text-emerald-700 hover:bg-emerald-50"
+                        data-action-id="ACT-2025-002">
+                        Détails
+                    </button>
+                    <button
+                        type="button"
+                        class="btn-edit icon-btn"
+                        data-action-id="ACT-2025-002">
+                        <i data-feather="edit" class="w-4 h-4 text-slate-500"></i>
+                    </button>
+                </div>
+            </article>
+
+            <!-- Carte ACT-2025-003 -->
+            <article
+                class="request-card-mobile"
+                data-action-item
+                data-action-id="ACT-2025-003"
+                data-status="En cours"
+                data-responsible="IT Manager"
+                data-date-bucket="this_month">
+                <div class="flex justify-between items-start gap-3">
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="priority-dot priority-dot--medium"></span>
+                            <span class="text-xs font-semibold text-slate-900">
+                                Activer le chiffrement des postes nomades
+                            </span>
+                        </div>
+                        <p class="text-[11px] text-slate-500">
+                            Intégrité & confidentialité • IT Manager
+                        </p>
+                        <p class="text-[11px] text-slate-600 mt-1">
+                            Échéance : 20/03/2025
+                        </p>
+                    </div>
+                    <span class="status-pill status-pill--en-cours">
+                        En cours
+                    </span>
+                </div>
+                <div class="mt-3 flex justify-end gap-2">
+                    <button
+                        type="button"
+                        class="btn-details text-xs px-2 py-1 rounded border border-emerald-500 text-emerald-700 hover:bg-emerald-50"
+                        data-action-id="ACT-2025-003">
+                        Détails
+                    </button>
+                    <button
+                        type="button"
+                        class="btn-edit icon-btn"
+                        data-action-id="ACT-2025-003">
+                        <i data-feather="edit" class="w-4 h-4 text-slate-500"></i>
+                    </button>
+                </div>
+            </article>
+
+            <!-- Carte ACT-2025-004 -->
+            <article
+                class="request-card-mobile"
+                data-action-item
+                data-action-id="ACT-2025-004"
+                data-status="A faire"
+                data-responsible="Responsable Marketing"
+                data-date-bucket="later">
+                <div class="flex justify-between items-start gap-3">
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="priority-dot priority-dot--low"></span>
+                            <span class="text-xs font-semibold text-slate-900">
+                                Documenter les bases légales des campagnes emailing
+                            </span>
+                        </div>
+                        <p class="text-[11px] text-slate-500">
+                            Licéité du traitement • Responsable Marketing
+                        </p>
+                        <p class="text-[11px] text-slate-600 mt-1">
+                            Échéance : 30/04/2025
+                        </p>
+                    </div>
+                    <span class="status-pill status-pill--a-faire">
+                        À faire
+                    </span>
+                </div>
+                <div class="mt-3 flex justify-end gap-2">
+                    <button
+                        type="button"
+                        class="btn-details text-xs px-2 py-1 rounded border border-emerald-500 text-emerald-700 hover:bg-emerald-50"
+                        data-action-id="ACT-2025-004">
+                        Détails
+                    </button>
+                    <button
+                        type="button"
+                        class="btn-edit icon-btn"
+                        data-action-id="ACT-2025-004">
+                        <i data-feather="edit" class="w-4 h-4 text-slate-500"></i>
+                    </button>
+                </div>
+            </article>
+
+            <!-- Carte ACT-2024-010 -->
+            <article
+                class="request-card-mobile"
+                data-action-item
+                data-action-id="ACT-2024-010"
+                data-status="Terminé"
+                data-responsible="DPO"
+                data-date-bucket="this_month">
+                <div class="flex justify-between items-start gap-3">
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="priority-dot priority-dot--low"></span>
+                            <span class="text-xs font-semibold text-slate-900">
+                                Mettre à jour les mentions d’information sur le site web
+                            </span>
+                        </div>
+                        <p class="text-[11px] text-slate-500">
+                            Transparence • DPO
+                        </p>
+                        <p class="text-[11px] text-emerald-700 mt-1">
+                            Clôturée le 15/01/2025
+                        </p>
+                    </div>
+                    <span class="status-pill status-pill--terminee">
+                        Terminé
+                    </span>
+                </div>
+                <div class="mt-3 flex justify-end gap-2">
+                    <button
+                        type="button"
+                        class="btn-details text-xs px-2 py-1 rounded border border-slate-300 text-slate-700 hover:bg-slate-50"
+                        data-action-id="ACT-2024-010">
+                        Détails
+                    </button>
+                    <button
+                        type="button"
+                        class="btn-edit icon-btn"
+                        data-action-id="ACT-2024-010">
+                        <i data-feather="edit" class="w-4 h-4 text-slate-500"></i>
+                    </button>
+                </div>
+            </article>
+
+        </div>
+
+        <!-- FOOTER / PAGINATION SIMPLE (DÉMO) -->
+        <div class="px-4 py-3 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-500">
+            <p id="pagination-text">
+                Affichage de 1 à 5 sur 5 actions (données de démonstration)
+            </p>
+            <div class="inline-flex items-center gap-1">
+                <button
+                    id="prev-page-btn"
+                    type="button"
+                    class="px-2 py-1 rounded border border-slate-300 text-slate-600 hover:bg-slate-50">
+                    Précédent
+                </button>
+                <button
+                    id="next-page-btn"
+                    type="button"
+                    class="px-2 py-1 rounded border border-slate-300 text-slate-600 hover:bg-slate-50">
+                    Suivant
                 </button>
             </div>
+        </div>
 
-            <!-- Calendar View (Hidden by default) -->
-            <div id="calendar-view" class="hidden bg-white rounded-lg shadow-sm p-6 mb-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-medium text-gray-700">Vue Calendrier</h3>
-                    <div class="flex items-center space-x-2">
-                        <button class="p-2 rounded-md hover:bg-gray-100">
-                            <i data-feather="chevron-left"></i>
-                        </button>
-                        <span class="font-medium">Juin 2023</span>
-                        <button class="p-2 rounded-md hover:bg-gray-100">
-                            <i data-feather="chevron-right"></i>
-                        </button>
-                        <button class="px-3 py-1 text-sm bg-gray-100 rounded-md">Aujourd'hui</button>
-                    </div>
-                </div>
-                <div class="grid grid-cols-7 gap-1 mb-2">
-                    <div class="text-center text-sm font-medium text-gray-500 py-2">Dim</div>
-                    <div class="text-center text-sm font-medium text-gray-500 py-2">Lun</div>
-                    <div class="text-center text-sm font-medium text-gray-500 py-2">Mar</div>
-                    <div class="text-center text-sm font-medium text-gray-500 py-2">Mer</div>
-                    <div class="text-center text-sm font-medium text-gray-500 py-2">Jeu</div>
-                    <div class="text-center text-sm font-medium text-gray-500 py-2">Ven</div>
-                    <div class="text-center text-sm font-medium text-gray-500 py-2">Sam</div>
-                </div>
-                <div class="grid grid-cols-7 gap-1">
-                    <!-- Calendar cells would be populated here -->
-                    <div class="h-24 border border-gray-100 p-1">
-                        <div class="text-right text-sm">28</div>
-                    </div>
-                    <div class="h-24 border border-gray-100 p-1">
-                        <div class="text-right text-sm">29</div>
-                    </div>
-                    <div class="h-24 border border-gray-100 p-1">
-                        <div class="text-right text-sm">30</div>
-                    </div>
-                    <div class="h-24 border border-gray-100 p-1">
-                        <div class="text-right text-sm">31</div>
-                    </div>
-                    <div class="h-24 border border-gray-100 p-1 bg-blue-50">
-                        <div class="text-right text-sm">1</div>
-                        <div class="text-xs mt-1 p-1 bg-red-100 rounded truncate">Cryptage données</div>
-                    </div>
-                    <div class="h-24 border border-gray-100 p-1">
-                        <div class="text-right text-sm">2</div>
-                    </div>
-                    <div class="h-24 border border-gray-100 p-1">
-                        <div class="text-right text-sm">3</div>
-                    </div>
-                    <!-- More cells... -->
-                </div>
+    </section>
+
+</main>
+
+<!-- MODALE DÉTAIL ACTION -->
+<div
+    id="action-modal"
+    class="fixed inset-0 z-40 hidden items-center justify-center bg-black/40">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-md mx-4 p-5 relative">
+        <button
+            id="action-modal-close"
+            type="button"
+            class="absolute top-3 right-3 inline-flex items-center justify-center rounded-full p-1.5 hover:bg-slate-100">
+            <i data-feather="x" class="w-4 h-4 text-slate-500"></i>
+        </button>
+
+        <h3 id="modal-title" class="text-base font-semibold text-slate-900">
+            Détails de l’action
+        </h3>
+
+        <div class="mt-4 space-y-3 text-sm">
+            <div class="flex items-center justify-between">
+                <span class="text-slate-500 text-xs">ID</span>
+                <span id="modal-id" class="font-mono text-slate-900 text-xs"></span>
             </div>
-
-            <!-- List View -->
-            <div id="list-view" class="bg-white rounded-lg shadow-sm overflow-hidden">
-                <!-- Sticky Header with Filters -->
-                <div class="sticky-header border-b border-gray-200 p-4">
-                    <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
-                        <div class="flex items-center">
-                            <h3 class="text-lg font-medium text-gray-700 mr-4">Actions</h3>
-                            <span class="text-sm text-gray-500">24 éléments</span>
-                        </div>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                            <div class="relative">
-                                <select class="appearance-none bg-gray-100 border border-gray-200 rounded-md pl-3 pr-8 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-green-500 w-full">
-                                    <option>Tous statuts</option>
-                                    <option>À faire</option>
-                                    <option>En cours</option>
-                                    <option>Terminé</option>
-                                    <option>En retard</option>
-                                </select>
-                                <i data-feather="chevron-down" class="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500"></i>
-                            </div>
-                            <div class="relative">
-                                <select class="appearance-none bg-gray-100 border border-gray-200 rounded-md pl-3 pr-8 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-green-500 w-full">
-                                    <option>Tous responsables</option>
-                                    <option>IT</option>
-                                    <option>Juridique</option>
-                                    <option>RH</option>
-                                    <option>Marketing</option>
-                                </select>
-                                <i data-feather="chevron-down" class="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500"></i>
-                            </div>
-                            <div class="relative">
-                                <select class="appearance-none bg-gray-100 border border-gray-200 rounded-md pl-3 pr-8 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-green-500 w-full">
-                                    <option>Toutes échéances</option>
-                                    <option>Cette semaine</option>
-                                    <option>Ce mois</option>
-                                    <option>En retard</option>
-                                    <option>Sans date</option>
-                                </select>
-                                <i data-feather="chevron-down" class="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500"></i>
-                            </div>
-                            <div class="relative">
-                                <select class="appearance-none bg-gray-100 border border-gray-200 rounded-md pl-3 pr-8 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-green-500 w-full">
-                                    <option>Toutes priorités</option>
-                                    <option>Critique</option>
-                                    <option>Élevée</option>
-                                    <option>Moyenne</option>
-                                    <option>Faible</option>
-                                </select>
-                                <i data-feather="chevron-down" class="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Table for desktop -->
-                <div class="hidden md:block">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Responsable</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Échéance</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Progression</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            <!-- Action Row 1 -->
-                            <tr class="action-row hover:bg-gray-50">
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="flex items-center">
-                                        <span class="priority-badge bg-red-500"></span>
-                                        <div>
-                                            <div class="text-sm font-medium text-gray-900">Mettre en place un système de cryptage des données</div>
-                                            <div class="text-sm text-gray-500">RGPD - Article 32</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="flex items-center">
-                                        <div class="flex-shrink-0 h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
-                                            <i data-feather="user" class="w-4 h-4 text-blue-600"></i>
-                                        </div>
-                                        <div class="ml-2">
-                                            <div class="text-sm font-medium text-gray-900">Jean Dupont</div>
-                                            <div class="text-sm text-gray-500">IT</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">En retard</span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">15/06/2023</div>
-                                    <div class="text-sm text-gray-500">+3 jours</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="w-full">
-                                        <div class="flex justify-between text-xs text-gray-500 mb-1">
-                                            <span>Progression</span>
-                                            <span>30%</span>
-                                        </div>
-                                        <div class="timeline-bar bg-gray-200 w-full">
-                                            <div class="timeline-progress bg-blue-500" style="width: 30%"></div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <div class="dropdown-trigger relative">
-                                        <button class="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100">
-                                            <i data-feather="more-vertical" class="w-5 h-5"></i>
-                                        </button>
-                                        <div class="dropdown-menu w-48 py-1">
-                                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Suivre</a>
-                                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Partager</a>
-                                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Éditer</a>
-                                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Archiver</a>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <!-- Action Row 2 -->
-                            <tr class="action-row hover:bg-gray-50">
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="flex items-center">
-                                        <span class="priority-badge bg-yellow-500"></span>
-                                        <div>
-                                            <div class="text-sm font-medium text-gray-900">Mettre à jour les mentions légales du site web</div>
-                                            <div class="text-sm text-gray-500">RGPD - Article 13</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="flex items-center">
-                                        <div class="flex-shrink-0 h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center">
-                                            <i data-feather="user" class="w-4 h-4 text-purple-600"></i>
-                                        </div>
-                                        <div class="ml-2">
-                                            <div class="text-sm font-medium text-gray-900">Marie Martin</div>
-                                            <div class="text-sm text-gray-500">Juridique</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">En cours</span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">25/06/2023</div>
-                                    <div class="text-sm text-gray-500">7 jours restants</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="w-full">
-                                        <div class="flex justify-between text-xs text-gray-500 mb-1">
-                                            <span>Progression</span>
-                                            <span>75%</span>
-                                        </div>
-                                        <div class="timeline-bar bg-gray-200 w-full">
-                                            <div class="timeline-progress bg-blue-500" style="width: 75%"></div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <div class="dropdown-trigger relative">
-                                        <button class="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100">
-                                            <i data-feather="more-vertical" class="w-5 h-5"></i>
-                                        </button>
-                                        <div class="dropdown-menu w-48 py-1">
-                                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Suivre</a>
-                                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Partager</a>
-                                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Éditer</a>
-                                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Archiver</a>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <!-- Action Row 3 -->
-                            <tr class="action-row hover:bg-gray-50">
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="flex items-center">
-                                        <span class="priority-badge bg-green-500"></span>
-                                        <div>
-                                            <div class="text-sm font-medium text-gray-900">Former les employés à la protection des données</div>
-                                            <div class="text-sm text-gray-500">RGPD - Article 39</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="flex items-center">
-                                        <div class="flex-shrink-0 h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
-                                            <i data-feather="user" class="w-4 h-4 text-green-600"></i>
-                                        </div>
-                                        <div class="ml-2">
-                                            <div class="text-sm font-medium text-gray-900">Sophie Leroy</div>
-                                            <div class="text-sm text-gray-500">RH</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Terminé</span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">10/06/2023</div>
-                                    <div class="text-sm text-gray-500">À temps</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="w-full">
-                                        <div class="flex justify-between text-xs text-gray-500 mb-1">
-                                            <span>Progression</span>
-                                            <span>100%</span>
-                                        </div>
-                                        <div class="timeline-bar bg-gray-200 w-full">
-                                            <div class="timeline-progress bg-blue-500" style="width: 100%"></div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <div class="dropdown-trigger relative">
-                                        <button class="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100">
-                                            <i data-feather="more-vertical" class="w-5 h-5"></i>
-                                        </button>
-                                        <div class="dropdown-menu w-48 py-1">
-                                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Suivre</a>
-                                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Partager</a>
-                                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Éditer</a>
-                                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Archiver</a>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Cards for mobile -->
-                <div class="md:hidden">
-                    <!-- Mobile Action Card 1 -->
-                    <div class="mobile-action-card action-card border-b border-gray-200 p-4">
-                        <div class="flex justify-between items-start">
-                            <div class="flex items-start">
-                                <span class="priority-badge bg-red-500 mt-1"></span>
-                                <div class="ml-2">
-                                    <h4 class="text-sm font-medium text-gray-900">Mettre en place un système de cryptage des données</h4>
-                                    <p class="text-xs text-gray-500">RGPD - Article 32</p>
-                                    <div class="mt-2 flex items-center">
-                                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800 mr-2">En retard</span>
-                                        <span class="text-xs text-gray-500">15/06/2023 (+3 jours)</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <button class="text-gray-400 hover:text-gray-600" onclick="toggleMobileCard(this)">
-                                <i data-feather="chevron-down" class="w-5 h-5"></i>
-                            </button>
-                        </div>
-                        
-                        <!-- Expanded content (hidden by default) -->
-                        <div class="mt-3 hidden">
-                            <div class="flex items-center mb-2">
-                                <div class="flex-shrink-0 h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
-                                    <i data-feather="user" class="w-4 h-4 text-blue-600"></i>
-                                </div>
-                                <div class="ml-2">
-                                    <div class="text-sm font-medium text-gray-900">Jean Dupont</div>
-                                    <div class="text-xs text-gray-500">IT</div>
-                                </div>
-                            </div>
-                            
-                            <div class="w-full mb-3">
-                                <div class="flex justify-between text-xs text-gray-500 mb-1">
-                                    <span>Progression</span>
-                                    <span>30%</span>
-                                </div>
-                                <div class="timeline-bar bg-gray-200 w-full">
-                                    <div class="timeline-progress bg-blue-500" style="width: 30%"></div>
-                                </div>
-                            </div>
-                            
-                            <div class="flex justify-between">
-                                <button class="px-3 py-1 text-xs bg-gray-100 rounded-md flex items-center">
-                                    <i data-feather="eye" class="w-3 h-3 mr-1"></i> Voir
-                                </button>
-                                <button class="px-3 py-1 text-xs bg-gray-100 rounded-md flex items-center">
-                                    <i data-feather="share-2" class="w-3 h-3 mr-1"></i> Partager
-                                </button>
-                                <button class="px-3 py-1 text-xs bg-gray-100 rounded-md flex items-center">
-                                    <i data-feather="edit" class="w-3 h-3 mr-1"></i> Éditer
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Mobile Action Card 2 -->
-                    <div class="mobile-action-card action-card border-b border-gray-200 p-4">
-                        <div class="flex justify-between items-start">
-                            <div class="flex items-start">
-                                <span class="priority-badge bg-yellow-500 mt-1"></span>
-                                <div class="ml-2">
-                                    <h4 class="text-sm font-medium text-gray-900">Mettre à jour les mentions légales du site web</h4>
-                                    <p class="text-xs text-gray-500">RGPD - Article 13</p>
-                                    <div class="mt-2 flex items-center">
-                                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 mr-2">En cours</span>
-                                        <span class="text-xs text-gray-500">25/06/2023 (7 jours)</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <button class="text-gray-400 hover:text-gray-600" onclick="toggleMobileCard(this)">
-                                <i data-feather="chevron-down" class="w-5 h-5"></i>
-                            </button>
-                        </div>
-                        
-                        <!-- Expanded content (hidden by default) -->
-                        <div class="mt-3 hidden">
-                            <div class="flex items-center mb-2">
-                                <div class="flex-shrink-0 h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center">
-                                    <i data-feather="user" class="w-4 h-4 text-purple-600"></i>
-                                </div>
-                                <div class="ml-2">
-                                    <div class="text-sm font-medium text-gray-900">Marie Martin</div>
-                                    <div class="text-xs text-gray-500">Juridique</div>
-                                </div>
-                            </div>
-                            
-                            <div class="w-full mb-3">
-                                <div class="flex justify-between text-xs text-gray-500 mb-1">
-                                    <span>Progression</span>
-                                    <span>75%</span>
-                                </div>
-                                <div class="timeline-bar bg-gray-200 w-full">
-                                    <div class="timeline-progress bg-blue-500" style="width: 75%"></div>
-                                </div>
-                            </div>
-                            
-                            <div class="flex justify-between">
-                                <button class="px-3 py-1 text-xs bg-gray-100 rounded-md flex items-center">
-                                    <i data-feather="eye" class="w-3 h-3 mr-1"></i> Voir
-                                </button>
-                                <button class="px-3 py-1 text-xs bg-gray-100 rounded-md flex items-center">
-                                    <i data-feather="share-2" class="w-3 h-3 mr-1"></i> Partager
-                                </button>
-                                <button class="px-3 py-1 text-xs bg-gray-100 rounded-md flex items-center">
-                                    <i data-feather="edit" class="w-3 h-3 mr-1"></i> Éditer
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- More mobile cards... -->
-                </div>
-
-                <!-- Pagination -->
-                <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
-                    <div class="flex-1 flex justify-between sm:hidden">
-                        <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                            Précédent
-                        </a>
-                        <a href="#" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                            Suivant
-                        </a>
-                    </div>
-                    <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-                        <div>
-                            <p class="text-sm text-gray-700">
-                                Affichage de
-                                <span class="font-medium">1</span>
-                                à
-                                <span class="font-medium">10</span>
-                                sur
-                                <span class="font-medium">24</span>
-                                résultats
-                            </p>
-                        </div>
-                        <div>
-                            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                                <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                                    <span class="sr-only">Précédent</span>
-                                    <i data-feather="chevron-left" class="h-5 w-5"></i>
-                                </a>
-                                <a href="#" aria-current="page" class="z-10 bg-green-50 border-green-500 text-green-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
-                                    1
-                                </a>
-                                <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
-                                    2
-                                </a>
-                                <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
-                                    3
-                                </a>
-                                <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
-                                    ...
-                                </span>
-                                <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
-                                    8
-                                </a>
-                                <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                                    <span class="sr-only">Suivant</span>
-                                    <i data-feather="chevron-right" class="h-5 w-5"></i>
-                                </a>
-                            </nav>
-                        </div>
-                    </div>
-                </div>
+            <div>
+                <span class="text-slate-500 text-xs">Action</span>
+                <p id="modal-description" class="text-slate-900 text-sm mt-0.5"></p>
             </div>
-        </main>
-        {% endblock %}
-        
+            <div>
+                <span class="text-slate-500 text-xs">Principe RGPD</span>
+                <p id="modal-principle" class="text-slate-900 text-xs mt-0.5"></p>
+            </div>
+            <div class="flex items-center justify-between">
+                <span class="text-slate-500 text-xs">Responsable</span>
+                <span id="modal-responsible" class="text-slate-900 text-xs"></span>
+            </div>
+            <div class="flex items-center justify-between">
+                <span class="text-slate-500 text-xs">Statut</span>
+                <span id="modal-status" class="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700"></span>
+            </div>
+            <div>
+                <span class="text-slate-500 text-xs">Échéance</span>
+                <p id="modal-deadline" class="text-slate-900 text-xs mt-0.5"></p>
+            </div>
+            <div>
+                <span class="text-slate-500 text-xs">Prochaines étapes</span>
+                <ul id="modal-steps" class="list-disc pl-5 text-xs text-slate-800 mt-1 space-y-1"></ul>
+            </div>
+            <div>
+                <span class="text-slate-500 text-xs">Notes internes</span>
+                <p id="modal-notes" class="text-slate-900 text-xs mt-0.5"></p>
+            </div>
+        </div>
 
-    {% block script %}
+        <div class="mt-5 flex justify-end gap-2">
+            <button
+                type="button"
+                class="px-3 py-1.5 text-xs rounded-md border border-slate-300 text-slate-700 hover:bg-slate-50">
+                Exporter en PDF
+            </button>
+            <button
+                type="button"
+                class="px-3 py-1.5 text-xs rounded-md bg-emerald-600 text-white hover:bg-emerald-700">
+                Marquer comme terminée
+            </button>
+        </div>
+    </div>
+</div>
 
-    <script>
-        // Initialize feather icons
-        feather.replace();
-        
-        // Toggle sidebar on mobile
-        function toggleSidebar() {
-            document.querySelector('.sidebar').classList.toggle('active');
+{% endblock %}
+
+{% block script %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Icônes Feather
+    if (window.feather) {
+        window.feather.replace();
+    }
+
+    // --- Données d'exemple pour la modale ---
+    const actionsData = {
+        "ACT-2025-001": {
+            id: "ACT-2025-001",
+            description: "Mettre à jour le registre des traitements RH",
+            principle: "Responsabilité (Accountability)",
+            responsible: "Responsable RH",
+            status: "À faire",
+            deadline: "10/02/2025 – En retard de 5 jours",
+            steps: [
+                "Recenser les nouveaux traitements RH (paie, évaluation annuelle).",
+                "Valider les fiches avec le DPO.",
+                "Mettre à jour le registre consolidé."
+            ],
+            notes: "Action à traiter en priorité. Plusieurs traitements récents ne sont pas encore documentés."
+        },
+        "ACT-2025-002": {
+            id: "ACT-2025-002",
+            description: "Finaliser la charte de confidentialité interne",
+            principle: "Transparence",
+            responsible: "DPO",
+            status: "En cours",
+            deadline: "28/02/2025 – 3 jours restants",
+            steps: [
+                "Intégrer les retours des managers.",
+                "Valider la version finale avec la Direction.",
+                "Diffuser la charte à tous les collaborateurs."
+            ],
+            notes: "Prévoir un rappel automatique par email après diffusion pour s’assurer de la lecture."
+        },
+        "ACT-2025-003": {
+            id: "ACT-2025-003",
+            description: "Activer le chiffrement des postes nomades",
+            principle: "Intégrité & confidentialité",
+            responsible: "IT Manager",
+            status: "En cours",
+            deadline: "20/03/2025",
+            steps: [
+                "Identifier les postes nomades éligibles.",
+                "Planifier les mises à jour en dehors des heures de production.",
+                "Tester la procédure de restauration en cas de perte de mot de passe."
+            ],
+            notes: "Coordonner avec le support IT pour accompagner les utilisateurs."
+        },
+        "ACT-2025-004": {
+            id: "ACT-2025-004",
+            description: "Documenter les bases légales des campagnes emailing",
+            principle: "Licéité du traitement",
+            responsible: "Responsable Marketing",
+            status: "À faire",
+            deadline: "30/04/2025",
+            steps: [
+                "Lister les différents scénarios de campagnes (prospects, clients, inactifs).",
+                "Associer chaque scénario à une base légale.",
+                "Mettre à jour les fiches de traitement concernées."
+            ],
+            notes: "À prioriser après clôture des actions RH et IT les plus critiques."
+        },
+        "ACT-2024-010": {
+            id: "ACT-2024-010",
+            description: "Mettre à jour les mentions d’information sur le site web",
+            principle: "Transparence",
+            responsible: "DPO",
+            status: "Terminé",
+            deadline: "Clôturée le 15/01/2025",
+            steps: [
+                "Ajouter les nouvelles finalités liées au compte client.",
+                "Clarifier les durées de conservation.",
+                "Mettre à jour la page Politique de confidentialité."
+            ],
+            notes: "Revue annuelle recommandée pour rester aligné avec les évolutions métiers."
         }
-        
-        // Toggle view between list and calendar
-        document.getElementById('list-view-btn').addEventListener('click', function() {
-            document.getElementById('list-view').classList.remove('hidden');
-            document.getElementById('calendar-view').classList.add('hidden');
-            this.classList.add('bg-green-600', 'text-white');
-            this.classList.remove('bg-gray-200', 'text-gray-700');
-            document.getElementById('calendar-view-btn').classList.remove('bg-green-600', 'text-white');
-            document.getElementById('calendar-view-btn').classList.add('bg-gray-200', 'text-gray-700');
-        });
-        
-        document.getElementById('calendar-view-btn').addEventListener('click', function() {
-            document.getElementById('calendar-view').classList.remove('hidden');
-            document.getElementById('list-view').classList.add('hidden');
-            this.classList.add('bg-green-600', 'text-white');
-            this.classList.remove('bg-gray-200', 'text-gray-700');
-            document.getElementById('list-view-btn').classList.remove('bg-green-600', 'text-white');
-            document.getElementById('list-view-btn').classList.add('bg-gray-200', 'text-gray-700');
-        });
-        
-        // Toggle mobile card expansion
-        function toggleMobileCard(button) {
-            const card = button.closest('.mobile-action-card');
-            const content = card.querySelector('.hidden');
-            const icon = button.querySelector('i');
-            
-            content.classList.toggle('hidden');
-            
-            if (content.classList.contains('hidden')) {
-                feather.replace(icon, 'chevron-down');
-            } else {
-                feather.replace(icon, 'chevron-up');
+    };
+
+    // --- Filtres ---
+    const statusFilter = document.getElementById('status-filter');
+    const responsibleFilter = document.getElementById('responsible-filter');
+    const dateFilter = document.getElementById('date-filter');
+    const items = Array.from(document.querySelectorAll('[data-action-item]'));
+
+    function applyFilters() {
+        const statusVal = statusFilter ? statusFilter.value : 'all';
+        const responsibleVal = responsibleFilter ? responsibleFilter.value : 'all';
+        const dateVal = dateFilter ? dateFilter.value : 'all';
+
+        items.forEach(el => {
+            const itemStatus = el.dataset.status || '';
+            const itemResp = el.dataset.responsible || '';
+            const itemBucket = el.dataset.dateBucket || 'all';
+
+            let visible = true;
+
+            if (statusVal !== 'all' && itemStatus !== statusVal) {
+                visible = false;
             }
+
+            if (responsibleVal !== 'all' && itemResp !== responsibleVal) {
+                visible = false;
+            }
+
+            if (dateVal !== 'all' && itemBucket !== dateVal) {
+                visible = false;
+            }
+
+            el.style.display = visible ? '' : 'none';
+        });
+    }
+
+    if (statusFilter) statusFilter.addEventListener('change', applyFilters);
+    if (responsibleFilter) responsibleFilter.addEventListener('change', applyFilters);
+    if (dateFilter) dateFilter.addEventListener('change', applyFilters);
+
+    // --- Modale détails ---
+    const modal = document.getElementById('action-modal');
+    const modalClose = document.getElementById('action-modal-close');
+    const modalId = document.getElementById('modal-id');
+    const modalDescription = document.getElementById('modal-description');
+    const modalPrinciple = document.getElementById('modal-principle');
+    const modalResponsible = document.getElementById('modal-responsible');
+    const modalStatus = document.getElementById('modal-status');
+    const modalDeadline = document.getElementById('modal-deadline');
+    const modalSteps = document.getElementById('modal-steps');
+    const modalNotes = document.getElementById('modal-notes');
+
+    function openModal(actionId) {
+        const data = actionsData[actionId];
+        if (!data || !modal) return;
+
+        modalId.textContent = data.id;
+        modalDescription.textContent = data.description;
+        modalPrinciple.textContent = data.principle;
+        modalResponsible.textContent = data.responsible;
+        modalStatus.textContent = data.status;
+        modalDeadline.textContent = data.deadline;
+        modalNotes.textContent = data.notes;
+
+        // Reset & remplir les étapes
+        modalSteps.innerHTML = '';
+        if (Array.isArray(data.steps)) {
+            data.steps.forEach(step => {
+                const li = document.createElement('li');
+                li.textContent = step;
+                modalSteps.appendChild(li);
+            });
         }
-        
-        // Mobile detection
-        function isMobile() {
-            return window.innerWidth <= 768;
+
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+
+    function closeModal() {
+        if (!modal) return;
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+
+    const detailButtons = document.querySelectorAll('.btn-details');
+    detailButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = btn.dataset.actionId;
+            openModal(id);
+        });
+    });
+
+    if (modalClose) {
+        modalClose.addEventListener('click', closeModal);
+    }
+
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+    }
+
+    // --- Boutons "Modifier" (démo) ---
+    const editButtons = document.querySelectorAll('.btn-edit');
+    editButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = btn.dataset.actionId;
+            const action = actionsData[id];
+            const label = action ? action.description : id;
+            alert("Mode démo : ici, vous ouvririez l’écran d’édition pour :\n\n" + label);
+        });
+    });
+
+    // --- Pagination (démo purement visuelle) ---
+    const paginationText = document.getElementById('pagination-text');
+    const prevPageBtn = document.getElementById('prev-page-btn');
+    const nextPageBtn = document.getElementById('next-page-btn');
+
+    let currentPage = 1;
+    const totalItems = 5;
+    const pageSize = 5; // tout sur une page, mais on simule la pagination
+
+    function updatePagination() {
+        const totalPages = Math.ceil(totalItems / pageSize);
+        if (currentPage < 1) currentPage = 1;
+        if (currentPage > totalPages) currentPage = totalPages;
+
+        const start = (currentPage - 1) * pageSize + 1;
+        let end = currentPage * pageSize;
+        if (end > totalItems) end = totalItems;
+
+        if (paginationText) {
+            paginationText.textContent =
+                `Affichage de ${start} à ${end} sur ${totalItems} actions (données de démonstration)`;
         }
-        
-        // Initialize with mobile check
-        if (isMobile()) {
-            document.querySelector('.sidebar').classList.remove('active');
-        }
-    </script>
+    }
+
+    if (prevPageBtn) {
+        prevPageBtn.addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                updatePagination();
+            }
+        });
+    }
+
+    if (nextPageBtn) {
+        nextPageBtn.addEventListener('click', () => {
+            const totalPages = Math.ceil(totalItems / pageSize);
+            if (currentPage < totalPages) {
+                currentPage++;
+                updatePagination();
+            }
+        });
+    }
+
+    // Initialisation
+    applyFilters();
+    updatePagination();
+});
+</script>
 {% endblock %}

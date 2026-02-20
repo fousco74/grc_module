@@ -6,30 +6,10 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "cr\u00e9ation_departement_section",
-  "entreprise",
-  "column_break_qsum",
-  "name_service"
+  "name_service",
+  "departement"
  ],
  "fields": [
-  {
-   "fieldname": "cr\u00e9ation_departement_section",
-   "fieldtype": "Section Break",
-   "label": "Cr\u00e9ation departement"
-  },
-  {
-   "fetch_from": "customer.customer_name",
-   "fieldname": "entreprise",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Entreprise ",
-   "options": "customer_grc",
-   "reqd": 1
-  },
-  {
-   "fieldname": "column_break_qsum",
-   "fieldtype": "Column Break"
-  },
   {
    "fieldname": "name_service",
    "fieldtype": "Data",
@@ -37,12 +17,18 @@
    "label": "Nom du service",
    "link_filters": "[[\"department_grc\",\"entreprise\",\"=\",\"eval:doc.entreprise\"]]",
    "reqd": 1
+  },
+  {
+   "fieldname": "departement",
+   "fieldtype": "Link",
+   "label": "Departement ",
+   "options": "department_grc"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-05 09:55:42.067139",
+ "modified": "2026-02-14 13:29:04.929375",
  "modified_by": "Administrator",
  "module": "GRC",
  "name": "service_grc",

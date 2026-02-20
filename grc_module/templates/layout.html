@@ -3,111 +3,333 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %} {% endblock %}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://unpkg.com/feather-icons"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    
-    {% block link %} 
-    
-    {% endblock %}
-    
-</head>
-<body class="bg-gray-50 font-sans">
-    <!-- Mobile Menu Button -->
-    <button class="mobile-menu-btn fixed top-4 left-4 z-50 bg-white p-2 rounded-md shadow-md md:hidden" onclick="toggleSidebar()">
-        <i data-feather="menu"></i>
-    </button>
+    <title>ConformIT – {% block title %}{% endblock %}</title>
 
-    <!-- Fixed Sidebar -->
-    <div class="sidebar fixed top-0 left-0 bg-gray-800 text-white shadow-lg z-40">
-        <div class="p-4 border-b border-gray-700">
-            <h1 class="text-xl font-bold">Conform<span class="text-green-400">IT</span></h1>
-            <p class="text-gray-400 text-sm">Tableau de bord RGPD</p>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Libs globales (déférées pour de meilleures perfs) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <script src="https://unpkg.com/feather-icons" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+
+    {% block link %}{% endblock %}
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans antialiased">
+
+<div class="min-h-screen flex">
+
+    {# --- SIDEBAR --- #}
+    <!-- Overlay mobile -->
+    <div id="sidebar-backdrop"
+         class="fixed inset-0 bg-black/40 z-30 opacity-0 pointer-events-none transition-opacity duration-200 md:hidden">
+    </div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar"
+           class="fixed inset-y-0 left-0 z-40 w-64 bg-slate-900 text-slate-100 shadow-xl transform -translate-x-full md:translate-x-0 transition-transform duration-200 flex flex-col">
+
+        <!-- Branding -->
+        <div class="h-16 px-4 border-b border-slate-800 flex items-center justify-between">
+            <div>
+                <h1 class="text-lg font-semibold tracking-tight">
+                    Conform<span class="text-emerald-400">IT</span>
+                </h1>
+                <p class="text-[11px] text-slate-400">Tableau de bord RGPD</p>
+            </div>
+
+            <!-- Bouton close mobile -->
+            <button id="close-sidebar-btn"
+                    class="md:hidden inline-flex items-center justify-center rounded-md p-1 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <i data-feather="x" class="w-4 h-4"></i>
+            </button>
         </div>
-        <nav class="mt-4">
-            <ul>
-                <li class="px-4 py-3 hover:bg-gray-700 flex items-center text-green-400 bg-gray-700">
-                    <a class="flex w-full" href="/dashboard">
-                        <i data-feather="home" class="mr-3 w-5 h-5"></i>
-                        <span class="text-wrap">Dashboard</span>
+
+        <!-- Navigation -->
+        <nav class="flex-1 overflow-y-auto py-3">
+            <ul class="space-y-1 text-sm">
+
+                <!-- Ex : tu peux passer une variable current_page depuis le backend -->
+                <li>
+                    <a href="/dashboard"
+                       class="flex items-center px-4 py-2.5 gap-3 rounded-md 
+                              bg-slate-800 text-emerald-300 font-medium">
+                        <i data-feather="home" class="w-4 h-4"></i>
+                        <span class="truncate">Dashboard</span>
                     </a>
                 </li>
-                <li class="px-4 py-3 hover:bg-gray-700 flex items-center">
-                    <a class="flex w-full" href="/audit">
-                        <i data-feather="clipboard" class="mr-3 w-5 h-5"></i>
-                        <span class="text-wrap">Audit</span>
+
+                <li>
+                    <a href="/audit"
+                       class="flex items-center px-4 py-2.5 gap-3 rounded-md text-slate-200 hover:bg-slate-800 hover:text-white">
+                        <i data-feather="clipboard" class="w-4 h-4"></i>
+                        <span class="truncate">Audit</span>
                     </a>
                 </li>
-                <li class="px-4 py-3 hover:bg-gray-700 flex items-center">
-                    <a class="flex w-full" href="registre-processing">
-                        <i data-feather="file-text" class="mr-3 w-5 h-5"></i>
-                        <span class="text-wrap">Registre de traitement</span>
+
+                <li>
+                    <a href="/registre-processing"
+                       class="flex items-center px-4 py-2.5 gap-3 rounded-md text-slate-200 hover:bg-slate-800 hover:text-white">
+                        <i data-feather="file-text" class="w-4 h-4"></i>
+                        <span class="truncate">Registre de traitement</span>
                     </a>
                 </li>
-                <li class="px-4 py-3 hover:bg-gray-700 flex items-center">
-                    <a class="flex w-full" href="action-plan">
-                        <i data-feather="target" class="mr-3 w-5 h-5"></i>
-                        <span class="text-wrap">Plan d'action</span>
+
+                <li>
+                    <a href="/action-plan"
+                       class="flex items-center px-4 py-2.5 gap-3 rounded-md text-slate-200 hover:bg-slate-800 hover:text-white">
+                        <i data-feather="target" class="w-4 h-4"></i>
+                        <span class="truncate">Plan d'action</span>
                     </a>
                 </li>
-                <li class="px-4 py-3 hover:bg-gray-700 flex items-center">
-                    <a class="flex w-full" href="make-right">
-                        <i data-feather="user-check" class="mr-3 w-5 h-5"></i>
-                        <span class="text-wrap">Demande de droit</span>
+
+                <li>
+                    <a href="/make-right"
+                       class="flex items-center px-4 py-2.5 gap-3 rounded-md text-slate-200 hover:bg-slate-800 hover:text-white">
+                        <i data-feather="user-check" class="w-4 h-4"></i>
+                        <span class="truncate">Demande de droit</span>
                     </a>
                 </li>
-                <li class="px-4 py-3 hover:bg-gray-700 flex items-center">
-                    <a class="flex w-full" href="documents">
-                        <i data-feather="folder" class="mr-3 w-5 h-5"></i>
-                        <span class="text-wrap">Gestion documentaire</span>
+
+                <li>
+                    <a href="/documents"
+                       class="flex items-center px-4 py-2.5 gap-3 rounded-md text-slate-200 hover:bg-slate-800 hover:text-white">
+                        <i data-feather="folder" class="w-4 h-4"></i>
+                        <span class="truncate">Gestion documentaire</span>
                     </a>
                 </li>
             </ul>
         </nav>
-        <div class="absolute bottom-0 w-full p-4 border-t border-gray-700">
-            <div class="flex items-center">
-                <div class="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center mr-2">
+
+        <!-- User / footer -->
+        <div class="border-t border-slate-800 px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center">
                     <i data-feather="user" class="w-4 h-4"></i>
                 </div>
-                <div>
-                    <p class="text-sm">Admin</p>
-                    <p class="text-xs text-gray-400">Administrateur</p>
+                <div class="leading-tight">
+                    <p class="text-sm font-medium">Admin</p>
+                    <p class="text-[11px] text-slate-400">Administrateur RGPD</p>
                 </div>
             </div>
+            <button class="inline-flex items-center justify-center rounded-md p-1.5 hover:bg-slate-800"
+                    title="Déconnexion">
+                <i data-feather="log-out" class="w-4 h-4"></i>
+            </button>
         </div>
-    </div>
+    </aside>
 
-    <div class="content min-h-screen">
-        <header class="bg-white shadow-sm p-4">
-            <div class="flex justify-between items-center">
-                <h2 class="text-xl font-semibold text-gray-800">Tableau de bord de conformité</h2>
-                <div class="flex items-center">
-                    <div class="relative mr-4">
-                        <i data-feather="bell" class="text-gray-500 hover:text-gray-700 cursor-pointer"></i>
-                        <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+    {# --- CONTENT AREA --- #}
+    <div class="flex-1 flex flex-col min-h-screen md:ml-64 transition-[margin] duration-200">
+
+        <!-- Bouton Mobile Menu -->
+        <button id="open-sidebar-btn"
+                class="mobile-menu-btn md:hidden fixed top-4 left-4 z-30 bg-white/90 backdrop-blur border border-slate-200 p-2 rounded-md shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            <i data-feather="menu" class="w-4 h-4"></i>
+        </button>
+
+        <!-- Header sticky -->
+        <header class="sticky top-0 z-20 bg-white/90 backdrop-blur border-b border-slate-200">
+            <div class="max-w-100 px-10 mx-auto px-4 h-16 flex items-center justify-between gap-4">
+                <div class="flex flex-col">
+                    <h2 class="text-base md:text-lg font-semibold text-slate-800">
+                        Tableau de bord – {{ self.title() or "Conformité" }}
+                    </h2>
+                    <p class="hidden sm:block text-xs text-slate-500">
+                        Vue d’ensemble de l’état de conformité et des risques.
+                    </p>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <!-- NOTIF WRAPPER -->
+                    <div class="relative">
+                        <!-- Icône notification -->
+                        <button id="notification-btn"
+                                class="relative inline-flex items-center justify-center rounded-full p-2 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <i data-feather="bell" class="w-4 h-4 text-slate-500"></i>
+                            <span class="absolute top-1 right-1 inline-flex w-2 h-2 rounded-full bg-red-500"></span>
+                        </button>
+
+                        <!-- CARD NOTIFICATIONS -->
+                        <div id="notification-panel"
+                             class="hidden absolute right-0 mt-2 w-80 bg-white border border-slate-200 rounded-xl shadow-lg shadow-slate-900/10 z-30 text-sm">
+                            <!-- Header -->
+                            <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
+                                <p class="text-sm font-semibold text-slate-800">Notifications</p>
+                                <button class="text-[11px] text-emerald-600 font-medium hover:underline">
+                                    Tout marquer comme lu
+                                </button>
+                            </div>
+
+                            <!-- Liste des notif -->
+                            <div class="max-h-80 overflow-y-auto">
+                                <!-- Notif 1 -->
+                                <button class="w-full text-left px-4 py-3 hover:bg-slate-50 flex gap-3">
+                                    <div class="mt-1">
+                                        <span class="inline-flex w-2 h-2 rounded-full bg-red-500"></span>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-xs font-semibold text-slate-800">
+                                            Nouvel incident de sécurité déclaré
+                                        </p>
+                                        <p class="text-xs text-slate-500 mt-0.5">
+                                            L’équipe IT a signalé un accès suspect au SI.
+                                        </p>
+                                        <span class="text-[10px] text-slate-400 mt-1 inline-block">
+                                            Il y a 10 minutes
+                                        </span>
+                                    </div>
+                                </button>
+
+                                <!-- Notif 2 -->
+                                <button class="w-full text-left px-4 py-3 hover:bg-slate-50 flex gap-3">
+                                    <div class="mt-1">
+                                        <span class="inline-flex w-2 h-2 rounded-full bg-amber-400"></span>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-xs font-semibold text-slate-800">
+                                            3 demandes de droits en attente
+                                        </p>
+                                        <p class="text-xs text-slate-500 mt-0.5">
+                                            Des personnes concernées attendent une réponse à leurs demandes RGPD.
+                                        </p>
+                                        <span class="text-[10px] text-slate-400 mt-1 inline-block">
+                                            Il y a 1 heure
+                                        </span>
+                                    </div>
+                                </button>
+
+                                <!-- Notif 3 -->
+                                <button class="w-full text-left px-4 py-3 hover:bg-slate-50 flex gap-3">
+                                    <div class="mt-1">
+                                        <span class="inline-flex w-2 h-2 rounded-full bg-emerald-500"></span>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-xs font-semibold text-slate-800">
+                                            Registre de traitement mis à jour
+                                        </p>
+                                        <p class="text-xs text-slate-500 mt-0.5">
+                                            Le service Marketing a complété ses fiches de traitement.
+                                        </p>
+                                        <span class="text-[10px] text-slate-400 mt-1 inline-block">
+                                            Il y a 2 jours
+                                        </span>
+                                    </div>
+                                </button>
+
+                                <!-- Notif 4 -->
+                                <button class="w-full text-left px-4 py-3 hover:bg-slate-50 flex gap-3">
+                                    <div class="mt-1">
+                                        <span class="inline-flex w-2 h-2 rounded-full bg-slate-400"></span>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-xs font-semibold text-slate-800">
+                                            Plan d’action RGPD à réviser
+                                        </p>
+                                        <p class="text-xs text-slate-500 mt-0.5">
+                                            Certaines actions sont arrivées à échéance sans validation.
+                                        </p>
+                                        <span class="text-[10px] text-slate-400 mt-1 inline-block">
+                                            Il y a 5 jours
+                                        </span>
+                                    </div>
+                                </button>
+                            </div>
+
+                            <!-- Footer -->
+                            <button class="w-full border-t border-slate-100 px-4 py-2 text-xs text-emerald-700 hover:bg-emerald-50 text-center">
+                                Voir toutes les notifications
+                            </button>
+                        </div>
                     </div>
-                    <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                        <i data-feather="user" class="text-gray-600"></i>
+
+                    <!-- User avatar -->
+                    <div class="flex items-center gap-2">
+                        <div class="hidden sm:flex flex-col items-end leading-tight">
+                            <span class="text-xs font-medium text-slate-800">Admin</span>
+                            <span class="text-[11px] text-slate-500">Connecté</span>
+                        </div>
+                        <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center">
+                            <i data-feather="user" class="w-4 h-4 text-slate-600"></i>
+                        </div>
                     </div>
                 </div>
             </div>
         </header>
 
-        {% block content %}
-    
-        {% endblock %}
-
+        <!-- Main content -->
+        <main class="flex-1">
+            <div class="max-w-100 mx-auto px-4 py-6 space-y-4">
+                {% block content %}
+                {# Le contenu spécifique de chaque page viendra ici #}
+                {% endblock %}
+            </div>
+        </main>
 
     </div>
+</div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Init Feather icons
+        if (window.feather) {
+            window.feather.replace();
+        }
 
-    {% block script %}
-        
-    {% endblock %}
+        // === SIDEBAR MOBILE ===
+        const sidebar = document.getElementById('sidebar');
+        const backdrop = document.getElementById('sidebar-backdrop');
+        const openBtn = document.getElementById('open-sidebar-btn');
+        const closeBtn = document.getElementById('close-sidebar-btn');
 
+        function openSidebar() {
+            sidebar.classList.remove('-translate-x-full');
+            sidebar.classList.add('translate-x-0');
+            backdrop.classList.remove('opacity-0', 'pointer-events-none');
+            backdrop.classList.add('opacity-100');
+        }
 
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            sidebar.classList.remove('translate-x-0');
+            backdrop.classList.add('opacity-0', 'pointer-events-none');
+            backdrop.classList.remove('opacity-100');
+        }
+
+        if (openBtn) openBtn.addEventListener('click', openSidebar);
+        if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+        if (backdrop) backdrop.addEventListener('click', closeSidebar);
+
+        // === NOTIFICATIONS DROPDOWN ===
+        const notifBtn = document.getElementById('notification-btn');
+        const notifPanel = document.getElementById('notification-panel');
+
+        function closeNotifPanel() {
+            if (!notifPanel) return;
+            notifPanel.classList.add('hidden');
+        }
+
+        if (notifBtn && notifPanel) {
+            notifBtn.addEventListener('click', function (event) {
+                event.stopPropagation();
+                notifPanel.classList.toggle('hidden');
+            });
+
+            // Fermer en cliquant en dehors
+            document.addEventListener('click', function (event) {
+                if (!notifPanel.classList.contains('hidden')) {
+                    const isClickInsidePanel = notifPanel.contains(event.target);
+                    const isClickOnButton = notifBtn.contains(event.target);
+                    if (!isClickInsidePanel && !isClickOnButton) {
+                        closeNotifPanel();
+                    }
+                }
+            });
+        }
+    });
+</script>
+
+{% block script %}{% endblock %}
 
 </body>
 </html>

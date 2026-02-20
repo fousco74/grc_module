@@ -1,0 +1,417 @@
+/* Masquer la navbar Frappe uniquement sur cette page */
+.navbar {
+  display: none;
+}
+
+/* Conteneur de page */
+.rp-page {
+  font-size: 0.875rem;
+}
+
+/* === Barre de stats === */
+.rp-stats-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background-color: #f1f5f9;
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+}
+
+.rp-stats-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #475569;
+  font-size: 0.8rem;
+}
+
+.rp-stats-item i {
+  color: #2563eb;
+}
+
+/* === Filtres === */
+.rp-filters-card {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.rp-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+  margin-bottom: 0.25rem;
+}
+
+.rp-select,
+.rp-input {
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid #e2e8f0;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.8rem;
+  color: #0f172a;
+  background-color: #ffffff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.rp-select:focus,
+.rp-input:focus {
+  outline: none;
+  border-color: #22c55e;
+  box-shadow: 0 0 0 1px #bbf7d0;
+  background-color: #f8fafc;
+}
+
+/* === Boutons génériques === */
+.rp-btn {
+  border-radius: 0.5rem;
+  border: 1px solid transparent;
+  padding: 0.4rem 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  white-space: nowrap;
+}
+
+.rp-btn-primary {
+  background-color: #22c55e;
+  color: #f9fafb;
+  border-color: #16a34a;
+  box-shadow: 0 4px 6px -2px rgba(22, 163, 74, 0.25);
+}
+
+.rp-btn-primary:hover {
+  background-color: #16a34a;
+}
+
+.rp-btn-ghost {
+  background-color: #e2e8f0;
+  color: #475569;
+}
+
+.rp-btn-ghost:hover {
+  background-color: #cbd5f5;
+}
+
+.rp-btn-light {
+  background-color: #eff6ff;
+  color: #1d4ed8;
+  border-color: #bfdbfe;
+}
+
+.rp-btn-light:hover {
+  background-color: #dbeafe;
+}
+
+/* === Boutons vue grille / liste === */
+.rp-view-toggle {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #64748b;
+  background-color: #f8fafc;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.rp-view-toggle--active {
+  background-color: #1e293b;
+  color: #f9fafb;
+}
+
+/* === Conteneur d’enregistrements === */
+.rp-records-container {
+  margin-top: 1rem;
+}
+
+/* Vue grille (par défaut) */
+.rp-view-card {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+/* Vue liste */
+.rp-view-list {
+  display: flex !important;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Carte de traitement */
+.rp-record-item {
+  background-color: #ffffff;
+  border-radius: 0.9rem;
+  border: 1px solid #e2e8f0;
+  padding: 0.85rem 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  box-shadow: 0 8px 16px -10px rgba(15, 23, 42, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.rp-record-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 24px -15px rgba(15, 23, 42, 0.5);
+  border-color: #bfdbfe;
+}
+
+.rp-view-list .rp-record-item {
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+/* Header / body / footer */
+.rp-record-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.rp-record-title {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.rp-record-sub {
+  font-size: 0.72rem;
+  color: #64748b;
+}
+
+.rp-record-body {
+  margin-top: 0.25rem;
+  font-size: 0.78rem;
+  color: #475569;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.rp-record-field {
+  font-size: 0.78rem;
+}
+
+.rp-field-label {
+  font-weight: 500;
+  color: #64748b;
+  margin-right: 0.25rem;
+}
+
+.rp-record-footer {
+  margin-top: 0.4rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Badges statut */
+.rp-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.1rem 0.55rem;
+  border-radius: 9999px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+
+.rp-badge-blue {
+  background-color: #eff6ff;
+  color: #1d4ed8;
+  border-color: #bfdbfe;
+}
+
+.rp-badge-green {
+  background-color: #ecfdf5;
+  color: #15803d;
+  border-color: #bbf7d0;
+}
+
+.rp-badge-amber {
+  background-color: #fef3c7;
+  color: #b45309;
+  border-color: #fcd34d;
+}
+
+/* === Pagination === */
+.rp-pagination {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+}
+
+.rp-page-btn {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  border: 1px solid #e2e8f0;
+  background-color: #ffffff;
+  color: #64748b;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.rp-page-btn:hover:not(:disabled):not(.rp-page-btn--active) {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+.rp-page-btn--active {
+  background-color: #2563eb;
+  color: #f9fafb;
+  border-color: #2563eb;
+}
+
+.rp-page-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.rp-page-numbers {
+  display: inline-flex;
+  gap: 0.25rem;
+}
+
+/* === No results === */
+.rp-no-results {
+  margin-top: 2rem;
+  padding: 2rem 1.5rem;
+  border-radius: 1rem;
+  border: 1px dashed #cbd5f5;
+  background-color: #f8fafc;
+  text-align: center;
+}
+
+/* === Modale détails === */
+.rp-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.5);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 40;
+}
+
+.rp-modal-panel {
+  background-color: #ffffff;
+  border-radius: 1rem;
+  width: 100%;
+  max-width: 720px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.45);
+  overflow: hidden;
+}
+
+.rp-modal-header {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rp-modal-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.rp-modal-sub {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 0.1rem;
+}
+
+.rp-modal-close-btn {
+  border-radius: 9999px;
+  border: none;
+  background-color: transparent;
+  padding: 0.3rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.rp-modal-close-btn:hover {
+  background-color: #f1f5f9;
+  color: #ef4444;
+}
+
+.rp-modal-body {
+  padding: 1rem 1.25rem;
+  overflow-y: auto;
+}
+
+.rp-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem 1rem;
+}
+
+.rp-detail-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #94a3b8;
+  margin-bottom: 0.2rem;
+}
+
+.rp-detail-value {
+  font-size: 0.8rem;
+  color: #0f172a;
+  background-color: #f8fafc;
+  border-radius: 0.6rem;
+  padding: 0.5rem 0.6rem;
+}
+
+.rp-modal-footer {
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+/* Helpers */
+.hidden {
+  display: none !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .rp-stats-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .rp-filters-card {
+    position: static;
+  }
+
+  .rp-modal-panel {
+    margin: 0 1rem;
+  }
+}

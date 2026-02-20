@@ -15,9 +15,12 @@
   "informations_du_representant_legal_section",
   "first_name_legal",
   "email_legal",
+  "num\u00e9ro",
+  "user",
   "column_break_rnns",
   "last_name_legal",
-  "num\u00e9ro"
+  "password",
+  "password_confirmation"
  ],
  "fields": [
   {
@@ -91,12 +94,29 @@
    "fieldtype": "Phone",
    "label": "Num\u00e9ro",
    "reqd": 1
+  },
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "label": "User",
+   "options": "User",
+   "unique": 1
+  },
+  {
+   "fieldname": "password",
+   "fieldtype": "Password",
+   "label": "Password"
+  },
+  {
+   "fieldname": "password_confirmation",
+   "fieldtype": "Password",
+   "label": "Password confirmation"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-06 09:28:19.990877",
+ "modified": "2026-02-14 13:22:19.974731",
  "modified_by": "Administrator",
  "module": "GRC",
  "name": "customer_grc",

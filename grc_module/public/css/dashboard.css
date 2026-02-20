@@ -1,50 +1,101 @@
-.sidebar {
-            width: 200px;
-            height: 100vh;
-            transition: all 0.3s;
-        }
-        .content {
-            margin-left: 200px;
-            transition: all 0.3s;
-        }
-        .compliance-score {
-            font-size: 88px;
-            background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .heatmap-cell {
-            transition: all 0.2s;
-        }
-        .heatmap-cell:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .alert-badge {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 8px;
-        }
-        .kpi-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
-        }
-        @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-200px);
-            }
-            .content {
-                margin-left: 0;
-            }
-            .sidebar.active {
-                transform: translateX(0);
-            }
-            .mobile-menu-btn {
-                display: block;
-            }
-            .grid-container {
-                grid-template-columns: 1fr;
-            }
-        }
+/* Hover sur les cartes KPI */
+.kpi-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.12);
+}
+
+/* Badge d’alerte générique (si tu l’utilises dans le futur) */
+.alert-badge {
+    width: 8px;
+    height: 8px;
+    border-radius: 9999px;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+/* Cellule de heatmap (si tu ajoutes une heatmap plus tard) */
+.heatmap-cell {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.heatmap-cell:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(15, 23, 42, 0.12);
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    /* Si tu as encore une classe .content sur d’autres pages */
+    .content {
+        margin-left: 0;
+    }
+
+    .mobile-menu-btn {
+        display: block;
+    }
+
+    .grid-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ===== CERCLE DE CONFORMITÉ ===== */
+
+.circular-progress {
+    position: relative;
+    width: 220px;
+    height: 220px;
+    margin: 0 auto;
+}
+
+.circular-progress svg {
+    transform: rotate(-90deg);
+}
+
+/* Les 2 cercles (fond + progression) */
+.circular-progress circle {
+    fill: transparent;
+    stroke-width: 10;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.8s ease;
+}
+
+/* Cercle de fond */
+.circular-progress circle:nth-child(1) {
+    stroke: #e5e7eb; /* slate-200 */
+}
+
+/* Cercle de progression (valeur) */
+.circular-progress circle:nth-child(2) {
+    stroke: #10b981; /* emerald-500 */
+}
+
+/* Texte au centre du cercle */
+.progress-value {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #0f172a; /* slate-900 */
+}
+
+/* Ancien style textuel si tu veux l’utiliser autre part */
+.compliance-score {
+    font-size: 3.5rem;
+    background: linear-gradient(135deg, #22c55e 0%, #15803d 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}

@@ -1,7 +1,7 @@
 {
  "charts": [],
  "content": "[{\"id\":\"PK8-YNrXKn\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"> Gouvernance, Risques et Conformit\u00e9 (GRC)<b></b></span>\",\"col\":12}},{\"id\":\"vx9gYuERhc\",\"type\":\"paragraph\",\"data\":{\"text\":\"Ce module vous permet de piloter efficacement la conformit\u00e9, les violations, les demandes de droits et les plans d'action au sein de vos entit\u00e9s et clients.\",\"col\":12}},{\"id\":\"zOCZw0WdGF\",\"type\":\"onboarding\",\"data\":{\"onboarding_name\":\"Onboarding GRC\",\"col\":12}},{\"id\":\"c-VxRjDSY4\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"c5opHaxdN2\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Nombre d\u2019entreprises\",\"col\":3}},{\"id\":\"1x48QByKOt\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Plans d'action en cours\",\"col\":3}},{\"id\":\"aTvA8uEfN8\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"violations enregistr\u00e9es\",\"col\":3}},{\"id\":\"F9T1MTcY_7\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Fiches de traitement\",\"col\":3}},{\"id\":\"kAsYverqU9\",\"type\":\"card\",\"data\":{\"card_name\":\" Conformit\u00e9\",\"col\":4}},{\"id\":\"RjEiLWwl5i\",\"type\":\"card\",\"data\":{\"card_name\":\"Demandes & Violations\",\"col\":4}},{\"id\":\"F02jnAdXS_\",\"type\":\"card\",\"data\":{\"card_name\":\"Suivi & Avancement\",\"col\":4}},{\"id\":\"ng4hE_7AQK\",\"type\":\"card\",\"data\":{\"card_name\":\"Clients & Organisation\",\"col\":4}},{\"id\":\"dOgqe6_uXA\",\"type\":\"card\",\"data\":{\"card_name\":\"Gestion des documents\",\"col\":4}}]",
- "creation": "2025-05-18 09:41:20.618431",
+ "creation": "2025-12-23 14:41:35.701556",
  "custom_blocks": [],
  "docstatus": 0,
  "doctype": "Workspace",
@@ -133,6 +133,25 @@
   {
    "hidden": 0,
    "is_query_report": 0,
+   "label": "Gestion des documents",
+   "link_count": 1,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Ajouter un Document",
+   "link_count": 0,
+   "link_to": "File",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
    "label": "Clients & Organisation",
    "link_count": 3,
    "link_type": "DocType",
@@ -152,17 +171,7 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Services des entreprises",
-   "link_count": 0,
-   "link_to": "service_grc",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": " D\u00e9partements ",
+   "label": "Services",
    "link_count": 0,
    "link_to": "department_grc",
    "link_type": "DocType",
@@ -172,24 +181,15 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Gestion des documents",
-   "link_count": 1,
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Ajouter un Document",
+   "label": "Traitement par service",
    "link_count": 0,
-   "link_to": "File",
+   "link_to": "service_grc",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
   }
  ],
- "modified": "2025-06-19 14:00:55.999479",
+ "modified": "2025-12-23 14:58:42.429844",
  "modified_by": "Administrator",
  "module": "GRC",
  "name": "GRC",
@@ -212,11 +212,11 @@
   }
  ],
  "owner": "Administrator",
- "parent_page": "",
+ "parent_page": "Projects",
  "public": 1,
  "quick_lists": [],
  "roles": [],
- "sequence_id": 28.0,
+ "sequence_id": 21.0,
  "shortcuts": [],
  "title": "GRC"
 }

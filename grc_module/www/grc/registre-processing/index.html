@@ -1,645 +1,765 @@
-{% extends 'templates/layout.html' %}
+{% extends base_template %}
 
-{% block title %} Audit - Score de Conformité{% endblock %}
+{% block title %}Registre des traitements {% endblock %}
 
 {% block link %}
-
-<link rel="stylesheet" href="/assets/grc_module/css/file-processing.css">
-    
+<link rel="stylesheet" href="/assets/grc_module/css/registre_processing.css">
 {% endblock %}
 
-        <!-- Main Content -->
-        {% block content %}
-           <main class="p-4">
-            <!-- Filters Bar -->
-            <div class="bg-white rounded-lg shadow-sm p-4 mb-6 sticky top-0 z-10">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Service</label>
-                        <select class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
-                            <option>Tous les services</option>
-                            <option>RH</option>
-                            <option>IT</option>
-                            <option>Marketing</option>
-                            <option>Finance</option>
-                            <option>Commercial</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Statut juridique</label>
-                        <select class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
-                            <option>Tous les statuts</option>
-                            <option>Actif</option>
-                            <option>Inactif</option>
-                            <option>En cours de validation</option>
-                            <option>À archiver</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Date de création</label>
-                        <div class="flex space-x-2">
-                            <input type="date" class="flex-1 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
-                            <span class="flex items-center">à</span>
-                            <input type="date" class="flex-1 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
-                        </div>
-                    </div>
-                    <div class="flex items-end">
-                        <button class="w-full bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700 transition flex items-center justify-center">
-                            <i data-feather="filter" class="w-4 h-4 mr-2"></i>
-                            Filtrer
-                        </button>
-                    </div>
+{% block content %}
+
+<main class="rp-page max-w-100 mx-auto px-4 py-6 space-y-6">
+
+    <!-- 1. Barre de stats -->
+    <section class="rp-stats-bar">
+        <div class="rp-stats-item">
+            <i data-feather="database" class="w-4 h-4"></i>
+            <span>Total : <strong id="rp-total-count">6</strong> traitements</span>
+        </div>
+        <div class="rp-stats-item">
+            <i data-feather="filter" class="w-4 h-4"></i>
+            <span>Filtres actifs : <strong id="rp-active-filters">0</strong></span>
+        </div>
+        <div class="rp-stats-item">
+            <i data-feather="eye" class="w-4 h-4"></i>
+            <span>Affichage : <strong id="rp-current-view">Grille</strong></span>
+        </div>
+    </section>
+
+    <!-- 2. Filtres -->
+    <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 rp-filters-card">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <!-- Service -->
+            <div>
+                <label class="rp-label">Service</label>
+                <select id="rp-filter-service" class="rp-select">
+                    <option value="all">Tous les services</option>
+                    <option value="Ressources humaines">Ressources humaines</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="IT">IT</option>
+                    <option value="Support client">Support client</option>
+                    <option value="Comptabilité">Comptabilité</option>
+                </select>
+            </div>
+
+            <!-- Statut -->
+            <div>
+                <label class="rp-label">Statut de la personne</label>
+                <select id="rp-filter-status" class="rp-select">
+                    <option value="all">Tous les statuts</option>
+                    <option value="Candidat">Candidat</option>
+                    <option value="Salarié">Salarié</option>
+                    <option value="Client">Client</option>
+                    <option value="Prospect">Prospect</option>
+                </select>
+            </div>
+
+            <!-- Recherche -->
+            <div>
+                <label class="rp-label">Recherche</label>
+                <div class="relative">
+                    <input
+                        id="rp-search-input"
+                        type="text"
+                        placeholder="Nom, email, fonction..."
+                        class="rp-input pl-8"
+                    >
+                    <i data-feather="search" class="w-4 h-4 text-slate-400 absolute left-2.5 top-2.5"></i>
                 </div>
             </div>
 
-            <!-- View Toggle and Search -->
-            <div class="flex justify-between items-center mb-6">
-                <div class="flex space-x-2">
-                    <button id="card-view-btn" class="p-2 rounded-md bg-blue-100 text-blue-600">
-                        <i data-feather="grid" class="w-5 h-5"></i>
-                    </button>
-                    <button id="list-view-btn" class="p-2 rounded-md bg-gray-100 text-gray-600">
-                        <i data-feather="list" class="w-5 h-5"></i>
-                    </button>
-                </div>
-                <div class="relative w-64">
-                    <input type="text" placeholder="Rechercher un traitement..." class="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
-                    <i data-feather="search" class="absolute left-3 top-2.5 text-gray-400 w-4 h-4"></i>
-                </div>
-            </div>
-
-            <!-- Treatments Grid -->
-            <div id="treatments-container" class="grid-view grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Treatments will be added here by JavaScript -->
-            </div>
-
-            <!-- Pagination -->
-            <div class="mt-8 flex justify-center">
-                <nav class="inline-flex rounded-md shadow-sm">
-                    <button class="px-3 py-1 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-                        Précédent
-                    </button>
-                    <button class="px-3 py-1 border-t border-b border-gray-300 bg-white text-sm font-medium text-blue-600 hover:bg-blue-50">
-                        1
-                    </button>
-                    <button class="px-3 py-1 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-                        2
-                    </button>
-                    <button class="px-3 py-1 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-                        3
-                    </button>
-                    <button class="px-3 py-1 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-                        Suivant
-                    </button>
-                </nav>
-            </div>
-        </main>
-        {% endblock %}
-        
-
-    {% block script %}
-
-     <!-- Overlay Panel -->
-    <div class="overlay-backdrop" id="overlay-backdrop"></div>
-    <div class="overlay-panel" id="overlay-panel">
-        <div class="p-6">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-semibold text-gray-800" id="treatment-title">Détails du traitement</h3>
-                <button class="close-overlay p-1 rounded-full hover:bg-gray-100">
-                    <i data-feather="x" class="w-5 h-5 text-gray-500"></i>
+            <!-- Boutons -->
+            <div class="flex items-end gap-2">
+                <button
+                    id="rp-apply-filters"
+                    type="button"
+                    class="rp-btn rp-btn-primary flex-1 flex items-center justify-center gap-2">
+                    <i data-feather="filter" class="w-4 h-4"></i>
+                    <span>Appliquer</span>
+                </button>
+                <button
+                    id="rp-reset-filters"
+                    type="button"
+                    class="rp-btn rp-btn-ghost">
+                    <i data-feather="refresh-cw" class="w-4 h-4"></i>
                 </button>
             </div>
-            
-            <div class="flex items-center mb-4">
-                <span id="treatment-status" class="px-2 py-1 text-xs font-semibold rounded-full mr-2">Actif</span>
-                <span class="text-sm text-gray-600" id="treatment-service">RH</span>
-            </div>
-            
-            <!-- Tabs -->
-            <div class="border-b border-gray-200 mb-4">
-                <nav class="-mb-px flex space-x-8">
-                    <button class="tab-btn border-b-2 border-blue-500 text-blue-600 px-1 py-2 text-sm font-medium" data-tab="details">
+        </div>
+    </section>
+
+    <!-- 3. Toolbar : vue + pagination (haut) -->
+    <section class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <!-- Boutons vue -->
+        <div class="inline-flex rounded-md border border-slate-200 bg-white shadow-sm overflow-hidden">
+            <button
+                id="rp-card-view-btn"
+                type="button"
+                class="rp-view-toggle rp-view-toggle--active">
+                <i data-feather="grid" class="w-4 h-4 mr-1"></i>
+                Grille
+            </button>
+            <button
+                id="rp-list-view-btn"
+                type="button"
+                class="rp-view-toggle">
+                <i data-feather="list" class="w-4 h-4 mr-1"></i>
+                Liste
+            </button>
+        </div>
+
+        <!-- Pagination haut -->
+        <div class="rp-pagination">
+            <button id="rp-prev-page-top" type="button" class="rp-page-btn" disabled>
+                <i data-feather="chevron-left" class="w-4 h-4"></i>
+            </button>
+            <div id="rp-page-numbers-top" class="rp-page-numbers"></div>
+            <button id="rp-next-page-top" type="button" class="rp-page-btn">
+                <i data-feather="chevron-right" class="w-4 h-4"></i>
+            </button>
+        </div>
+    </section>
+
+    <!-- 4. Contenu : cartes / liste -->
+    <section>
+        <!-- Conteneur des enregistrements -->
+        <div
+            id="rp-records-container"
+            class="rp-records-container rp-view-card">
+
+            <!-- Enregistrement 1 -->
+            <article
+                class="rp-record-item"
+                data-record
+                data-id="REC-001"
+                data-nom="Dossier candidats RH"
+                data-email="recrutement@entreprise.com"
+                data-service="Ressources humaines"
+                data-status="Candidat"
+                data-fonction="Responsable recrutement"
+                data-finalite="Gestion des candidatures et du processus de recrutement."
+                data-base="Exécution de mesures précontractuelles"
+                data-categorie="Données d’identification, CV, lettres de motivation, notes d’entretien"
+                data-duree="24 mois après la dernière interaction avec le candidat"
+                data-mesures="Accès restreint, journalisation des accès, suppression automatique à échéance">
+                <div class="rp-record-header">
+                    <div>
+                        <h3 class="rp-record-title">Dossier candidats RH</h3>
+                        <p class="rp-record-sub">Ressources humaines • Recrutement</p>
+                    </div>
+                    <span class="rp-badge rp-badge-blue">Candidat</span>
+                </div>
+                <div class="rp-record-body">
+                    <p class="rp-record-field">
+                        <span class="rp-field-label">Email de contact :</span>
+                        recrutement@entreprise.com
+                    </p>
+                    <p class="rp-record-field">
+                        <span class="rp-field-label">Fonction principale :</span>
+                        Responsable recrutement
+                    </p>
+                    <p class="rp-record-field">
+                        <span class="rp-field-label">Finalité :</span>
+                        Gestion des candidatures RH.
+                    </p>
+                </div>
+                <div class="rp-record-footer">
+                    <button
+                        type="button"
+                        class="rp-btn rp-btn-light rp-record-details-btn"
+                        data-id="REC-001">
+                        <i data-feather="eye" class="w-4 h-4 mr-1"></i>
                         Détails
                     </button>
-                    <button class="tab-btn border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 px-1 py-2 text-sm font-medium" data-tab="documents">
-                        Documents liés
+                </div>
+            </article>
+
+            <!-- Enregistrement 2 -->
+            <article
+                class="rp-record-item"
+                data-record
+                data-id="REC-002"
+                data-nom="Dossier salariés"
+                data-email="rh@entreprise.com"
+                data-service="Ressources humaines"
+                data-status="Salarié"
+                data-fonction="Gestionnaire paie"
+                data-finalite="Gestion administrative du personnel, paie et déclarations sociales."
+                data-base="Obligation légale"
+                data-categorie="Données d’identification, données contractuelles, données de paie"
+                data-duree="5 ans après le départ du salarié"
+                data-mesures="Chiffrement des sauvegardes, contrôle d'accès par rôle, traçabilité des consultations">
+                <div class="rp-record-header">
+                    <div>
+                        <h3 class="rp-record-title">Dossier salariés</h3>
+                        <p class="rp-record-sub">Ressources humaines • Administration du personnel</p>
+                    </div>
+                    <span class="rp-badge rp-badge-green">Salarié</span>
+                </div>
+                <div class="rp-record-body">
+                    <p class="rp-record-field">
+                        <span class="rp-field-label">Email de contact :</span>
+                        rh@entreprise.com
+                    </p>
+                    <p class="rp-record-field">
+                        <span class="rp-field-label">Fonction principale :</span>
+                        Gestionnaire paie
+                    </p>
+                    <p class="rp-record-field">
+                        <span class="rp-field-label">Finalité :</span>
+                        Gestion du cycle de vie du salarié.
+                    </p>
+                </div>
+                <div class="rp-record-footer">
+                    <button
+                        type="button"
+                        class="rp-btn rp-btn-light rp-record-details-btn"
+                        data-id="REC-002">
+                        <i data-feather="eye" class="w-4 h-4 mr-1"></i>
+                        Détails
                     </button>
-                    <button class="tab-btn border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 px-1 py-2 text-sm font-medium" data-tab="history">
-                        Historique
+                </div>
+            </article>
+
+            <!-- Enregistrement 3 -->
+            <article
+                class="rp-record-item"
+                data-record
+                data-id="REC-003"
+                data-nom="Campagnes emailing marketing"
+                data-email="marketing@entreprise.com"
+                data-service="Marketing"
+                data-status="Prospect"
+                data-fonction="Responsable marketing digital"
+                data-finalite="Prospection commerciale par email et suivi de performance des campagnes."
+                data-base="Intérêt légitime / Consentement selon le scénario"
+                data-categorie="Données de contact, préférences marketing, logs d’ouverture et de clic"
+                data-duree="3 ans après le dernier contact ou jusqu’au retrait du consentement"
+                data-mesures="Lien de désabonnement systématique, anonymisation des rapports, contrôle des sous-traitants">
+                <div class="rp-record-header">
+                    <div>
+                        <h3 class="rp-record-title">Campagnes emailing marketing</h3>
+                        <p class="rp-record-sub">Marketing • Prospection commerciale</p>
+                    </div>
+                    <span class="rp-badge rp-badge-amber">Prospect</span>
+                </div>
+                <div class="rp-record-body">
+                    <p class="rp-record-field">
+                        <span class="rp-field-label">Email de contact :</span>
+                        marketing@entreprise.com
+                    </p>
+                    <p class="rp-record-field">
+                        <span class="rp-field-label">Fonction principale :</span>
+                        Responsable marketing digital
+                    </p>
+                    <p class="rp-record-field">
+                        <span class="rp-field-label">Finalité :</span>
+                        Gestion des campagnes emailing.
+                    </p>
+                </div>
+                <div class="rp-record-footer">
+                    <button
+                        type="button"
+                        class="rp-btn rp-btn-light rp-record-details-btn"
+                        data-id="REC-003">
+                        <i data-feather="eye" class="w-4 h-4 mr-1"></i>
+                        Détails
                     </button>
-                </nav>
+                </div>
+            </article>
+
+            <!-- Enregistrement 4 -->
+            <article
+                class="rp-record-item"
+                data-record
+                data-id="REC-004"
+                data-nom="Support client CRM"
+                data-email="support@entreprise.com"
+                data-service="Support client"
+                data-status="Client"
+                data-fonction="Chargé de support"
+                data-finalite="Gestion des demandes clients, incidents et historique des échanges."
+                data-base="Exécution du contrat"
+                data-categorie="Données d’identification, historique des tickets, enregistrements des réponses"
+                data-duree="5 ans après la clôture du dernier ticket"
+                data-mesures="Authentification forte, journalisation, cloisonnement des comptes clients">
+                <div class="rp-record-header">
+                    <div>
+                        <h3 class="rp-record-title">Support client CRM</h3>
+                        <p class="rp-record-sub">Support client • Service après-vente</p>
+                    </div>
+                    <span class="rp-badge rp-badge-green">Client</span>
+                </div>
+                <div class="rp-record-body">
+                    <p class="rp-record-field">
+                        <span class="rp-field-label">Email de contact :</span>
+                        support@entreprise.com
+                    </p>
+                    <p class="rp-record-field">
+                        <span class="rp-field-label">Fonction principale :</span>
+                        Chargé de support
+                    </p>
+                    <p class="rp-record-field">
+                        <span class="rp-field-label">Finalité :</span>
+                        Suivi des demandes clients.
+                    </p>
+                </div>
+                <div class="rp-record-footer">
+                    <button
+                        type="button"
+                        class="rp-btn rp-btn-light rp-record-details-btn"
+                        data-id="REC-004">
+                        <i data-feather="eye" class="w-4 h-4 mr-1"></i>
+                        Détails
+                    </button>
+                </div>
+            </article>
+
+            <!-- Enregistrement 5 -->
+            <article
+                class="rp-record-item"
+                data-record
+                data-id="REC-005"
+                data-nom="Accès VPN & postes IT"
+                data-email="it@entreprise.com"
+                data-service="IT"
+                data-status="Salarié"
+                data-fonction="Administrateur systèmes"
+                data-finalite="Gestion des comptes techniques, VPN et sécurité d’accès au SI."
+                data-base="Intérêt légitime de sécurisation du SI"
+                data-categorie="Identifiants, traces de connexion, adresses IP, journaux techniques"
+                data-duree="12 mois pour les logs, 6 mois après départ pour les comptes"
+                data-mesures="Chiffrement, MFA, revues régulières des droits, segmentation réseau">
+                <div class="rp-record-header">
+                    <div>
+                        <h3 class="rp-record-title">Accès VPN & postes IT</h3>
+                        <p class="rp-record-sub">IT • Sécurité du SI</p>
+                    </div>
+                    <span class="rp-badge rp-badge-green">Salarié</span>
+                </div>
+                <div class="rp-record-body">
+                    <p class="rp-record-field">
+                        <span class="rp-field-label">Email de contact :</span>
+                        it@entreprise.com
+                    </p>
+                    <p class="rp-record-field">
+                        <span class="rp-field-label">Fonction principale :</span>
+                        Administrateur systèmes
+                    </p>
+                    <p class="rp-record-field">
+                        <span class="rp-field-label">Finalité :</span>
+                        Sécurisation des accès.
+                    </p>
+                </div>
+                <div class="rp-record-footer">
+                    <button
+                        type="button"
+                        class="rp-btn rp-btn-light rp-record-details-btn"
+                        data-id="REC-005">
+                        <i data-feather="eye" class="w-4 h-4 mr-1"></i>
+                        Détails
+                    </button>
+                </div>
+            </article>
+
+            <!-- Enregistrement 6 -->
+            <article
+                class="rp-record-item"
+                data-record
+                data-id="REC-006"
+                data-nom="Facturation clients"
+                data-email="facturation@entreprise.com"
+                data-service="Comptabilité"
+                data-status="Client"
+                data-fonction="Responsable comptable"
+                data-finalite="Émission des factures, suivi des paiements et relances."
+                data-base="Obligation légale et contractuelle"
+                data-categorie="Données d’identification, coordonnées de facturation, historique de paiement"
+                data-duree="10 ans à compter de la clôture de l’exercice"
+                data-mesures="Archivage sécurisé, restriction d’accès aux seuls comptables, sauvegardes chiffrées">
+                <div class="rp-record-header">
+                    <div>
+                        <h3 class="rp-record-title">Facturation clients</h3>
+                        <p class="rp-record-sub">Comptabilité • Facturation</p>
+                    </div>
+                    <span class="rp-badge rp-badge-green">Client</span>
+                </div>
+                <div class="rp-record-body">
+                    <p class="rp-record-field">
+                        <span class="rp-field-label">Email de contact :</span>
+                        facturation@entreprise.com
+                    </p>
+                    <p class="rp-record-field">
+                        <span class="rp-field-label">Fonction principale :</span>
+                        Responsable comptable
+                    </p>
+                    <p class="rp-record-field">
+                        <span class="rp-field-label">Finalité :</span>
+                        Gestion de la facturation.
+                    </p>
+                </div>
+                <div class="rp-record-footer">
+                    <button
+                        type="button"
+                        class="rp-btn rp-btn-light rp-record-details-btn"
+                        data-id="REC-006">
+                        <i data-feather="eye" class="w-4 h-4 mr-1"></i>
+                        Détails
+                    </button>
+                </div>
+            </article>
+
+        </div>
+
+        <!-- Message "aucun résultat" -->
+        <div id="rp-no-results" class="rp-no-results hidden">
+            <i data-feather="search" class="w-10 h-10 mb-2 text-slate-300"></i>
+            <h3 class="text-sm font-semibold text-slate-800 mb-1">Aucun résultat</h3>
+            <p class="text-xs text-slate-500">
+                Aucun traitement ne correspond à vos critères. Essayez d’élargir vos filtres.
+            </p>
+        </div>
+    </section>
+
+    <!-- 5. Pagination bas -->
+    <section class="flex items-center justify-center">
+        <div class="rp-pagination">
+            <button id="rp-prev-page-bottom" type="button" class="rp-page-btn" disabled>
+                <i data-feather="chevron-left" class="w-4 h-4"></i>
+            </button>
+            <div id="rp-page-numbers-bottom" class="rp-page-numbers"></div>
+            <button id="rp-next-page-bottom" type="button" class="rp-page-btn">
+                <i data-feather="chevron-right" class="w-4 h-4"></i>
+            </button>
+        </div>
+    </section>
+
+</main>
+
+<!-- 6. Modale de détails -->
+<div id="rp-detail-modal" class="rp-modal-overlay hidden">
+    <div class="rp-modal-panel">
+        <div class="rp-modal-header">
+            <div>
+                <h3 class="rp-modal-title" id="rp-modal-title">Détails du traitement</h3>
+                <p class="rp-modal-sub" id="rp-modal-sub">Fiche de registre RGPD</p>
             </div>
-            
-            <!-- Tab Contents -->
-            <div class="tab-content active" id="details-tab">
-                <div class="mb-4">
-                    <h4 class="text-sm font-medium text-gray-700 mb-1">Description</h4>
-                    <p class="text-sm text-gray-600" id="treatment-description">Description du traitement...</p>
-                </div>
-                
-                <div class="grid grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <h4 class="text-sm font-medium text-gray-700 mb-1">Responsable</h4>
-                        <p class="text-sm text-gray-600" id="treatment-responsable">John Doe</p>
-                    </div>
-                    <div>
-                        <h4 class="text-sm font-medium text-gray-700 mb-1">Délégué à la protection</h4>
-                        <p class="text-sm text-gray-600" id="treatment-dpo">Jane Smith</p>
-                    </div>
-                    <div>
-                        <h4 class="text-sm font-medium text-gray-700 mb-1">Date de création</h4>
-                        <p class="text-sm text-gray-600" id="treatment-created">15/03/2023</p>
-                    </div>
-                    <div>
-                        <h4 class="text-sm font-medium text-gray-700 mb-1">Dernière mise à jour</h4>
-                        <p class="text-sm text-gray-600" id="treatment-updated">22/05/2023</p>
-                    </div>
-                </div>
-                
-                <div class="mb-4">
-                    <h4 class="text-sm font-medium text-gray-700 mb-1">Finalité</h4>
-                    <p class="text-sm text-gray-600" id="treatment-purpose">Gestion des employés et paie</p>
-                </div>
-                
-                <div class="mb-4">
-                    <h4 class="text-sm font-medium text-gray-700 mb-1">Catégories de données</h4>
-                    <div class="flex flex-wrap gap-1 mt-1" id="treatment-categories">
-                        <!-- Categories will be added here -->
-                    </div>
-                </div>
-                
+            <button id="rp-modal-close" type="button" class="rp-modal-close-btn">
+                <i data-feather="x" class="w-4 h-4"></i>
+            </button>
+        </div>
+        <div class="rp-modal-body">
+            <div class="rp-detail-grid">
                 <div>
-                    <h4 class="text-sm font-medium text-gray-700 mb-1">Progression</h4>
-                    <div class="flex items-center">
-                        <div class="w-full bg-gray-200 rounded-full h-2.5 mr-2">
-                            <div class="bg-blue-600 h-2.5 rounded-full" id="treatment-progress-bar" style="width: 75%"></div>
-                        </div>
-                        <span class="text-xs text-gray-600" id="treatment-progress-text">75%</span>
-                    </div>
+                    <div class="rp-detail-label">Nom du traitement</div>
+                    <div class="rp-detail-value" id="rp-detail-nom"></div>
                 </div>
-            </div>
-            
-            <div class="tab-content" id="documents-tab">
-                <div class="border border-gray-200 rounded-md divide-y divide-gray-200">
-                    <div class="p-3 flex items-center justify-between hover:bg-gray-50">
-                        <div class="flex items-center">
-                            <i data-feather="file-text" class="text-gray-500 w-5 h-5 mr-3"></i>
-                            <div>
-                                <p class="text-sm font-medium text-gray-900">Analyse d'impact</p>
-                                <p class="text-xs text-gray-500">PDF • 250 Ko</p>
-                            </div>
-                        </div>
-                        <button class="text-blue-600 text-sm font-medium hover:text-blue-800">Télécharger</button>
-                    </div>
-                    <div class="p-3 flex items-center justify-between hover:bg-gray-50">
-                        <div class="flex items-center">
-                            <i data-feather="file-text" class="text-gray-500 w-5 h-5 mr-3"></i>
-                            <div>
-                                <p class="text-sm font-medium text-gray-900">Contrat sous-traitant</p>
-                                <p class="text-xs text-gray-500">DOCX • 180 Ko</p>
-                            </div>
-                        </div>
-                        <button class="text-blue-600 text-sm font-medium hover:text-blue-800">Télécharger</button>
-                    </div>
-                    <div class="p-3 flex items-center justify-between hover:bg-gray-50">
-                        <div class="flex items-center">
-                            <i data-feather="file-text" class="text-gray-500 w-5 h-5 mr-3"></i>
-                            <div>
-                                <p class="text-sm font-medium text-gray-900">Preuve de consentement</p>
-                                <p class="text-xs text-gray-500">PDF • 320 Ko</p>
-                            </div>
-                        </div>
-                        <button class="text-blue-600 text-sm font-medium hover:text-blue-800">Télécharger</button>
-                    </div>
+                <div>
+                    <div class="rp-detail-label">Service concerné</div>
+                    <div class="rp-detail-value" id="rp-detail-service"></div>
                 </div>
-            </div>
-            
-            <div class="tab-content" id="history-tab">
-                <div class="space-y-4">
-                    <div class="border-l-2 pl-4 py-1 border-blue-500">
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm font-medium">22/05/2023</span>
-                            <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-800">Mise à jour</span>
-                        </div>
-                        <p class="text-sm text-gray-600 mt-1">Modification des catégories de données par John Doe</p>
-                    </div>
-                    <div class="border-l-2 pl-4 py-1 border-green-500">
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm font-medium">15/04/2023</span>
-                            <span class="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-800">Validation</span>
-                        </div>
-                        <p class="text-sm text-gray-600 mt-1">Validation par le DPO Jane Smith</p>
-                    </div>
-                    <div class="border-l-2 pl-4 py-1 border-yellow-500">
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm font-medium">05/04/2023</span>
-                            <span class="text-xs px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-800">Révision</span>
-                        </div>
-                        <p class="text-sm text-gray-600 mt-1">Demande de modifications par Jane Smith</p>
-                    </div>
-                    <div class="border-l-2 pl-4 py-1 border-gray-400">
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm font-medium">15/03/2023</span>
-                            <span class="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-800">Création</span>
-                        </div>
-                        <p class="text-sm text-gray-600 mt-1">Création initiale par John Doe</p>
-                    </div>
+                <div>
+                    <div class="rp-detail-label">Statut des personnes</div>
+                    <div class="rp-detail-value" id="rp-detail-status"></div>
+                </div>
+                <div>
+                    <div class="rp-detail-label">Email de contact</div>
+                    <div class="rp-detail-value" id="rp-detail-email"></div>
+                </div>
+                <div>
+                    <div class="rp-detail-label">Fonction principale</div>
+                    <div class="rp-detail-value" id="rp-detail-fonction"></div>
+                </div>
+                <div class="md:col-span-2">
+                    <div class="rp-detail-label">Finalité du traitement</div>
+                    <div class="rp-detail-value" id="rp-detail-finalite"></div>
+                </div>
+                <div>
+                    <div class="rp-detail-label">Base légale</div>
+                    <div class="rp-detail-value" id="rp-detail-base"></div>
+                </div>
+                <div>
+                    <div class="rp-detail-label">Catégories de données</div>
+                    <div class="rp-detail-value" id="rp-detail-categorie"></div>
+                </div>
+                <div>
+                    <div class="rp-detail-label">Durée de conservation</div>
+                    <div class="rp-detail-value" id="rp-detail-duree"></div>
+                </div>
+                <div>
+                    <div class="rp-detail-label">Mesures de sécurité</div>
+                    <div class="rp-detail-value" id="rp-detail-mesures"></div>
                 </div>
             </div>
         </div>
+        <div class="rp-modal-footer">
+            <button type="button" class="rp-btn rp-btn-light">
+                <i data-feather="download" class="w-4 h-4 mr-1"></i>
+                Exporter la fiche
+            </button>
+            <button type="button" class="rp-btn rp-btn-primary">
+                <i data-feather="edit" class="w-4 h-4 mr-1"></i>
+                Modifier (démo)
+            </button>
+        </div>
     </div>
+</div>
 
-    <script>
-        // Initialize feather icons
-        feather.replace();
-        
-        // Toggle sidebar on mobile
-        function toggleSidebar() {
-            document.querySelector('.sidebar').classList.toggle('active');
-        }
-        
-        // Sample data for treatments
-        const treatmentsData = [
-            {
-                id: 1,
-                title: "Gestion des employés",
-                service: "RH",
-                status: "active",
-                description: "Traitement des données des employés pour la gestion des contrats, paie et avantages sociaux.",
-                responsable: "John Doe",
-                dpo: "Jane Smith",
-                created: "15/03/2023",
-                updated: "22/05/2023",
-                purpose: "Gestion des ressources humaines",
-                categories: ["Identité", "Coordonnées", "Situation familiale", "Rémunération"],
-                progress: 90,
-                documents: 3,
-                evaluations: 2,
-                inactive: false
-            },
-            {
-                id: 2,
-                title: "Campagnes marketing",
-                service: "Marketing",
-                status: "active",
-                description: "Traitement des données clients pour les campagnes de marketing direct et publicité ciblée.",
-                responsable: "Alice Martin",
-                dpo: "Jane Smith",
-                created: "10/02/2023",
-                updated: "18/05/2023",
-                purpose: "Marketing et prospection",
-                categories: ["Coordonnées", "Comportement d'achat", "Préférences"],
-                progress: 75,
-                documents: 2,
-                evaluations: 1,
-                inactive: false
-            },
-            {
-                id: 3,
-                title: "Support client",
-                service: "Commercial",
-                status: "active",
-                description: "Traitement des demandes clients et gestion des tickets de support.",
-                responsable: "Bob Johnson",
-                dpo: "Jane Smith",
-                created: "05/01/2023",
-                updated: "12/05/2023",
-                purpose: "Relation client",
-                categories: ["Coordonnées", "Historique des demandes", "Satisfaction"],
-                progress: 100,
-                documents: 4,
-                evaluations: 3,
-                inactive: false
-            },
-            {
-                id: 4,
-                title: "Analyse financière",
-                service: "Finance",
-                status: "validation",
-                description: "Analyse des données financières pour les rapports et prévisions.",
-                responsable: "Charles Brown",
-                dpo: "Jane Smith",
-                created: "20/04/2023",
-                updated: "20/05/2023",
-                purpose: "Analyse financière",
-                categories: ["Données financières", "Transactions", "Comptes"],
-                progress: 50,
-                documents: 1,
-                evaluations: 0,
-                inactive: false
-            },
-            {
-                id: 5,
-                title: "Gestion des accès",
-                service: "IT",
-                status: "active",
-                description: "Gestion des comptes utilisateurs et des droits d'accès aux systèmes.",
-                responsable: "David Wilson",
-                dpo: "Jane Smith",
-                created: "12/03/2023",
-                updated: "15/05/2023",
-                purpose: "Sécurité des systèmes",
-                categories: ["Identifiants", "Droits d'accès", "Journaux de connexion"],
-                progress: 85,
-                documents: 3,
-                evaluations: 2,
-                inactive: false
-            },
-            {
-                id: 6,
-                title: "Ancien système CRM",
-                service: "Commercial",
-                status: "inactive",
-                description: "Ancien système de gestion de la relation client remplacé en 2022.",
-                responsable: "Bob Johnson",
-                dpo: "Jane Smith",
-                created: "15/06/2020",
-                updated: "30/11/2022",
-                purpose: "Ancienne relation client",
-                categories: ["Coordonnées", "Historique des interactions"],
-                progress: 100,
-                documents: 5,
-                evaluations: 4,
-                inactive: true
-            },
-            {
-                id: 7,
-                title: "Enquête satisfaction",
-                service: "Marketing",
-                status: "active",
-                description: "Collecte et analyse des enquêtes de satisfaction clients.",
-                responsable: "Alice Martin",
-                dpo: "Jane Smith",
-                created: "01/05/2023",
-                updated: "10/05/2023",
-                purpose: "Amélioration qualité",
-                categories: ["Opinions", "Satisfaction", "Suggestions"],
-                progress: 65,
-                documents: 2,
-                evaluations: 1,
-                inactive: false
-            },
-            {
-                id: 8,
-                title: "Recrutement",
-                service: "RH",
-                status: "archive",
-                description: "Traitement des candidatures et gestion du processus de recrutement.",
-                responsable: "John Doe",
-                dpo: "Jane Smith",
-                created: "10/01/2023",
-                updated: "05/05/2023",
-                purpose: "Recrutement",
-                categories: ["CV", "Compétences", "Évaluations"],
-                progress: 100,
-                documents: 4,
-                evaluations: 3,
-                inactive: false
-            },
-            {
-                id: 9,
-                title: "Gestion des fournisseurs",
-                service: "Finance",
-                status: "active",
-                description: "Traitement des données des fournisseurs pour la gestion des contrats et paiements.",
-                responsable: "Charles Brown",
-                dpo: "Jane Smith",
-                created: "15/02/2023",
-                updated: "20/05/2023",
-                purpose: "Gestion fournisseurs",
-                categories: ["Coordonnées", "Contrats", "Paiements"],
-                progress: 80,
-                documents: 3,
-                evaluations: 2,
-                inactive: false
-            },
-            {
-                id: 10,
-                title: "Analyse web",
-                service: "Marketing",
-                status: "active",
-                description: "Collecte et analyse des données de navigation sur le site web.",
-                responsable: "Alice Martin",
-                dpo: "Jane Smith",
-                created: "05/03/2023",
-                updated: "15/05/2023",
-                purpose: "Optimisation web",
-                categories: ["Cookies", "Comportement navigation", "Pages vues"],
-                progress: 70,
-                documents: 2,
-                evaluations: 1,
-                inactive: false
-            }
-        ];
+{% endblock %}
 
-        // Get service color
-        function getServiceColor(service) {
-            const colors = {
-                'RH': 'bg-purple-100 text-purple-800',
-                'Marketing': 'bg-pink-100 text-pink-800',
-                'Commercial': 'bg-blue-100 text-blue-800',
-                'Finance': 'bg-green-100 text-green-800',
-                'IT': 'bg-orange-100 text-orange-800'
-            };
-            return colors[service] || 'bg-gray-100 text-gray-800';
-        }
+{% block script %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    if (window.feather) {
+        window.feather.replace();
+    }
 
-        // Get status color
-        function getStatusColor(status) {
-            const colors = {
-                'active': 'bg-green-100 text-green-800',
-                'inactive': 'bg-red-100 text-red-800',
-                'validation': 'bg-yellow-100 text-yellow-800',
-                'archive': 'bg-gray-100 text-gray-800'
-            };
-            return colors[status] || 'bg-gray-100 text-gray-800';
-        }
+    // === Sélecteurs ===
+    const serviceFilter = document.getElementById('rp-filter-service');
+    const statusFilter = document.getElementById('rp-filter-status');
+    const searchInput = document.getElementById('rp-search-input');
+    const applyFiltersBtn = document.getElementById('rp-apply-filters');
+    const resetFiltersBtn = document.getElementById('rp-reset-filters');
+    const activeFiltersEl = document.getElementById('rp-active-filters');
 
-        // Get status text
-        function getStatusText(status) {
-            const texts = {
-                'active': 'Actif',
-                'inactive': 'Inactif',
-                'validation': 'En validation',
-                'archive': 'À archiver'
-            };
-            return texts[status] || status;
-        }
+    const recordsContainer = document.getElementById('rp-records-container');
+    const allRecords = Array.from(recordsContainer.querySelectorAll('[data-record]'));
+    const noResultsEl = document.getElementById('rp-no-results');
 
-        // Render treatments list
-        function renderTreatmentsList(view = 'grid') {
-            const container = document.getElementById('treatments-container');
-            container.innerHTML = '';
-            
-            container.className = view === 'grid' ? 
-                'grid-view grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 
-                'list-view space-y-4';
-            
-            treatmentsData.forEach(treatment => {
-                const treatmentCard = document.createElement('div');
-                treatmentCard.className = `treatment-card bg-white rounded-lg p-4 cursor-pointer ${treatment.inactive ? 'inactive' : ''}`;
-                treatmentCard.dataset.id = treatment.id;
-                
-                if (view === 'grid') {
-                    treatmentCard.innerHTML = `
-                        <div class="card-body">
-                            <div class="flex justify-between items-start mb-3">
-                                <span class="text-xs px-2 py-1 rounded-full ${getServiceColor(treatment.service)}">${treatment.service}</span>
-                                <span class="text-xs px-2 py-1 rounded-full ${getStatusColor(treatment.status)}">${getStatusText(treatment.status)}</span>
-                            </div>
-                            <h3 class="title text-lg font-semibold text-gray-900 mb-3">${treatment.title}</h3>
-                            <div class="flex justify-between mb-4">
-                                <div class="circular-badge bg-blue-100 text-blue-600">${treatment.documents}</div>
-                                <div class="circular-badge bg-green-100 text-green-600">${treatment.evaluations}</div>
-                                <div class="circular-badge bg-purple-100 text-purple-600">${treatment.categories.length}</div>
-                            </div>
-                            <div class="mini-progress">
-                                <div class="mini-progress-fill" style="width: ${treatment.progress}%"></div>
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    treatmentCard.innerHTML = `
-                        <div class="flex items-start">
-                            <div class="flex-1">
-                                <div class="flex items-center mb-1">
-                                    <h3 class="title text-lg font-semibold text-gray-900 mr-2">${treatment.title}</h3>
-                                    <span class="text-xs px-2 py-1 rounded-full ${getStatusColor(treatment.status)}">${getStatusText(treatment.status)}</span>
-                                </div>
-                                <p class="text-sm text-gray-600 mb-2">${treatment.description.substring(0, 80)}...</p>
-                                <div class="flex items-center text-xs text-gray-500">
-                                    <span class="mr-3">Service: ${treatment.service}</span>
-                                    <span class="mr-3">Documents: ${treatment.documents}</span>
-                                    <span>Évaluations: ${treatment.evaluations}</span>
-                                </div>
-                            </div>
-                            <div class="ml-4 w-24">
-                                <div class="mini-progress mb-1">
-                                    <div class="mini-progress-fill" style="width: ${treatment.progress}%"></div>
-                                </div>
-                                <span class="text-xs text-gray-600">${treatment.progress}% complet</span>
-                            </div>
-                        </div>
-                    `;
-                }
-                
-                treatmentCard.addEventListener('click', () => openTreatmentDetails(treatment.id));
-                container.appendChild(treatmentCard);
-            });
-            
-            feather.replace();
-        }
+    const cardViewBtn = document.getElementById('rp-card-view-btn');
+    const listViewBtn = document.getElementById('rp-list-view-btn');
+    const currentViewEl = document.getElementById('rp-current-view');
 
-        // Open treatment details in overlay
-        function openTreatmentDetails(treatmentId) {
-            const treatment = treatmentsData.find(t => t.id === treatmentId);
-            if (!treatment) return;
-            
-            // Update overlay content
-            document.getElementById('treatment-title').textContent = treatment.title;
-            document.getElementById('treatment-description').textContent = treatment.description;
-            document.getElementById('treatment-service').textContent = treatment.service;
-            document.getElementById('treatment-responsable').textContent = treatment.responsable;
-            document.getElementById('treatment-dpo').textContent = treatment.dpo;
-            document.getElementById('treatment-created').textContent = treatment.created;
-            document.getElementById('treatment-updated').textContent = treatment.updated;
-            document.getElementById('treatment-purpose').textContent = treatment.purpose;
-            document.getElementById('treatment-progress-bar').style.width = `${treatment.progress}%`;
-            document.getElementById('treatment-progress-text').textContent = `${treatment.progress}%`;
-            
-            // Update status
-            const statusBadge = document.getElementById('treatment-status');
-            statusBadge.className = `px-2 py-1 text-xs font-semibold rounded-full mr-2 ${getStatusColor(treatment.status)}`;
-            statusBadge.textContent = getStatusText(treatment.status);
-            
-            // Update categories
-            const categoriesContainer = document.getElementById('treatment-categories');
-            categoriesContainer.innerHTML = '';
-            treatment.categories.forEach(cat => {
-                const span = document.createElement('span');
-                span.className = 'text-xs px-2 py-1 bg-gray-100 text-gray-800 rounded-full';
-                span.textContent = cat;
-                categoriesContainer.appendChild(span);
-            });
-            
-            // Show overlay
-            document.getElementById('overlay-panel').classList.add('active');
-            document.getElementById('overlay-backdrop').classList.add('active');
-            
-            // Close button
-            document.querySelector('.close-overlay').addEventListener('click', closeTreatmentDetails);
-            document.getElementById('overlay-backdrop').addEventListener('click', closeTreatmentDetails);
-            
-            // Set first tab as active
-            switchTab('details');
-        }
+    const prevTop = document.getElementById('rp-prev-page-top');
+    const nextTop = document.getElementById('rp-next-page-top');
+    const prevBottom = document.getElementById('rp-prev-page-bottom');
+    const nextBottom = document.getElementById('rp-next-page-bottom');
+    const pageNumsTop = document.getElementById('rp-page-numbers-top');
+    const pageNumsBottom = document.getElementById('rp-page-numbers-bottom');
 
-        // Close treatment details
-        function closeTreatmentDetails() {
-            document.getElementById('overlay-panel').classList.remove('active');
-            document.getElementById('overlay-backdrop').classList.remove('active');
-        }
+    const modal = document.getElementById('rp-detail-modal');
+    const modalClose = document.getElementById('rp-modal-close');
+    const modalTitle = document.getElementById('rp-modal-title');
+    const modalSub = document.getElementById('rp-modal-sub');
+    const detailNom = document.getElementById('rp-detail-nom');
+    const detailService = document.getElementById('rp-detail-service');
+    const detailStatus = document.getElementById('rp-detail-status');
+    const detailEmail = document.getElementById('rp-detail-email');
+    const detailFonction = document.getElementById('rp-detail-fonction');
+    const detailFinalite = document.getElementById('rp-detail-finalite');
+    const detailBase = document.getElementById('rp-detail-base');
+    const detailCategorie = document.getElementById('rp-detail-categorie');
+    const detailDuree = document.getElementById('rp-detail-duree');
+    const detailMesures = document.getElementById('rp-detail-mesures');
 
-        // Switch tabs in overlay
-        function switchTab(tabName) {
-            // Hide all tab contents
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Show selected tab content
-            document.getElementById(`${tabName}-tab`).classList.add('active');
-            
-            // Update tab buttons
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                if (btn.dataset.tab === tabName) {
-                    btn.classList.add('border-blue-500', 'text-blue-600');
-                    btn.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
-                } else {
-                    btn.classList.remove('border-blue-500', 'text-blue-600');
-                    btn.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
-                }
-            });
-        }
+    let filteredRecords = [...allRecords];
+    let currentPage = 1;
+    const pageSize = 3; // 3 par page pour la démo
 
-        // Setup tab buttons
-        function setupTabButtons() {
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    switchTab(btn.dataset.tab);
-                });
-            });
-        }
+    // === Filtres ===
+    function computeActiveFilters() {
+        let count = 0;
+        if (serviceFilter && serviceFilter.value !== 'all') count++;
+        if (statusFilter && statusFilter.value !== 'all') count++;
+        if (searchInput && searchInput.value.trim() !== '') count++;
+        if (activeFiltersEl) activeFiltersEl.textContent = count;
+    }
 
-        // Setup view toggle buttons
-        function setupViewToggleButtons() {
-            document.getElementById('card-view-btn').addEventListener('click', () => {
-                renderTreatmentsList('grid');
-                document.getElementById('card-view-btn').classList.add('bg-blue-100', 'text-blue-600');
-                document.getElementById('card-view-btn').classList.remove('bg-gray-100', 'text-gray-600');
-                document.getElementById('list-view-btn').classList.add('bg-gray-100', 'text-gray-600');
-                document.getElementById('list-view-btn').classList.remove('bg-blue-100', 'text-blue-600');
-            });
-            
-            document.getElementById('list-view-btn').addEventListener('click', () => {
-                renderTreatmentsList('list');
-                document.getElementById('list-view-btn').classList.add('bg-blue-100', 'text-blue-600');
-                document.getElementById('list-view-btn').classList.remove('bg-gray-100', 'text-gray-600');
-                document.getElementById('card-view-btn').classList.add('bg-gray-100', 'text-gray-600');
-                document.getElementById('card-view-btn').classList.remove('bg-blue-100', 'text-blue-600');
-            });
-        }
+    function applyFilters() {
+        const serviceVal = serviceFilter ? serviceFilter.value : 'all';
+        const statusVal = statusFilter ? statusFilter.value : 'all';
+        const searchVal = searchInput ? searchInput.value.trim().toLowerCase() : '';
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            renderTreatmentsList();
-            setupTabButtons();
-            setupViewToggleButtons();
-            
-            // Set card view as active by default
-            document.getElementById('card-view-btn').classList.add('bg-blue-100', 'text-blue-600');
-            document.getElementById('card-view-btn').classList.remove('bg-gray-100', 'text-gray-600');
+        filteredRecords = allRecords.filter((el) => {
+            const service = (el.dataset.service || '');
+            const status = (el.dataset.status || '');
+            const text = (
+                (el.dataset.nom || '') + ' ' +
+                (el.dataset.email || '') + ' ' +
+                (el.dataset.fonction || '')
+            ).toLowerCase();
+
+            if (serviceVal !== 'all' && service !== serviceVal) return false;
+            if (statusVal !== 'all' && status !== statusVal) return false;
+            if (searchVal && !text.includes(searchVal)) return false;
+
+            return true;
         });
-    </script>
-        
+
+        currentPage = 1;
+        computeActiveFilters();
+        render();
+    }
+
+    function resetFilters() {
+        if (serviceFilter) serviceFilter.value = 'all';
+        if (statusFilter) statusFilter.value = 'all';
+        if (searchInput) searchInput.value = '';
+        applyFilters();
+    }
+
+    if (applyFiltersBtn) applyFiltersBtn.addEventListener('click', applyFilters);
+    if (resetFiltersBtn) resetFiltersBtn.addEventListener('click', resetFilters);
+    if (searchInput) {
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') applyFilters();
+        });
+    }
+
+    // === Vue grille / liste ===
+    function setView(mode) {
+        if (mode === 'list') {
+            recordsContainer.classList.remove('rp-view-card');
+            recordsContainer.classList.add('rp-view-list');
+            cardViewBtn.classList.remove('rp-view-toggle--active');
+            listViewBtn.classList.add('rp-view-toggle--active');
+            if (currentViewEl) currentViewEl.textContent = 'Liste';
+        } else {
+            recordsContainer.classList.remove('rp-view-list');
+            recordsContainer.classList.add('rp-view-card');
+            listViewBtn.classList.remove('rp-view-toggle--active');
+            cardViewBtn.classList.add('rp-view-toggle--active');
+            if (currentViewEl) currentViewEl.textContent = 'Grille';
+        }
+    }
+
+    if (cardViewBtn) cardViewBtn.addEventListener('click', () => setView('card'));
+    if (listViewBtn) listViewBtn.addEventListener('click', () => setView('list'));
+
+    // === Pagination ===
+    const prevButtons = [prevTop, prevBottom];
+    const nextButtons = [nextTop, nextBottom];
+    const pageNumberContainers = [pageNumsTop, pageNumsBottom];
+
+    function buildPageNumbers(totalPages) {
+        pageNumberContainers.forEach((container) => {
+            if (!container) return;
+            container.innerHTML = '';
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.textContent = i;
+                btn.className = 'rp-page-btn' + (i === currentPage ? ' rp-page-btn--active' : '');
+                btn.addEventListener('click', () => {
+                    currentPage = i;
+                    render();
+                });
+                container.appendChild(btn);
+            }
+        });
+    }
+
+    function render() {
+        // Masquer tous les enregistrements
+        allRecords.forEach((el) => el.classList.add('hidden'));
+
+        if (!filteredRecords.length) {
+            if (noResultsEl) noResultsEl.classList.remove('hidden');
+        } else {
+            if (noResultsEl) noResultsEl.classList.add('hidden');
+        }
+
+        const totalPages = Math.max(1, Math.ceil(filteredRecords.length / pageSize));
+        if (currentPage > totalPages) currentPage = totalPages;
+        const start = (currentPage - 1) * pageSize;
+        const end = start + pageSize;
+
+        filteredRecords.slice(start, end).forEach((el) => el.classList.remove('hidden'));
+
+        // Màj boutons prev/next
+        prevButtons.forEach((btn) => {
+            if (!btn) return;
+            btn.disabled = currentPage <= 1;
+        });
+        nextButtons.forEach((btn) => {
+            if (!btn) return;
+            btn.disabled = currentPage >= totalPages;
+        });
+
+        buildPageNumbers(totalPages);
+    }
+
+    prevButtons.forEach((btn) => {
+        if (!btn) return;
+        btn.addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                render();
+            }
+        });
+    });
+
+    nextButtons.forEach((btn) => {
+        if (!btn) return;
+        btn.addEventListener('click', () => {
+            const totalPages = Math.max(1, Math.ceil(filteredRecords.length / pageSize));
+            if (currentPage < totalPages) {
+                currentPage++;
+                render();
+            }
+        });
+    });
+
+    // === Modale de détails ===
+    function openModalFromRecord(recordEl) {
+        if (!recordEl || !modal) return;
+
+        const nom = recordEl.dataset.nom || '';
+        const service = recordEl.dataset.service || '';
+        const status = recordEl.dataset.status || '';
+        const email = recordEl.dataset.email || '';
+        const fonction = recordEl.dataset.fonction || '';
+        const finalite = recordEl.dataset.finalite || '';
+        const base = recordEl.dataset.base || '';
+        const categorie = recordEl.dataset.categorie || '';
+        const duree = recordEl.dataset.duree || '';
+        const mesures = recordEl.dataset.mesures || '';
+
+        modalTitle.textContent = nom || 'Détails du traitement';
+        modalSub.textContent = service ? 'Service : ' + service : 'Fiche de registre RGPD';
+
+        detailNom.textContent = nom;
+        detailService.textContent = service;
+        detailStatus.textContent = status;
+        detailEmail.textContent = email;
+        detailFonction.textContent = fonction;
+        detailFinalite.textContent = finalite;
+        detailBase.textContent = base;
+        detailCategorie.textContent = categorie;
+        detailDuree.textContent = duree;
+        detailMesures.textContent = mesures;
+
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+
+    const detailButtons = document.querySelectorAll('.rp-record-details-btn');
+    detailButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const id = btn.dataset.id;
+            const record = allRecords.find((el) => el.dataset.id === id);
+            openModalFromRecord(record);
+        });
+    });
+
+    if (modalClose) {
+        modalClose.addEventListener('click', () => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        });
+    }
+
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        });
+    }
+
+    // Initialisation
+    computeActiveFilters();
+    render();
+});
+</script>
 {% endblock %}

@@ -1,735 +1,481 @@
-{% extends 'templates/layout.html' %}
+{% extends base_template %}
 
-{% block title %} Audit - Score de Conformité{% endblock %}
+{% block title %} Audit – Liste des contrôles {% endblock %}
 
 {% block link %}
-
 <link rel="stylesheet" href="/assets/grc_module/css/audit.css">
-    
 {% endblock %}
 
-        <!-- Main Content -->
-        {% block content %}
-            <main class="p-4">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- Left Column - Circular Gauge -->
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <h3 class="text-lg font-medium text-gray-700 mb-4">Score global de conformité</h3>
-                    <div class="flex flex-col items-center">
-                        <div class="circular-progress mb-6">
-                            <svg width="220" height="220" viewBox="0 0 220 220">
-                                <circle cx="110" cy="110" r="100"></circle>
-                                <circle id="progress-circle" cx="110" cy="110" r="100"></circle>
-                            </svg>
-                            <div class="progress-value" id="compliance-score">0%</div>
-                        </div>
-                        <div class="w-full max-w-xs">
-                            <div class="flex items-center justify-between mb-2">
-                                <div class="flex items-center">
-                                    <div class="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
-                                    <span class="text-sm">Conforme</span>
-                                </div>
-                                <span class="text-sm font-medium" id="conforme-count">0</span>
-                            </div>
-                            <div class="flex items-center justify-between mb-2">
-                                <div class="flex items-center">
-                                    <div class="w-3 h-3 rounded-full bg-yellow-500 mr-2"></div>
-                                    <span class="text-sm">Partiel</span>
-                                </div>
-                                <span class="text-sm font-medium" id="partiel-count">0</span>
-                            </div>
-                            <div class="flex items-center justify-between mb-2">
-                                <div class="flex items-center">
-                                    <div class="w-3 h-3 rounded-full bg-red-500 mr-2"></div>
-                                    <span class="text-sm">Non conforme</span>
-                                </div>
-                                <span class="text-sm font-medium" id="non-conforme-count">0</span>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center">
-                                    <div class="w-3 h-3 rounded-full bg-gray-300 mr-2"></div>
-                                    <span class="text-sm">Non évalué</span>
-                                </div>
-                                <span class="text-sm font-medium" id="non-evalue-count">0</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+{% block content %}
 
-                <!-- Right Column - Controls List -->
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <div class="sticky top-0 bg-white pt-2 pb-4 z-10">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-medium text-gray-700">Liste des contrôles</h3>
-                            <div class="relative">
-                                <input type="text" placeholder="Rechercher..." class="pl-8 pr-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
-                                <i data-feather="search" class="absolute left-3 top-2.5 text-gray-400 w-4 h-4"></i>
-                            </div>
-                        </div>
-                        <div class="flex space-x-2 mb-4 overflow-x-auto pb-2">
-                            <button class="filter-btn px-3 py-1 bg-blue-600 text-white rounded-md text-xs whitespace-nowrap" data-status="all">Tous</button>
-                            <button class="filter-btn px-3 py-1 bg-green-100 text-green-800 rounded-md text-xs whitespace-nowrap" data-status="conforme">Conforme</button>
-                            <button class="filter-btn px-3 py-1 bg-yellow-100 text-yellow-800 rounded-md text-xs whitespace-nowrap" data-status="partiel">Partiel</button>
-                            <button class="filter-btn px-3 py-1 bg-red-100 text-red-800 rounded-md text-xs whitespace-nowrap" data-status="non-conforme">Non conforme</button>
-                            <button class="filter-btn px-3 py-1 bg-gray-100 text-gray-800 rounded-md text-xs whitespace-nowrap" data-status="non-evalue">Non évalué</button>
-                        </div>
-                    </div>
-                    <div class="space-y-4" id="controls-list">
-                        <!-- Controls will be added here by JavaScript -->
-                    </div>
+<div class="gap-6">
+    <div class="bg-white rounded-lg shadow-sm p-6 audit-card">
+        <!-- Header sticky à l’intérieur de la card -->
+        <div class="audit-card-header">
+            <div class="flex justify-between items-center mb-4 gap-4">
+                <div>
+                    <h3 class="text-lg font-medium text-gray-800">Liste des contrôles d’audit</h3>
+                    <p class="text-xs text-gray-500 mt-1">
+                        Suivi des principaux points de conformité RGPD de l’entreprise.
+                    </p>
+                </div>
+                <div class="relative w-full max-w-xs">
+                    <input
+                        id="control-search"
+                        type="text"
+                        placeholder="Rechercher un contrôle..."
+                        class="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md text-sm
+                               focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                    >
+                    <i data-feather="search" class="absolute left-2.5 top-2.5 text-gray-400 w-4 h-4"></i>
                 </div>
             </div>
-        </main>
-        {% endblock %}
-        
 
-    {% block script %}
-
-    <!-- Overlay Panel -->
-    <div class="overlay-backdrop" id="overlay-backdrop"></div>
-    <div class="overlay-panel" id="overlay-panel">
-        <div class="p-6">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-semibold text-gray-800" id="control-title">Détails du contrôle</h3>
-                <button class="close-overlay p-1 rounded-full hover:bg-gray-100">
-                    <i data-feather="x" class="w-5 h-5 text-gray-500"></i>
+            <!-- Filtres -->
+            <div class="flex flex-wrap gap-2 mb-4">
+                <button class="filter-btn filter-btn--active" data-status="all">
+                    Tous
+                </button>
+                <button class="filter-btn filter-btn--conforme" data-status="conforme">
+                    Conforme
+                </button>
+                <button class="filter-btn filter-btn--partiel" data-status="partiel">
+                    Partiel
+                </button>
+                <button class="filter-btn filter-btn--non-conforme" data-status="non-conforme">
+                    Non conforme
+                </button>
+                <button class="filter-btn filter-btn--non-evalue" data-status="non-evalue">
+                    Non évalué
                 </button>
             </div>
-            <div class="mb-6">
-                <div class="flex items-center mb-2">
-                    <span class="text-sm font-medium text-gray-700 mr-2">Statut:</span>
-                    <span class="px-2 py-1 text-xs font-semibold rounded-full" id="control-status-badge">Non évalué</span>
-                </div>
-                <div class="mb-2">
-                    <span class="text-sm font-medium text-gray-700 mr-2">Progression:</span>
-                    <div class="progress-bar mt-1">
-                        <div class="progress-bar-fill" id="control-progress-bar" style="width: 0%"></div>
+        </div>
+
+        <!-- Liste des contrôles -->
+        <div class="space-y-4" id="controls-list">
+
+            <!-- Contrôle 1 : Conforme -->
+            <div class="control-item" data-id="1" data-status="conforme">
+                <div class="flex justify-between items-center mb-2 gap-4">
+                    <div>
+                        <h4 class="font-medium text-gray-800">
+                            Registre des activités de traitement
+                        </h4>
+                        <p class="text-xs text-gray-500 mt-1">
+                            Exhaustivité du registre, responsables et finalités documentés.
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="status-badge status-badge--conforme">
+                            Conforme
+                        </span>
+                        <i data-feather="check-circle" class="w-5 h-5 text-green-500"></i>
                     </div>
                 </div>
-                <div class="mb-2">
-                    <span class="text-sm font-medium text-gray-700 mr-2">Responsable:</span>
-                    <span class="text-sm" id="control-responsable">Non assigné</span>
+                <div class="progress-bar mt-2">
+                    <div class="progress-bar-fill progress-bar-fill--conforme" style="width: 100%"></div>
                 </div>
-                <div class="mb-2">
-                    <span class="text-sm font-medium text-gray-700 mr-2">Dernière évaluation:</span>
-                    <span class="text-sm" id="control-last-eval">Jamais</span>
+                <div class="flex justify-between items-center mt-2 text-xs text-gray-500">
+                    <span>100% complété</span>
+                    <span>Dernière éval : 2025-01-10</span>
                 </div>
             </div>
-            <div class="mb-6">
-                <h4 class="text-md font-medium text-gray-800 mb-2">Description</h4>
-                <p class="text-sm text-gray-600" id="control-description">Description du contrôle...</p>
+
+            <!-- Contrôle 2 : Partiel -->
+            <div class="control-item" data-id="2" data-status="partiel">
+                <div class="flex justify-between items-center mb-2 gap-4">
+                    <div>
+                        <h4 class="font-medium text-gray-800">
+                            Gestion des demandes de droits (accès, rectification, suppression)
+                        </h4>
+                        <p class="text-xs text-gray-500 mt-1">
+                            Processus de réception, suivi et réponse aux demandes des personnes concernées.
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="status-badge status-badge--partiel">
+                            Partiel
+                        </span>
+                        <i data-feather="alert-circle" class="w-5 h-5 text-yellow-500"></i>
+                    </div>
+                </div>
+                <div class="progress-bar mt-2">
+                    <div class="progress-bar-fill progress-bar-fill--partiel" style="width: 65%"></div>
+                </div>
+                <div class="flex justify-between items-center mt-2 text-xs text-gray-500">
+                    <span>65% complété</span>
+                    <span>Dernière éval: 2025-01-05</span>
+                </div>
             </div>
-            <div class="mb-6">
-                <h4 class="text-md font-medium text-gray-800 mb-2">Exigences</h4>
-                <ul class="list-disc pl-5 text-sm text-gray-600 space-y-1" id="control-requirements">
-                    <li>Exigence 1</li>
-                    <li>Exigence 2</li>
-                </ul>
+
+            <!-- Contrôle 3 : Non conforme -->
+            <div class="control-item" data-id="3" data-status="non-conforme">
+                <div class="flex justify-between items-center mb-2 gap-4">
+                    <div>
+                        <h4 class="font-medium text-gray-800">
+                            Journalisation et notification des violations de données
+                        </h4>
+                        <p class="text-xs text-gray-500 mt-1">
+                            Procédure de détection, enregistrement et notification des violations à l’autorité.
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="status-badge status-badge--non-conforme">
+                            Non conforme
+                        </span>
+                        <i data-feather="x-circle" class="w-5 h-5 text-red-500"></i>
+                    </div>
+                </div>
+                <div class="progress-bar mt-2">
+                    <div class="progress-bar-fill progress-bar-fill--non-conforme" style="width: 30%"></div>
+                </div>
+                <div class="flex justify-between items-center mt-2 text-xs text-gray-500">
+                    <span>30% complété</span>
+                    <span>Dernière éval : 2024-12-20</span>
+                </div>
+            </div>
+
+            <!-- Contrôle 4 : Non évalué -->
+            <div class="control-item" data-id="4" data-status="non-evalue">
+                <div class="flex justify-between items-center mb-2 gap-4">
+                    <div>
+                        <h4 class="font-medium text-gray-800">
+                            Politique de conservation et d’archivage des données
+                        </h4>
+                        <p class="text-xs text-gray-500 mt-1">
+                            Définition des durées de conservation, purge et anonymisation des données.
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="status-badge status-badge--non-evalue">
+                            Non évalué
+                        </span>
+                        <i data-feather="help-circle" class="w-5 h-5 text-gray-400"></i>
+                    </div>
+                </div>
+                <div class="progress-bar mt-2">
+                    <div class="progress-bar-fill progress-bar-fill--non-evalue" style="width: 0%"></div>
+                </div>
+                <div class="flex justify-between items-center mt-2 text-xs text-gray-500">
+                    <span>0% complété</span>
+                    <span>Dernière éval : –</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Overlay Panel (détails contrôle) -->
+<div class="overlay-backdrop" id="overlay-backdrop"></div>
+<div class="overlay-panel" id="overlay-panel">
+    <div class="p-6">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-xl font-semibold text-gray-800" id="control-title">
+                Détails du contrôle
+            </h3>
+            <button class="close-overlay p-1 rounded-full hover:bg-gray-100" id="close-overlay-btn">
+                <i data-feather="x" class="w-5 h-5 text-gray-500"></i>
+            </button>
+        </div>
+
+        <div class="mb-6 space-y-2">
+            <div class="flex items-center gap-2">
+                <span class="text-sm font-medium text-gray-700">Statut :</span>
+                <span class="px-2 py-1 text-xs font-semibold rounded-full" id="control-status-badge">
+                    –
+                </span>
             </div>
             <div>
-                <h4 class="text-md font-medium text-gray-800 mb-2">Historique</h4>
-                <div class="space-y-4" id="control-history">
-                    <!-- History items will be added here by JavaScript -->
+                <span class="text-sm font-medium text-gray-700">Progression :</span>
+                <div class="progress-bar mt-1">
+                    <div class="progress-bar-fill" id="control-progress-bar" style="width: 0%"></div>
                 </div>
+            </div>
+            <div>
+                <span class="text-sm font-medium text-gray-700">Responsable :</span>
+                <span class="text-sm text-gray-700" id="control-responsable">
+                    Non assigné
+                </span>
+            </div>
+            <div>
+                <span class="text-sm font-medium text-gray-700">Dernière évaluation :</span>
+                <span class="text-sm text-gray-700" id="control-last-eval">
+                    –
+                </span>
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <h4 class="text-md font-medium text-gray-800 mb-1">Description</h4>
+            <p class="text-sm text-gray-600" id="control-description">
+                –
+            </p>
+        </div>
+
+        <div class="mb-6">
+            <h4 class="text-md font-medium text-gray-800 mb-1">Exigences</h4>
+            <ul class="list-disc pl-5 text-sm text-gray-600 space-y-1" id="control-requirements">
+                <!-- Rempli en JS -->
+            </ul>
+        </div>
+
+        <div>
+            <h4 class="text-md font-medium text-gray-800 mb-1">Historique</h4>
+            <div class="space-y-3 text-sm" id="control-history">
+                <!-- Rempli en JS -->
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        // Initialize feather icons
-        feather.replace();
-        
-        // Toggle sidebar on mobile
-        function toggleSidebar() {
-            document.querySelector('.sidebar').classList.toggle('active');
-        }
-        
-        // Sample data for controls
-        const controlsData = [
-            {
-                id: 1,
-                title: "Cryptage des données sensibles",
-                status: "conforme",
-                progress: 100,
-                description: "Vérification que toutes les données sensibles sont cryptées en transit et au repos.",
-                requirements: [
-                    "Cryptage AES-256 pour les données au repos",
-                    "Utilisation de TLS 1.2+ pour les données en transit",
-                    "Gestion centralisée des clés de cryptage"
-                ],
-                responsable: "Équipe sécurité",
-                lastEvaluation: "2023-05-15",
-                history: [
-                    { date: "2023-05-15", status: "conforme", comment: "Tous les points vérifiés" },
-                    { date: "2022-11-10", status: "partiel", comment: "Manque documentation procédures" }
-                ]
-            },
-            {
-                id: 2,
-                title: "Gestion des consentements",
-                status: "partiel",
-                progress: 65,
-                description: "Vérification du processus de collecte et gestion des consentements utilisateurs.",
-                requirements: [
-                    "Formulaire de consentement clair et explicite",
-                    "Journalisation des consentements",
-                    "Mécanisme de retrait facile"
-                ],
-                responsable: "Équipe RGPD",
-                lastEvaluation: "2023-04-20",
-                history: [
-                    { date: "2023-04-20", status: "partiel", comment: "Retrait pas assez visible" },
-                    { date: "2022-09-05", status: "non-conforme", comment: "Pas de journalisation" }
-                ]
-            },
-            {
-                id: 3,
-                title: "Accès aux données personnelles",
-                status: "non-conforme",
-                progress: 30,
-                description: "Contrôle des accès aux données personnelles selon le principe du besoin de savoir.",
-                requirements: [
-                    "Liste à jour des habilitations",
-                    "Revue trimestrielle des accès",
-                    "Séparation des environnements"
-                ],
-                responsable: "Équipe IT",
-                lastEvaluation: "2023-03-10",
-                history: [
-                    { date: "2023-03-10", status: "non-conforme", comment: "Pas de revue des accès" },
-                    { date: "2022-12-15", status: "partiel", comment: "Habilitations pas à jour" }
-                ]
-            },
-            {
-                id: 4,
-                title: "Notification des violations",
-                status: "conforme",
-                progress: 100,
-                description: "Processus de détection et notification des violations de données personnelles.",
-                requirements: [
-                    "Procédure documentée",
-                    "Délai de 72h respecté",
-                    "Registre des violations"
-                ],
-                responsable: "Équipe sécurité",
-                lastEvaluation: "2023-05-05",
-                history: [
-                    { date: "2023-05-05", status: "conforme", comment: "Procédure complète" }
-                ]
-            },
-            {
-                id: 5,
-                title: "Formation des employés",
-                status: "partiel",
-                progress: 80,
-                description: "Vérification que tous les employés ont reçu une formation RGPD adéquate.",
-                requirements: [
-                    "Formation initiale obligatoire",
-                    "Mises à jour annuelles",
-                    "Test de connaissances"
-                ],
-                responsable: "RH",
-                lastEvaluation: "2023-02-28",
-                history: [
-                    { date: "2023-02-28", status: "partiel", comment: "Manque tests pour 15%" },
-                    { date: "2022-06-15", status: "non-conforme", comment: "Pas de formation formalisée" }
-                ]
-            },
-            {
-                id: 6,
-                title: "Sauvegardes des données",
-                status: "conforme",
-                progress: 100,
-                description: "Vérification du processus de sauvegarde et restauration des données personnelles.",
-                requirements: [
-                    "Sauvegardes journalières",
-                    "Tests de restauration trimestriels",
-                    "Cryptage des sauvegardes"
-                ],
-                responsable: "Équipe IT",
-                lastEvaluation: "2023-04-10",
-                history: [
-                    { date: "2023-04-10", status: "conforme", comment: "Tous les points OK" },
-                    { date: "2022-10-22", status: "partiel", comment: "Tests pas assez fréquents" }
-                ]
-            },
-            {
-                id: 7,
-                title: "Durée de conservation",
-                status: "non-conforme",
-                progress: 20,
-                description: "Vérification que les durées de conservation des données sont respectées.",
-                requirements: [
-                    "Délais définis pour chaque catégorie",
-                    "Processus de suppression automatique",
-                    "Documentation des exceptions"
-                ],
-                responsable: "Équipe RGPD",
-                lastEvaluation: "2023-01-15",
-                history: [
-                    { date: "2023-01-15", status: "non-conforme", comment: "Pas de processus automatique" }
-                ]
-            },
-            {
-                id: 8,
-                title: "Sous-traitants",
-                status: "partiel",
-                progress: 75,
-                description: "Contrôle des engagements des sous-traitants vis-à-vis du RGPD.",
-                requirements: [
-                    "DPA signés avec tous les sous-traitants",
-                    "Liste à jour des sous-traitants",
-                    "Audits périodiques"
-                ],
-                responsable: "Juridique",
-                lastEvaluation: "2023-03-28",
-                history: [
-                    { date: "2023-03-28", status: "partiel", comment: "Manque 2 DPA" },
-                    { date: "2022-08-10", status: "non-conforme", comment: "Pas de liste centralisée" }
-                ]
-            },
-            {
-                id: 9,
-                title: "Droits des personnes",
-                status: "conforme",
-                progress: 100,
-                description: "Processus de réponse aux demandes d'accès, rectification et suppression.",
-                requirements: [
-                    "Délai d'un mois respecté",
-                    "Vérification d'identité",
-                    "Registre des demandes"
-                ],
-                responsable: "Équipe RGPD",
-                lastEvaluation: "2023-05-18",
-                history: [
-                    { date: "2023-05-18", status: "conforme", comment: "Processus optimisé" }
-                ]
-            },
-            {
-                id: 10,
-                title: "Analyse d'impact",
-                status: "non-evalue",
-                progress: 0,
-                description: "Réalisation d'analyses d'impact pour les traitements à risque.",
-                requirements: [
-                    "Méthodologie documentée",
-                    "Revue par le DPO",
-                    "Plan d'action si nécessaire"
-                ],
-                responsable: "DPO",
-                lastEvaluation: null,
-                history: []
-            },
-            {
-                id: 11,
-                title: "Sécurité physique",
-                status: "conforme",
-                progress: 100,
-                description: "Contrôles d'accès physique aux locaux contenant des données personnelles.",
-                requirements: [
-                    "Badges d'accès",
-                    "Journal des entrées",
-                    "Zones sécurisées"
-                ],
-                responsable: "Sécurité",
-                lastEvaluation: "2023-04-05",
-                history: [
-                    { date: "2023-04-05", status: "conforme", comment: "Tous les points vérifiés" }
-                ]
-            },
-            {
-                id: 12,
-                title: "Gestion des incidents",
-                status: "partiel",
-                progress: 90,
-                description: "Processus de gestion et documentation des incidents de sécurité.",
-                requirements: [
-                    "Procédure documentée",
-                    "Classification des incidents",
-                    "Analyse post-incident"
-                ],
-                responsable: "Équipe sécurité",
-                lastEvaluation: "2023-03-15",
-                history: [
-                    { date: "2023-03-15", status: "partiel", comment: "Manque analyse pour 2 incidents" }
-                ]
-            },
-            {
-                id: 13,
-                title: "Anonymisation des données",
-                status: "non-conforme",
-                progress: 10,
-                description: "Utilisation de techniques d'anonymisation lorsque possible.",
-                requirements: [
-                    "Méthodes documentées",
-                    "Vérification de l'irréversibilité",
-                    "Processus de pseudonymisation"
-                ],
-                responsable: "Équipe données",
-                lastEvaluation: "2023-02-10",
-                history: [
-                    { date: "2023-02-10", status: "non-conforme", comment: "Pas de méthodologie" }
-                ]
-            },
-            {
-                id: 14,
-                title: "Revue des logs",
-                status: "partiel",
-                progress: 60,
-                description: "Surveillance et revue des logs d'accès aux données personnelles.",
-                requirements: [
-                    "Conservation des logs 6 mois",
-                    "Alertes sur accès anormaux",
-                    "Revue hebdomadaire"
-                ],
-                responsable: "Équipe sécurité",
-                lastEvaluation: "2023-01-20",
-                history: [
-                    { date: "2023-01-20", status: "partiel", comment: "Revue pas systématique" }
-                ]
-            },
-            {
-                id: 15,
-                title: "Protection des postes",
-                status: "conforme",
-                progress: 100,
-                description: "Mesures de sécurité sur les postes accédant aux données personnelles.",
-                requirements: [
-                    "Antivirus à jour",
-                    "Chiffrement des disques",
-                    "Verrouillage automatique"
-                ],
-                responsable: "Équipe IT",
-                lastEvaluation: "2023-05-10",
-                history: [
-                    { date: "2023-05-10", status: "conforme", comment: "Tous les postes vérifiés" }
-                ]
-            },
-            {
-                id: 16,
-                title: "Transferts internationaux",
-                status: "non-evalue",
-                progress: 0,
-                description: "Encadrement des transferts de données hors UE.",
-                requirements: [
-                    "Clauses contractuelles",
-                    "Analyse des risques",
-                    "Documentation des garanties"
-                ],
-                responsable: "Juridique",
-                lastEvaluation: null,
-                history: []
-            },
-            {
-                id: 17,
-                title: "Gestion des mots de passe",
-                status: "partiel",
-                progress: 85,
-                description: "Politique de gestion des mots de passe pour accès aux données.",
-                requirements: [
-                    "Complexité minimale",
-                    "Renouvellement périodique",
-                    "Authentification à deux facteurs"
-                ],
-                responsable: "Équipe IT",
-                lastEvaluation: "2023-04-15",
-                history: [
-                    { date: "2023-04-15", status: "partiel", comment: "2FA pas partout" }
-                ]
-            },
-            {
-                id: 18,
-                title: "Documentation des traitements",
-                status: "conforme",
-                progress: 100,
-                description: "Complétude du registre des traitements.",
-                requirements: [
-                    "Fiches complètes pour chaque traitement",
-                    "Mises à jour régulières",
-                    "Accès centralisé"
-                ],
-                responsable: "DPO",
-                lastEvaluation: "2023-05-20",
-                history: [
-                    { date: "2023-05-20", status: "conforme", comment: "Registre à jour" }
-                ]
-            },
-            {
-                id: 19,
-                title: "Tests d'intrusion",
-                status: "non-conforme",
-                progress: 25,
-                description: "Réalisation de tests d'intrusion sur les systèmes critiques.",
-                requirements: [
-                    "Tests annuels",
-                    "Plan de correction",
-                    "Rapport détaillé"
-                ],
-                responsable: "Équipe sécurité",
-                lastEvaluation: "2023-02-28",
-                history: [
-                    { date: "2023-02-28", status: "non-conforme", comment: "Pas de tests depuis 18 mois" }
-                ]
-            },
-            {
-                id: 20,
-                title: "Gestion des cookies",
-                status: "partiel",
-                progress: 70,
-                description: "Conformité de la gestion des cookies sur les sites web.",
-                requirements: [
-                    "Bannière d'information",
-                    "Consentement explicite",
-                    "Gestion des préférences"
-                ],
-                responsable: "Équipe web",
-                lastEvaluation: "2023-03-05",
-                history: [
-                    { date: "2023-03-05", status: "partiel", comment: "Gestion des préférences incomplète" }
-                ]
-            }
-        ];
+{% endblock %}
 
-        // Calculate stats
-        function calculateStats() {
-            const conformeCount = controlsData.filter(c => c.status === 'conforme').length;
-            const partielCount = controlsData.filter(c => c.status === 'partiel').length;
-            const nonConformeCount = controlsData.filter(c => c.status === 'non-conforme').length;
-            const nonEvalueCount = controlsData.filter(c => c.status === 'non-evalue').length;
-            const total = controlsData.length;
-            
-            const score = Math.round(((conformeCount + (partielCount * 0.5)) / total) * 100);
-            
-            return {
-                conformeCount,
-                partielCount,
-                nonConformeCount,
-                nonEvalueCount,
-                total,
-                score
-            };
-        }
-
-        // Update circular progress
-        function updateCircularProgress(score) {
-            const circle = document.getElementById('progress-circle');
-            const offset = 628 - (628 * score / 100);
-            circle.style.strokeDashoffset = offset;
-            document.getElementById('compliance-score').textContent = `${score}%`;
-            
-            // Update stats
-            const stats = calculateStats();
-            document.getElementById('conforme-count').textContent = stats.conformeCount;
-            document.getElementById('partiel-count').textContent = stats.partielCount;
-            document.getElementById('non-conforme-count').textContent = stats.nonConformeCount;
-            document.getElementById('non-evalue-count').textContent = stats.nonEvalueCount;
-        }
-
-        // Render controls list
-        function renderControlsList(filter = 'all') {
-            const controlsList = document.getElementById('controls-list');
-            controlsList.innerHTML = '';
-            
-            let filteredControls = controlsData;
-            if (filter !== 'all') {
-                filteredControls = controlsData.filter(c => c.status === filter);
-            }
-            
-            filteredControls.forEach(control => {
-                const controlItem = document.createElement('div');
-                controlItem.className = 'control-item p-4 border border-gray-200 rounded-md cursor-pointer transition';
-                controlItem.dataset.id = control.id;
-                
-                let statusIcon = '';
-                let statusColor = '';
-                
-                switch(control.status) {
-                    case 'conforme':
-                        statusIcon = 'check-circle';
-                        statusColor = 'text-green-500';
-                        break;
-                    case 'partiel':
-                        statusIcon = 'alert-circle';
-                        statusColor = 'text-yellow-500';
-                        break;
-                    case 'non-conforme':
-                        statusIcon = 'x-circle';
-                        statusColor = 'text-red-500';
-                        break;
-                    default:
-                        statusIcon = 'help-circle';
-                        statusColor = 'text-gray-400';
+{% block script %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Données statiques des contrôles (exemple)
+    var controlsData = {
+        "1": {
+            titre: "Registre des activités de traitement",
+            statut: "Conforme",
+            statutKey: "conforme",
+            progression: 100,
+            responsable: "DPO – Marie Kouassi",
+            derniere_eval: "2025-01-10",
+            description: "Le registre de traitement couvre l’ensemble des activités majeures de l’entreprise, avec les responsables, bases légales et durées de conservation documentés.",
+            exigences: [
+                "Lister toutes les activités de traitement par service.",
+                "Identifier le responsable de traitement et les sous-traitants.",
+                "Documenter les bases légales et les durées de conservation."
+            ],
+            historique: [
+                {
+                    date: "2025-01-10",
+                    auteur: "Marie Kouassi",
+                    statut: "Conforme",
+                    commentaire: "Registre complété et validé avec les équipes métiers."
+                },
+                {
+                    date: "2024-11-02",
+                    auteur: "Jean Dupont",
+                    statut: "Partiel",
+                    commentaire: "Certaines fiches manquaient pour le service Marketing."
                 }
-                
-                controlItem.innerHTML = `
-                    <div class="flex justify-between items-center mb-2">
-                        <h4 class="font-medium text-gray-800">${control.title}</h4>
-                        <i data-feather="${statusIcon}" class="w-5 h-5 ${statusColor}" data-toggle="tooltip" data-placement="top" title="${control.status === 'non-evalue' ? 'Non évalué' : control.status}"></i>
-                    </div>
-                    <div class="progress-bar mt-2">
-                        <div class="progress-bar-fill" style="width: ${control.progress}%"></div>
-                    </div>
-                    <div class="flex justify-between items-center mt-2 text-xs text-gray-500">
-                        <span>${control.progress}% complet</span>
-                        <span>${control.lastEvaluation ? 'Dernière éval: ' + control.lastEvaluation : 'Jamais évalué'}</span>
-                    </div>
-                `;
-                
-                controlItem.addEventListener('click', () => openControlDetails(control.id));
-                controlsList.appendChild(controlItem);
+            ]
+        },
+        "2": {
+            titre: "Gestion des demandes de droits",
+            statut: "Partiel",
+            statutKey: "partiel",
+            progression: 65,
+            responsable: "Service Juridique",
+            derniere_eval: "2025-01-05",
+            description: "Une procédure existe pour traiter les demandes de droits, mais elle n’est pas encore entièrement automatisée ni systématisée.",
+            exigences: [
+                "Mettre en place un point d’entrée unique pour les demandes.",
+                "Tracer les délais de réponse pour chaque demande.",
+                "Formaliser des modèles de réponses conformes au RGPD."
+            ],
+            historique: [
+                {
+                    date: "2025-01-05",
+                    auteur: "Service Juridique",
+                    statut: "Partiel",
+                    commentaire: "Suivi manuel dans un fichier Excel en attendant l’intégration dans l’outil."
+                }
+            ]
+        },
+        "3": {
+            titre: "Journalisation et notification des violations de données",
+            statut: "Non conforme",
+            statutKey: "non-conforme",
+            progression: 30,
+            responsable: "Responsable Sécurité SI",
+            derniere_eval: "2024-12-20",
+            description: "Aucun processus formalisé pour centraliser les incidents de sécurité et notifier l’autorité en cas de violation avérée.",
+            exigences: [
+                "Mettre en place un registre des incidents de sécurité.",
+                "Définir les critères de qualification d’une violation de données.",
+                "Documenter le processus de notification à l’ARTCI / CNIL locale."
+            ],
+            historique: [
+                {
+                    date: "2024-12-20",
+                    auteur: "Responsable Sécurité SI",
+                    statut: "Non conforme",
+                    commentaire: "Processus en cours de définition. Aucun outil de ticketing dédié."
+                }
+            ]
+        },
+        "4": {
+            titre: "Politique de conservation et d’archivage des données",
+            statut: "Non évalué",
+            statutKey: "non-evalue",
+            progression: 0,
+            responsable: "À définir",
+            derniere_eval: "–",
+            description: "Aucune politique formelle de conservation n’a encore été définie pour l’ensemble des systèmes.",
+            exigences: [
+                "Identifier les durées de conservation légales par type de données.",
+                "Mettre en place des règles de purge et d’archivage.",
+                "Communiquer la politique aux équipes métiers."
+            ],
+            historique: []
+        }
+    };
+
+    // --- Sélecteurs généraux ---
+    var filterButtons = document.querySelectorAll('.filter-btn');
+    var controlsList = document.getElementById('controls-list');
+    var searchInput = document.getElementById('control-search');
+
+    // Overlay
+    var overlayBackdrop = document.getElementById('overlay-backdrop');
+    var overlayPanel = document.getElementById('overlay-panel');
+    var overlayCloseBtn = document.getElementById('close-overlay-btn');
+
+    // Champs overlay
+    var titleEl = document.getElementById('control-title');
+    var statusBadgeEl = document.getElementById('control-status-badge');
+    var progressBarEl = document.getElementById('control-progress-bar');
+    var responsableEl = document.getElementById('control-responsable');
+    var lastEvalEl = document.getElementById('control-last-eval');
+    var descriptionEl = document.getElementById('control-description');
+    var requirementsEl = document.getElementById('control-requirements');
+    var historyEl = document.getElementById('control-history');
+
+    // --- Filtres par statut ---
+    filterButtons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var status = btn.getAttribute('data-status');
+
+            // Active state visuel
+            filterButtons.forEach(function (b) {
+                b.classList.remove('filter-btn--active');
             });
-            
-            feather.replace();
-        }
+            btn.classList.add('filter-btn--active');
 
-        // Open control details in overlay
-        function openControlDetails(controlId) {
-            const control = controlsData.find(c => c.id === controlId);
-            if (!control) return;
-            
-            // Update overlay content
-            document.getElementById('control-title').textContent = control.title;
-            document.getElementById('control-description').textContent = control.description;
-            document.getElementById('control-progress-bar').style.width = `${control.progress}%`;
-            document.getElementById('control-responsable').textContent = control.responsable;
-            document.getElementById('control-last-eval').textContent = control.lastEvaluation || 'Jamais';
-            
-            // Update status badge
-            const statusBadge = document.getElementById('control-status-badge');
-            statusBadge.className = 'px-2 py-1 text-xs font-semibold rounded-full';
-            
-            switch(control.status) {
-                case 'conforme':
-                    statusBadge.classList.add('bg-green-100', 'text-green-800');
-                    statusBadge.textContent = 'Conforme';
-                    break;
-                case 'partiel':
-                    statusBadge.classList.add('bg-yellow-100', 'text-yellow-800');
-                    statusBadge.textContent = 'Partiel';
-                    break;
-                case 'non-conforme':
-                    statusBadge.classList.add('bg-red-100', 'text-red-800');
-                    statusBadge.textContent = 'Non conforme';
-                    break;
-                default:
-                    statusBadge.classList.add('bg-gray-100', 'text-gray-800');
-                    statusBadge.textContent = 'Non évalué';
-            }
-            
-            // Update requirements
-            const requirementsList = document.getElementById('control-requirements');
-            requirementsList.innerHTML = '';
-            control.requirements.forEach(req => {
-                const li = document.createElement('li');
-                li.textContent = req;
-                requirementsList.appendChild(li);
+            var items = controlsList.querySelectorAll('.control-item');
+            items.forEach(function (item) {
+                var itemStatus = item.getAttribute('data-status');
+                var matchesStatus = (status === 'all') || (itemStatus === status);
+
+                // On applique aussi le filtre texte
+                var matchesSearch = matchSearch(item, searchInput.value);
+
+                item.style.display = (matchesStatus && matchesSearch) ? '' : 'none';
             });
-            
-            // Update history
-            const historyList = document.getElementById('control-history');
-            historyList.innerHTML = '';
-            
-            if (control.history.length === 0) {
-                const empty = document.createElement('p');
-                empty.className = 'text-sm text-gray-500 italic';
-                empty.textContent = 'Aucun historique disponible';
-                historyList.appendChild(empty);
-            } else {
-                control.history.forEach(item => {
-                    const historyItem = document.createElement('div');
-                    historyItem.className = 'border-l-2 pl-4 py-1';
-                    
-                    let statusColor = '';
-                    switch(item.status) {
-                        case 'conforme':
-                            statusColor = 'border-green-500';
-                            break;
-                        case 'partiel':
-                            statusColor = 'border-yellow-500';
-                            break;
-                        case 'non-conforme':
-                            statusColor = 'border-red-500';
-                            break;
-                        default:
-                            statusColor = 'border-gray-400';
-                    }
-                    
-                    historyItem.classList.add(statusColor);
-                    
-                    historyItem.innerHTML = `
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm font-medium">${item.date}</span>
-                            <span class="text-xs px-2 py-0.5 rounded-full ${statusColor.replace('border', 'bg')} ${statusColor.replace('border', 'text')}">${item.status}</span>
-                        </div>
-                        <p class="text-sm text-gray-600 mt-1">${item.comment}</p>
-                    `;
-                    
-                    historyList.appendChild(historyItem);
-                });
-            }
-            
-            // Show overlay
-            document.getElementById('overlay-panel').classList.add('active');
-            document.getElementById('overlay-backdrop').classList.add('active');
-            
-            // Close button
-            document.querySelector('.close-overlay').addEventListener('click', closeControlDetails);
-            document.getElementById('overlay-backdrop').addEventListener('click', closeControlDetails);
-        }
-
-        // Close control details
-        function closeControlDetails() {
-            document.getElementById('overlay-panel').classList.remove('active');
-            document.getElementById('overlay-backdrop').classList.remove('active');
-        }
-
-        // Filter controls
-        function setupFilterButtons() {
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    // Remove active class from all buttons
-                    document.querySelectorAll('.filter-btn').forEach(b => {
-                        b.classList.remove('bg-blue-600', 'text-white');
-                        if (b.dataset.status === 'conforme') b.classList.add('bg-green-100', 'text-green-800');
-                        if (b.dataset.status === 'partiel') b.classList.add('bg-yellow-100', 'text-yellow-800');
-                        if (b.dataset.status === 'non-conforme') b.classList.add('bg-red-100', 'text-red-800');
-                        if (b.dataset.status === 'non-evalue') b.classList.add('bg-gray-100', 'text-gray-800');
-                        if (b.dataset.status === 'all') b.classList.add('bg-gray-100', 'text-gray-800');
-                    });
-                    
-                    // Add active class to clicked button
-                    if (btn.dataset.status === 'all') {
-                        btn.classList.add('bg-blue-600', 'text-white');
-                        btn.classList.remove('bg-gray-100', 'text-gray-800');
-                    } else {
-                        btn.classList.add('bg-blue-600', 'text-white');
-                    }
-                    
-                    renderControlsList(btn.dataset.status);
-                });
-            });
-        }
-
-        // Export to PDF
-        function setupExportPDF() {
-            document.getElementById('export-pdf').addEventListener('click', () => {
-                // In a real app, we would use jsPDF to generate a PDF
-                alert('Export PDF fonctionnalité serait implémentée ici avec jsPDF');
-            });
-        }
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            const stats = calculateStats();
-            updateCircularProgress(stats.score);
-            renderControlsList();
-            setupFilterButtons();
-            setupExportPDF();
-            
-            // Set first filter button as active
-            document.querySelector('.filter-btn[data-status="all"]').classList.add('bg-blue-600', 'text-white');
-            document.querySelector('.filter-btn[data-status="all"]').classList.remove('bg-gray-100', 'text-gray-800');
         });
-    </script>
-        
+    });
+
+    // --- Recherche texte ---
+    function matchSearch(item, query) {
+        if (!query) return true;
+        query = query.toLowerCase();
+        var title = item.querySelector('h4');
+        var desc = item.querySelector('p');
+        var text = ((title ? title.textContent : '') + ' ' + (desc ? desc.textContent : '')).toLowerCase();
+        return text.indexOf(query) !== -1;
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener('input', function () {
+            var query = searchInput.value;
+            var activeFilterBtn = document.querySelector('.filter-btn.filter-btn--active');
+            var status = activeFilterBtn ? activeFilterBtn.getAttribute('data-status') : 'all';
+            var items = controlsList.querySelectorAll('.control-item');
+
+            items.forEach(function (item) {
+                var itemStatus = item.getAttribute('data-status');
+                var matchesStatus = (status === 'all') || (itemStatus === status);
+                var matchesSearch = matchSearch(item, query);
+                item.style.display = (matchesStatus && matchesSearch) ? '' : 'none';
+            });
+        });
+    }
+
+    // --- Click sur un contrôle : ouvre overlay ---
+    controlsList.addEventListener('click', function (event) {
+        var item = event.target.closest('.control-item');
+        if (!item) return;
+        var id = item.getAttribute('data-id');
+        var data = controlsData[id];
+        if (!data) return;
+
+        openOverlay(data);
+    });
+
+    function openOverlay(data) {
+        titleEl.textContent = data.titre;
+        descriptionEl.textContent = data.description;
+        responsableEl.textContent = data.responsable;
+        lastEvalEl.textContent = data.derniere_eval;
+        progressBarEl.style.width = data.progression + '%';
+
+        // Badge statut
+        statusBadgeEl.textContent = data.statut;
+        statusBadgeEl.className = 'px-2 py-1 text-xs font-semibold rounded-full';
+
+        if (data.statutKey === 'conforme') {
+            statusBadgeEl.classList.add('status-badge', 'status-badge--conforme');
+            progressBarEl.className = 'progress-bar-fill progress-bar-fill--conforme';
+        } else if (data.statutKey === 'partiel') {
+            statusBadgeEl.classList.add('status-badge', 'status-badge--partiel');
+            progressBarEl.className = 'progress-bar-fill progress-bar-fill--partiel';
+        } else if (data.statutKey === 'non-conforme') {
+            statusBadgeEl.classList.add('status-badge', 'status-badge--non-conforme');
+            progressBarEl.className = 'progress-bar-fill progress-bar-fill--non-conforme';
+        } else {
+            statusBadgeEl.classList.add('status-badge', 'status-badge--non-evalue');
+            progressBarEl.className = 'progress-bar-fill progress-bar-fill--non-evalue';
+        }
+
+        // Exigences
+        requirementsEl.innerHTML = '';
+        data.exigences.forEach(function (ex) {
+            var li = document.createElement('li');
+            li.textContent = ex;
+            requirementsEl.appendChild(li);
+        });
+
+        // Historique
+        historyEl.innerHTML = '';
+        if (data.historique.length === 0) {
+            var empty = document.createElement('p');
+            empty.className = 'text-gray-500 text-xs';
+            empty.textContent = 'Aucun historique disponible pour ce contrôle.';
+            historyEl.appendChild(empty);
+        } else {
+            data.historique.forEach(function (entry) {
+                var div = document.createElement('div');
+                div.className = 'border border-gray-100 rounded-md p-3 bg-gray-50';
+                div.innerHTML =
+                    '<div class="flex justify-between items-center mb-1">' +
+                        '<span class="text-[11px] font-medium text-gray-700">' + entry.date + '</span>' +
+                        '<span class="text-[11px] text-gray-500">' + entry.auteur + '</span>' +
+                    '</div>' +
+                    '<div class="text-[11px] font-semibold mb-1">' + entry.statut + '</div>' +
+                    '<p class="text-xs text-gray-600">' + entry.commentaire + '</p>';
+                historyEl.appendChild(div);
+            });
+        }
+
+        overlayBackdrop.classList.add('active');
+        overlayPanel.classList.add('active');
+    }
+
+    function closeOverlay() {
+        overlayBackdrop.classList.remove('active');
+        overlayPanel.classList.remove('active');
+    }
+
+    if (overlayBackdrop) {
+        overlayBackdrop.addEventListener('click', closeOverlay);
+    }
+    if (overlayCloseBtn) {
+        overlayCloseBtn.addEventListener('click', closeOverlay);
+    }
+});
+</script>
 {% endblock %}
