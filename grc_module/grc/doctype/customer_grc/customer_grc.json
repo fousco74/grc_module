@@ -3,24 +3,21 @@
  "allow_import": 1,
  "allow_rename": 1,
  "autoname": "format:{entreprise}-{#####}",
- "creation": "2025-08-05 09:34:25.867973",
+ "creation": "2026-03-09 10:20:20.530185",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
   "company_information_section",
-  "number_company",
   "entreprise",
+  "number_company",
   "column_break_aiwa",
   "email_company",
   "informations_du_representant_legal_section",
   "first_name_legal",
   "email_legal",
-  "num\u00e9ro",
-  "user",
   "column_break_rnns",
   "last_name_legal",
-  "password",
-  "password_confirmation"
+  "phone"
  ],
  "fields": [
   {
@@ -42,7 +39,6 @@
    "unique": 1
   },
   {
-   "fetch_from": "entreprise.mobile_no",
    "fieldname": "number_company",
    "fieldtype": "Data",
    "label": "Num\u00e9ro",
@@ -53,7 +49,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "entreprise.email_id",
    "fieldname": "email_company",
    "fieldtype": "Data",
    "label": "Email",
@@ -90,33 +85,16 @@
   },
   {
    "fetch_from": "name_company.phone_rep",
-   "fieldname": "num\u00e9ro",
+   "fieldname": "phone",
    "fieldtype": "Phone",
-   "label": "Num\u00e9ro",
+   "label": "Phone",
    "reqd": 1
-  },
-  {
-   "fieldname": "user",
-   "fieldtype": "Link",
-   "label": "User",
-   "options": "User",
-   "unique": 1
-  },
-  {
-   "fieldname": "password",
-   "fieldtype": "Password",
-   "label": "Password"
-  },
-  {
-   "fieldname": "password_confirmation",
-   "fieldtype": "Password",
-   "label": "Password confirmation"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-02-14 13:22:19.974731",
+ "modified": "2026-03-10 09:26:54.062676",
  "modified_by": "Administrator",
  "module": "GRC",
  "name": "customer_grc",
