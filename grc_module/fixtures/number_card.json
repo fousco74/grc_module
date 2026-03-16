@@ -1,0 +1,50 @@
+[
+ {
+  "document_type": "customer_grc",
+  "doctype": "Number Card",
+  "filters_json": "[[\"customer_grc\",\"statut\",\"=\",\"Actif\"]]",
+  "function": "Count",
+  "is_public": 1,
+  "label": "Entreprises actives",
+  "module": "GRC",
+  "name": "GRC - Entreprises actives",
+  "show_percentage_stats": 0,
+  "stats_time_interval": "Monthly"
+ },
+ {
+  "document_type": "violation_grc",
+  "doctype": "Number Card",
+  "filters_json": "[[\"violation_grc\",\"statut\",\"!=\",\"Terminer\"]]",
+  "function": "Count",
+  "is_public": 1,
+  "label": "Violations ouvertes",
+  "module": "GRC",
+  "name": "GRC - Violations ouvertes",
+  "show_percentage_stats": 0,
+  "stats_time_interval": "Monthly"
+ },
+ {
+  "document_type": "action_plan_grc",
+  "doctype": "Number Card",
+  "filters_json": "[[\"action_plan_grc\",\"statut\",\"=\",\"En cours\"]]",
+  "function": "Count",
+  "is_public": 1,
+  "label": "Plans en cours",
+  "module": "GRC",
+  "name": "GRC - Plans en cours",
+  "show_percentage_stats": 0,
+  "stats_time_interval": "Monthly"
+ },
+ {
+  "document_type": "make_right_grc",
+  "doctype": "Number Card",
+  "filters_json": "[[\"make_right_grc\",\"statut\",\"in\",\"Reçue,Vérifiée,En cours\"]]",
+  "function": "Count",
+  "is_public": 1,
+  "label": "Droits en attente",
+  "module": "GRC",
+  "name": "GRC - Droits en attente",
+  "show_percentage_stats": 0,
+  "stats_time_interval": "Monthly"
+ }
+]

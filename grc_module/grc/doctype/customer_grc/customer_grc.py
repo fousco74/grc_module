@@ -13,6 +13,7 @@ class customer_grc(Document):
 				"last_name": self.last_name_legal or "",
 				"email": self.email_legal,
 				"mobile_no": self.phone,
+				"user_type": "Website User",
 				"roles": [{"role": "GRC Client"}, {"role": "customer grc"}],
 			})
 			user.insert(ignore_permissions=True)

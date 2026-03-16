@@ -216,6 +216,82 @@ def get_action_plans(statut=None, limit=50):
 # ── Company info ─────────────────────────────────────────────────────────────
 
 @frappe.whitelist()
+def get_violations_stats():
+	"""Return violation counts grouped by gravite and statut for charts."""
+	_require_grc_access()
+	filters = _get_company_filter()
+	if filters is None:
+		return {}
+	violations = frappe.db.get_list("violation_grc", filters=filters, fields=["statut", "gravite"])
+	by_gravity = {}
+	by_status = {}
+	for v in violations:
+		g = v.get("gravite") or "Inconnu"
+		s = v.get("statut") or "Inconnu"
+		by_gravity[g] = by_gravity.get(g, 0) + 1
+		by_status[s] = by_status.get(s, 0) + 1
+	return {"by_gravity": by_gravity, "by_status": by_status}
+
+
+# ── Discussions ───────────────────────────────────────────────────────────────
+
+_ALLOWED_DISCUSSION_DOCTYPES = {
+	"violation_grc", "action_plan_grc", "make_right_grc", "grc_document",
+}
+
+
+def _check_doc_access(doctype, docname):
+	"""Raise PermissionError if the current user cannot access this document."""
+	if doctype not in _ALLOWED_DISCUSSION_DOCTYPES:
+		frappe.throw(_("Type de document non autorisé"), frappe.PermissionError)
+	if not frappe.has_permission(doctype, doc=docname):
+		frappe.throw(_("Accès non autorisé"), frappe.PermissionError)
+
+
+@frappe.whitelist()
+def get_comments(doctype, docname):
+	_require_grc_access()
+	_check_doc_access(doctype, docname)
+	comments = frappe.db.get_list(
+		"Comment",
+		filters={
+			"reference_doctype": doctype,
+			"reference_name": docname,
+			"comment_type": "Comment",
+		},
+		fields=["name", "comment_by", "comment_by_fullname", "content", "creation"],
+		order_by="creation asc",
+		limit=100,
+	)
+	return comments
+
+
+@frappe.whitelist()
+def post_comment(doctype, docname, content):
+	_require_grc_access()
+	_check_doc_access(doctype, docname)
+	content = (content or "").strip()
+	if not content:
+		frappe.throw(_("Le commentaire ne peut pas être vide."))
+	doc = frappe.get_doc({
+		"doctype": "Comment",
+		"comment_type": "Comment",
+		"reference_doctype": doctype,
+		"reference_name": docname,
+		"content": frappe.utils.escape_html(content),
+		"comment_by": frappe.session.user,
+	})
+	doc.insert(ignore_permissions=True)
+	return {
+		"name": doc.name,
+		"comment_by": doc.comment_by,
+		"comment_by_fullname": frappe.db.get_value("User", doc.comment_by, "full_name") or doc.comment_by,
+		"content": doc.content,
+		"creation": str(doc.creation),
+	}
+
+
+@frappe.whitelist()
 def get_company_info():
 	_require_grc_access()
 	if is_grc_client():

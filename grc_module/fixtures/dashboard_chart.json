@@ -1,0 +1,53 @@
+[
+ {
+  "based_on": "gravite",
+  "chart_name": "Violations par Gravit\u00e9",
+  "chart_type": "Group By",
+  "color": "#e74c3c",
+  "document_type": "violation_grc",
+  "doctype": "Dashboard Chart",
+  "filters_json": "[]",
+  "group_by_based_on": "gravite",
+  "group_by_type": "Count",
+  "is_public": 1,
+  "module": "GRC",
+  "name": "GRC - Violations par Gravit\u00e9",
+  "time_series_based_on": "",
+  "type": "Donut",
+  "use_report_chart": 0
+ },
+ {
+  "based_on": "statut",
+  "chart_name": "Plans d'Action par Statut",
+  "chart_type": "Group By",
+  "color": "#f39c12",
+  "document_type": "action_plan_grc",
+  "doctype": "Dashboard Chart",
+  "filters_json": "[]",
+  "group_by_based_on": "statut",
+  "group_by_type": "Count",
+  "is_public": 1,
+  "module": "GRC",
+  "name": "GRC - Plans par Statut",
+  "time_series_based_on": "",
+  "type": "Bar",
+  "use_report_chart": 0
+ },
+ {
+  "based_on": "statut",
+  "chart_name": "Demandes de Droits par Statut",
+  "chart_type": "Group By",
+  "color": "#9b59b6",
+  "document_type": "make_right_grc",
+  "doctype": "Dashboard Chart",
+  "filters_json": "[]",
+  "group_by_based_on": "statut",
+  "group_by_type": "Count",
+  "is_public": 1,
+  "module": "GRC",
+  "name": "GRC - Droits par Statut",
+  "time_series_based_on": "",
+  "type": "Bar",
+  "use_report_chart": 0
+ }
+]

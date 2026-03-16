@@ -18,6 +18,10 @@ fixtures = [
 	{"dt": "Client Script", "filters": [["module", "=", "GRC"]]},
 	{"dt": "Server Script", "filters": [["module", "=", "GRC"]]},
 	{"dt": "Role", "filters": [["name", "in", ["GRC Manager", "GRC Analyst", "GRC Client"]]]},
+	{"dt": "Number Card", "filters": [["module", "=", "GRC"]]},
+	{"dt": "Dashboard Chart", "filters": [["module", "=", "GRC"]]},
+	{"dt": "Dashboard", "filters": [["module", "=", "GRC"]]},
+	{"dt": "Notification", "filters": [["module", "=", "GRC"]]},
 ]
 
 # Role home pages
@@ -27,6 +31,22 @@ role_home_page = {
 	"GRC Manager": "/app/grc",
 	"GRC Analyst": "/app/grc",
 }
+
+# Portal navigation items (shown in Frappe's website sidebar)
+portal_menu_items = [
+	{"title": "Tableau de bord", "route": "/grc/dashboard", "role": "GRC Client"},
+	{"title": "Violations", "route": "/grc/violations", "role": "GRC Client"},
+	{"title": "Plans d'action", "route": "/grc/action-plan", "role": "GRC Client"},
+	{"title": "Demandes de droits", "route": "/grc/make-right", "role": "GRC Client"},
+	{"title": "Documents", "route": "/grc/documents", "role": "GRC Client"},
+	{"title": "Registre", "route": "/grc/registre-processing", "role": "GRC Client"},
+	{"title": "Audit", "route": "/grc/audit", "role": "GRC Client"},
+]
+
+# Website routes
+website_route_rules = [
+	{"from_route": "/grc", "to_route": "/grc/dashboard"},
+]
 
 # Row-level security: GRC Clients only see their company's data
 permission_query_conditions = {

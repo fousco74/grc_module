@@ -59,7 +59,8 @@
    "fieldname": "email_company",
    "fieldtype": "Data",
    "label": "Email",
-   "reqd": 1
+   "reqd": 1,
+   "search_index": 1
   },
   {
    "default": "En cours d'int\u00e9gration",
@@ -68,7 +69,8 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Statut",
-   "options": "En cours d'int\u00e9gration\nActif\nInactif"
+   "options": "En cours d'int\u00e9gration\nActif\nInactif",
+   "search_index": 1
   },
   {
    "fieldname": "compliance_score",
@@ -88,7 +90,8 @@
    "fieldtype": "Link",
    "label": "Utilisateur portail",
    "options": "User",
-   "description": "Compte Frappe de l'utilisateur client qui acc\u00e8de au portail"
+   "description": "Compte Frappe de l'utilisateur client qui acc\u00e8de au portail",
+   "search_index": 1
   },
   {
    "fieldname": "grc_manager",
@@ -145,7 +148,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-03-16 13:00:00.000000",
+ "modified": "2026-03-16 16:00:00.000000",
  "modified_by": "Administrator",
  "module": "GRC",
  "name": "customer_grc",
