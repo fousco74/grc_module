@@ -257,25 +257,25 @@
   "name": "GRC",
   "number_cards": [
    {
-    "card_name": "GRC - Entreprises actives",
+    "number_card_name": "GRC - Entreprises actives",
     "parent": "GRC",
     "parentfield": "number_cards",
     "parenttype": "Workspace"
    },
    {
-    "card_name": "GRC - Violations ouvertes",
+    "number_card_name": "GRC - Violations ouvertes",
     "parent": "GRC",
     "parentfield": "number_cards",
     "parenttype": "Workspace"
    },
    {
-    "card_name": "GRC - Plans en cours",
+    "number_card_name": "GRC - Plans en cours",
     "parent": "GRC",
     "parentfield": "number_cards",
     "parenttype": "Workspace"
    },
    {
-    "card_name": "GRC - Droits en attente",
+    "number_card_name": "GRC - Droits en attente",
     "parent": "GRC",
     "parentfield": "number_cards",
     "parenttype": "Workspace"

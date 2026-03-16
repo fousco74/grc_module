@@ -196,10 +196,10 @@
  "module": "GRC",
  "name": "GRC",
  "number_cards": [
-  {"card_name": "GRC - Entreprises actives"},
-  {"card_name": "GRC - Violations ouvertes"},
-  {"card_name": "GRC - Plans en cours"},
-  {"card_name": "GRC - Droits en attente"}
+  {"number_card_name": "GRC - Entreprises actives"},
+  {"number_card_name": "GRC - Violations ouvertes"},
+  {"number_card_name": "GRC - Plans en cours"},
+  {"number_card_name": "GRC - Droits en attente"}
  ],
  "owner": "Administrator",
  "parent_page": "Projects",

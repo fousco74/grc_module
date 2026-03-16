@@ -20,7 +20,6 @@ fixtures = [
 	{"dt": "Role", "filters": [["name", "in", ["GRC Manager", "GRC Analyst", "GRC Client"]]]},
 	{"dt": "Number Card", "filters": [["module", "=", "GRC"]]},
 	{"dt": "Dashboard Chart", "filters": [["module", "=", "GRC"]]},
-	{"dt": "Dashboard", "filters": [["module", "=", "GRC"]]},
 	{"dt": "Notification", "filters": [["module", "=", "GRC"]]},
 ]
 
