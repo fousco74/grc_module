@@ -18,6 +18,7 @@
   "portal_user",
   "grc_manager",
   "onboarding_date",
+  "etape_avancement",
   "informations_du_representant_legal_section",
   "first_name_legal",
   "email_legal",
@@ -101,6 +102,14 @@
    "label": "Date d'int\u00e9gration"
   },
   {
+   "fieldname": "etape_avancement",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "\u00c9tape d'avancement",
+   "options": "\nFormation\nAudit\nRapport provisoire\nCorrection\nRapport d\u00e9finitif\nD\u00e9p\u00f4t & ARTCI\nTermin\u00e9"
+  },
+  {
    "fieldname": "informations_du_representant_legal_section",
    "fieldtype": "Section Break",
    "label": "INFORMATIONS DU REPRESENTANT LEGAL"
@@ -136,7 +145,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-03-16 08:00:00.000000",
+ "modified": "2026-03-16 13:00:00.000000",
  "modified_by": "Administrator",
  "module": "GRC",
  "name": "customer_grc",

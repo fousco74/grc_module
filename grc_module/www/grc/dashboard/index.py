@@ -21,7 +21,7 @@ def get_context(context):
 	if context.company:
 		co = frappe.db.get_value(
 			"customer_grc", context.company,
-			["entreprise", "email_company", "statut", "compliance_score", "grc_manager"],
+			["entreprise", "email_company", "statut", "compliance_score", "grc_manager", "etape_avancement"],
 			as_dict=True,
 		) or {}
 		if co.get("grc_manager"):

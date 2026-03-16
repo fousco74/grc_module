@@ -7,6 +7,7 @@
  "engine": "InnoDB",
  "field_order": [
   "name_service",
+  "entreprise",
   "departement"
  ],
  "fields": [
@@ -14,21 +15,32 @@
    "fieldname": "name_service",
    "fieldtype": "Data",
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Nom du service",
-   "link_filters": "[[\"department_grc\",\"entreprise\",\"=\",\"eval:doc.entreprise\"]]",
+   "reqd": 1
+  },
+  {
+   "fieldname": "entreprise",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Entreprise",
+   "options": "customer_grc",
    "reqd": 1
   },
   {
    "fieldname": "departement",
    "fieldtype": "Link",
-   "label": "Departement ",
+   "in_list_view": 1,
+   "label": "D\u00e9partement",
+   "link_filters": "[[\"department_grc\",\"entreprise\",\"=\",\"eval:doc.entreprise\"]]",
    "options": "department_grc"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-02-14 13:29:04.929375",
+ "modified": "2026-03-16 13:00:00.000000",
  "modified_by": "Administrator",
  "module": "GRC",
  "name": "service_grc",
@@ -46,6 +58,33 @@
    "role": "System Manager",
    "share": 1,
    "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "GRC Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "GRC Analyst",
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "GRC Client",
+   "select": 1
   },
   {
    "email": 1,

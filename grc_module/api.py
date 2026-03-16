@@ -224,7 +224,7 @@ def get_company_info():
 			return None
 		company = frappe.db.get_value(
 			"customer_grc", company_name,
-			["name", "entreprise", "email_company", "statut", "compliance_score", "grc_manager", "onboarding_date"],
+			["name", "entreprise", "email_company", "statut", "compliance_score", "grc_manager", "onboarding_date", "etape_avancement"],
 			as_dict=True,
 		)
 		if company and company.get("grc_manager"):

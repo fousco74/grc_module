@@ -188,16 +188,19 @@
    "label": "Sous-traitance"
   },
   {
+   "default": "En cours",
    "fieldname": "status",
    "fieldtype": "Select",
-   "label": "status",
-   "options": "En cours\nTerminer"
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Statut",
+   "options": "En cours\nTermin\u00e9"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-05 10:38:38.228965",
+ "modified": "2026-03-16 13:00:00.000000",
  "modified_by": "Administrator",
  "module": "GRC",
  "name": "file_processing",
@@ -214,6 +217,33 @@
    "role": "System Manager",
    "share": 1,
    "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "GRC Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "GRC Analyst",
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "GRC Client",
+   "select": 1
   }
  ],
  "row_format": "Dynamic",
