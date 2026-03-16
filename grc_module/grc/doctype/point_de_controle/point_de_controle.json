@@ -6,11 +6,12 @@
  "engine": "InnoDB",
  "field_order": [
   "entreprise",
+  "titre",
   "description",
   "column_break_acnd",
   "service",
-  "titre",
-  "statut"
+  "statut",
+  "priorite"
  ],
  "fields": [
   {
@@ -20,6 +21,14 @@
    "in_standard_filter": 1,
    "label": "Entreprise",
    "options": "customer_grc",
+   "reqd": 1
+  },
+  {
+   "fieldname": "titre",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Titre",
    "reqd": 1
   },
   {
@@ -33,35 +42,36 @@
    "fieldtype": "Column Break"
   },
   {
-   "default": "All",
    "fieldname": "service",
    "fieldtype": "Link",
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Service",
-   "link_filters": "[[\"service_grc\",\"entreprise\",\"=\",\"eval:doc.entreprise\"]]",
-   "options": "traitement_grc"
+   "options": "service_grc"
   },
   {
-   "fieldname": "titre",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "titre",
-   "reqd": 1
-  },
-  {
+   "default": "Non \u00e9valu\u00e9",
    "fieldname": "statut",
    "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Statut",
-   "options": "Critique\nMoyenne\nFaible",
+   "options": "Non \u00e9valu\u00e9\nConforme\nPartiel\nNon conforme",
    "reqd": 1
+  },
+  {
+   "fieldname": "priorite",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Priorit\u00e9",
+   "options": "\nCritique\nHaute\nNormale\nFaible"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-05 09:48:48.607132",
+ "modified": "2026-03-16 12:00:00.000000",
  "modified_by": "Administrator",
  "module": "GRC",
  "name": "Point_de_controle",
@@ -78,6 +88,33 @@
    "role": "System Manager",
    "share": 1,
    "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "GRC Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "GRC Analyst",
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "GRC Client",
+   "select": 1
   },
   {
    "email": 1,

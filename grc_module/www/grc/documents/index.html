@@ -1,1074 +1,241 @@
 {% extends base_template %}
 
-{% block title %}Gestion documentaire{% endblock %}
+{% block page_tab_title %}Documents{% endblock %}
+{% block page_title %}Gestion documentaire{% endblock %}
+{% block page_subtitle %}Partagez et consultez les documents de conformité{% endblock %}
 
-{% block link %}
-<link rel="stylesheet" href="/assets/grc_module/css/documents.css">
-{% endblock %}
+{% block page_body %}
 
-{% block content %}
-
-<main class="doc-page max-w-6xl mx-auto px-4 py-6 space-y-6">
-
-    <!-- 1. Section upload / dropzone -->
-    <section class="space-y-3">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-            <div>
-                <h1 class="text-lg font-semibold text-slate-900">Gestion documentaire</h1>
-                <p class="text-xs text-slate-500">
-                    Centralisez vos documents RGPD, contrats, rapports et supports internes.
-                </p>
-            </div>
-            <p class="text-[11px] text-slate-500">
-                Formats : PDF, DOCX, XLSX, PPTX, PNG, JPG • Max 20 Mo / fichier
-            </p>
-        </div>
-
-        <!-- Dropzone -->
-        <div id="dropzone"
-             class="dropzone bg-white rounded-xl px-6 py-8 text-center cursor-pointer">
-            <div class="flex flex-col items-center justify-center gap-2">
-                <i class="fas fa-cloud-upload-alt text-4xl text-blue-500 mb-2"></i>
-                <h3 class="text-sm font-medium text-slate-800">
-                    Glissez-déposez vos fichiers ici
-                </h3>
-                <p class="text-xs text-slate-500">
-                    … ou cliquez pour sélectionner des fichiers
-                </p>
-                <input type="file" id="file-input" class="hidden" multiple>
-                <button type="button"
-                        class="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium px-3 py-2 rounded-md transition-colors duration-200">
-                    <i class="fas fa-upload mr-2 text-[11px]"></i>
-                    Parcourir
-                </button>
-            </div>
-
-            <!-- Barre de progression upload -->
-            <div class="progress-container mt-4 hidden">
-                <div class="flex justify-between text-[11px] text-slate-600 mb-1">
-                    <span>Téléversement en cours…</span>
-                    <span class="progress-percentage">0%</span>
-                </div>
-                <div class="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
-                    <div class="progress-bar bg-blue-600 h-1.5 rounded-full"></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 2. Filtres + vue -->
-    <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 space-y-4">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-            <!-- Recherche -->
-            <div class="relative w-full md:max-w-sm">
-                <input
-                    id="search-input"
-                    type="text"
-                    placeholder="Rechercher par nom, auteur, tag…"
-                    class="w-full pl-9 pr-3 py-2 border border-slate-300 rounded-md text-xs
-                           focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500
-                           placeholder:text-slate-400">
-                <i class="fas fa-search text-slate-400 absolute left-3 top-2.5 text-xs"></i>
-            </div>
-
-            <!-- Vue grille / liste -->
-            <div class="inline-flex rounded-md border border-slate-200 overflow-hidden bg-slate-50">
-                <button type="button"
-                        id="grid-view-btn"
-                        class="view-toggle view-toggle--active">
-                    <i class="fas fa-th-large text-[11px] mr-1"></i>
-                    Grille
-                </button>
-                <button type="button"
-                        id="list-view-btn"
-                        class="view-toggle">
-                    <i class="fas fa-list text-[11px] mr-1"></i>
-                    Liste
-                </button>
-            </div>
-        </div>
-
-        <div class="flex flex-wrap items-center gap-3 text-xs">
-            <!-- Tri -->
-            <div>
-                <label class="block text-[11px] font-semibold text-slate-600 mb-1">
-                    Trier par
-                </label>
-                <select id="sort-select"
-                        class="border border-slate-300 rounded-md px-2 py-1.5 text-xs
-                               focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
-                    <option value="date" selected>Date de modification</option>
-                    <option value="name">Nom (A → Z)</option>
-                    <option value="size">Taille</option>
-                </select>
-            </div>
-
-            <!-- Filtre type -->
-            <div>
-                <label class="block text-[11px] font-semibold text-slate-600 mb-1">
-                    Type de fichier
-                </label>
-                <select id="type-filter"
-                        class="border border-slate-300 rounded-md px-2 py-1.5 text-xs
-                               focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
-                    <option value="all" selected>Tous les types</option>
-                    <option value="documents">Documents Office</option>
-                    <option value="images">Images</option>
-                    <option value="pdf">PDF</option>
-                    <option value="non-valides">Non validés</option>
-                </select>
-            </div>
-
-            <!-- Résumé -->
-            <div class="ml-auto text-[11px] text-slate-500">
-                <span id="docs-count">6</span> documents •
-                vue <span id="current-view-label">grille</span>
-            </div>
-        </div>
-    </section>
-
-    <!-- 3. Liste de documents -->
-    <section>
-        <!-- Conteneur des cartes -->
-        <div id="documents-container"
-             class="documents-grid grid-view gap-4">
-            <!-- Cartes ajoutées en JS -->
-        </div>
-
-        <!-- Etat vide -->
-        <div id="empty-state"
-             class="empty-state hidden bg-white rounded-xl border border-dashed border-slate-300 text-center px-6 py-8 mt-4">
-            <i class="fas fa-folder-open text-3xl text-slate-300 mb-2"></i>
-            <h3 class="text-sm font-semibold text-slate-800 mb-1">
-                Aucun document trouvé
-            </h3>
-            <p class="text-xs text-slate-500">
-                Ajoutez des documents via la zone de dépôt ci-dessus
-                ou ajustez vos filtres de recherche.
-            </p>
-        </div>
-    </section>
-
-    <!-- 4. Pagination -->
-    <section class="flex justify-center">
-        <nav class="inline-flex items-center gap-1 rounded-md bg-white border border-slate-200 px-1 py-1 shadow-sm"
-             aria-label="Pagination">
-            <button type="button"
-                    id="prev-page"
-                    class="page-arrow px-2 py-1 text-slate-500 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed">
-                <i class="fas fa-chevron-left text-[11px]"></i>
-            </button>
-
-            <div id="page-numbers" class="inline-flex items-center gap-1">
-                <!-- Boutons de pages ajoutés en JS -->
-            </div>
-
-            <button type="button"
-                    id="next-page"
-                    class="page-arrow px-2 py-1 text-slate-500 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed">
-                <i class="fas fa-chevron-right text-[11px]"></i>
-            </button>
-        </nav>
-    </section>
-
-</main>
-
-<!-- 5. Menu contextuel -->
-<div id="context-menu"
-     class="context-menu hidden fixed z-40 bg-white rounded-md shadow-lg border border-slate-200 py-1 text-xs">
-    <button class="context-menu-item px-3 py-1.5 w-full text-left text-slate-700 hover:bg-slate-50 flex items-center gap-2"
-            data-action="preview">
-        <i class="fas fa-eye text-slate-500 text-[11px]"></i>
-        Aperçu
-    </button>
-    <button class="context-menu-item px-3 py-1.5 w-full text-left text-slate-700 hover:bg-slate-50 flex items-center gap-2"
-            data-action="download">
-        <i class="fas fa-download text-slate-500 text-[11px]"></i>
-        Télécharger
-    </button>
-    <button class="context-menu-item px-3 py-1.5 w-full text-left text-slate-700 hover:bg-slate-50 flex items-center gap-2"
-            data-action="share">
-        <i class="fas fa-share-alt text-slate-500 text-[11px]"></i>
-        Partager
-    </button>
-    <button class="context-menu-item px-3 py-1.5 w-full text-left text-slate-700 hover:bg-slate-50 flex items-center gap-2"
-            data-action="history">
-        <i class="fas fa-history text-slate-500 text-[11px]"></i>
-        Historique des versions
-    </button>
-    <div class="border-t my-1 border-slate-200"></div>
-    <button class="context-menu-item px-3 py-1.5 w-full text-left text-red-600 hover:bg-slate-50 flex items-center gap-2"
-            data-action="delete">
-        <i class="fas fa-trash text-red-500 text-[11px]"></i>
-        Supprimer
-    </button>
-</div>
-
-<!-- 6. Modale d’aperçu (PDF + images) -->
-<div id="pdf-preview-modal" class="modal-overlay hidden">
-    <div class="bg-white rounded-xl shadow-xl w-full max-w-5xl max-h-screen overflow-auto animate-slide">
-        <div class="flex items-center justify-between border-b border-slate-200 px-4 py-3">
-            <h3 class="text-sm font-semibold text-slate-900">Aperçu du document</h3>
-            <button type="button"
-                    id="close-pdf-preview"
-                    class="text-slate-500 hover:text-slate-700 text-sm">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="p-4">
-            <iframe id="pdf-iframe"
-                    src=""
-                    class="w-full h-[70vh] border border-slate-200 rounded-md bg-slate-50"></iframe>
-        </div>
-        <div class="flex justify-end gap-2 border-t border-slate-200 px-4 py-3">
-            <button type="button"
-                    id="pdf-download-btn"
-                    class="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium px-3 py-2 rounded-md">
-                <i class="fas fa-download mr-2 text-[11px]"></i>
-                Télécharger
-            </button>
-        </div>
+{# ── Upload zone ── #}
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6">
+  <div class="flex flex-wrap gap-4 items-start justify-between mb-4">
+    <div>
+      <h3 class="text-sm font-semibold text-slate-800 dark:text-slate-100 mb-0.5">Téléverser un document</h3>
+      <p class="text-xs text-slate-500">PDF, Word, Excel, images acceptés (max 10 Mo)</p>
     </div>
-</div>
+  </div>
 
-<!-- 7. Modale historique des versions -->
-<div id="version-history-modal" class="modal-overlay hidden">
-    <div class="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-screen overflow-auto animate-slide">
-        <div class="flex items-center justify-between border-b border-slate-200 px-4 py-3">
-            <h3 class="text-sm font-semibold text-slate-900">Historique des versions</h3>
-            <button type="button"
-                    id="close-version-history"
-                    class="text-slate-500 hover:text-slate-700 text-sm">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="p-4 space-y-4">
-            <div class="overflow-x-auto border border-slate-200 rounded-lg">
-                <table class="min-w-full text-xs">
-                    <thead class="bg-slate-50 border-b border-slate-200">
-                        <tr>
-                            <th class="px-4 py-2 text-left font-semibold text-slate-500 uppercase tracking-wide text-[10px]">
-                                Version
-                            </th>
-                            <th class="px-4 py-2 text-left font-semibold text-slate-500 uppercase tracking-wide text-[10px]">
-                                Date
-                            </th>
-                            <th class="px-4 py-2 text-left font-semibold text-slate-500 uppercase tracking-wide text-[10px]">
-                                Auteur
-                            </th>
-                            <th class="px-4 py-2 text-left font-semibold text-slate-500 uppercase tracking-wide text-[10px]">
-                                Taille
-                            </th>
-                            <th class="px-4 py-2 text-left font-semibold text-slate-500 uppercase tracking-wide text-[10px]">
-                                Actions
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody id="version-history-body" class="divide-y divide-slate-100">
-                        <!-- Lignes injectées en JS -->
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Zone de comparaison simple (démo) -->
-            <div id="version-comparison" class="hidden border-t border-slate-200 pt-4">
-                <h4 class="text-xs font-semibold text-slate-800 mb-2">
-                    Comparaison (démo)
-                </h4>
-                <div class="bg-slate-50 rounded-lg p-3 text-[11px] text-slate-600">
-                    <p class="mb-1">
-                        <span class="font-semibold text-slate-700">Version précédente :</span>
-                        <span class="text-rose-500 line-through">Ancienne clause de confidentialité</span>
-                    </p>
-                    <p>
-                        <span class="font-semibold text-slate-700">Version sélectionnée :</span>
-                        <span class="text-emerald-600">Nouvelle clause conforme au RGPD</span>
-                    </p>
-                    <div class="flex justify-end gap-2 mt-3">
-                        <button type="button"
-                                id="cancel-comparison-btn"
-                                class="px-3 py-1.5 rounded-md border border-slate-300 text-[11px] text-slate-600 hover:bg-slate-100">
-                            Fermer
-                        </button>
-                        <button type="button"
-                                id="restore-comparison-btn"
-                                class="px-3 py-1.5 rounded-md bg-blue-600 text-white text-[11px] hover:bg-blue-700">
-                            Restaurer cette version (démo)
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-        </div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div>
+      <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Titre *</label>
+      <input id="doc-titre" type="text" placeholder="Nom du document"
+             class="w-full text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700
+                    rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-slate-100">
     </div>
+    <div>
+      <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Type</label>
+      <select id="doc-type"
+              class="w-full text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700
+                     rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-slate-100">
+        <option value="">Sélectionner…</option>
+        {% for t in doc_types %}<option>{{ t }}</option>{% endfor %}
+      </select>
+    </div>
+    {% if not is_client %}
+    <div>
+      <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Visibilité</label>
+      <select id="doc-visibility"
+              class="w-full text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700
+                     rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-slate-100">
+        <option>Client</option><option>Interne</option><option>Public</option>
+      </select>
+    </div>
+    {% endif %}
+    <div class="sm:col-span-2 lg:col-span-{% if not is_client %}1{% else %}2{% endif %}">
+      <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Description</label>
+      <input id="doc-desc" type="text" placeholder="Optionnel"
+             class="w-full text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700
+                    rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-slate-100">
+    </div>
+  </div>
+
+  {# Drop zone #}
+  <div id="drop-zone"
+       class="mt-4 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-xl p-8 text-center
+              cursor-pointer hover:border-emerald-400 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/10 transition-colors">
+    <i data-feather="upload-cloud" class="w-8 h-8 mx-auto mb-2 text-slate-400"></i>
+    <p class="text-sm text-slate-500 mb-1">Glissez un fichier ici ou <span class="text-emerald-600 dark:text-emerald-400 font-medium">cliquez pour parcourir</span></p>
+    <input id="file-input" type="file" class="hidden"
+           accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.png,.jpg,.jpeg">
+    <p id="file-name" class="text-xs text-emerald-600 dark:text-emerald-400 font-medium mt-2 hidden"></p>
+  </div>
+
+  <div class="mt-4 flex justify-end">
+    <button id="upload-btn" onclick="uploadDocument()"
+            class="flex items-center gap-2 px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg">
+      <i data-feather="upload" class="w-4 h-4"></i>Téléverser
+    </button>
+  </div>
 </div>
+
+{# ── Filter bar ── #}
+<div class="flex flex-wrap gap-3 items-center">
+  <input id="search-input" type="text" placeholder="Rechercher un document…"
+         class="flex-1 min-w-48 text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700
+                rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-slate-100">
+  <select id="type-filter"
+          class="text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700
+                 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-slate-100">
+    <option value="">Tous les types</option>
+    {% for t in doc_types %}<option>{{ t }}</option>{% endfor %}
+  </select>
+</div>
+
+{# ── Document list ── #}
+<div id="doc-list">
+{% if documents %}
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    {% for d in documents %}
+    <div class="doc-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-col gap-3"
+         data-type="{{ d.type_document or '' }}" data-search="{{ (d.titre or '')|lower }}">
+      <div class="flex items-start gap-3">
+        <div class="w-9 h-9 rounded-lg bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center flex-shrink-0">
+          <i data-feather="file" class="w-4 h-4 text-blue-500"></i>
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-semibold text-slate-800 dark:text-slate-100 truncate">{{ d.titre or d.name }}</p>
+          {% if d.type_document %}
+          <span class="inline-block px-2 py-0.5 rounded-full text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-500 mt-0.5">
+            {{ d.type_document }}
+          </span>
+          {% endif %}
+        </div>
+        {% if d.visibilite == 'Interne' %}
+        <span title="Interne uniquement" class="text-slate-400"><i data-feather="lock" class="w-3.5 h-3.5"></i></span>
+        {% endif %}
+      </div>
+
+      {% if d.description %}
+      <p class="text-xs text-slate-500 line-clamp-2">{{ d.description }}</p>
+      {% endif %}
+
+      <div class="flex items-center justify-between text-[11px] text-slate-400 mt-auto">
+        <span>{{ d.creation_date or "" }}</span>
+        <span>{{ d.televerse_par or "" }}</span>
+      </div>
+
+      {% if d.fichier %}
+      <a href="{{ d.fichier }}" target="_blank" download
+         class="flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700
+                text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+        <i data-feather="download" class="w-3.5 h-3.5"></i>Télécharger
+      </a>
+      {% else %}
+      <span class="text-xs text-slate-400 text-center">Aucun fichier joint</span>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl py-16 text-center">
+    <i data-feather="folder" class="w-10 h-10 mx-auto mb-3 text-slate-300"></i>
+    <p class="text-sm text-slate-500">Aucun document partagé</p>
+  </div>
+{% endif %}
+</div>
+<p id="no-results" class="hidden text-center text-sm text-slate-400 py-8">Aucun résultat.</p>
 
 {% endblock %}
 
 {% block script %}
+{{ super() }}
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    // =========================
-    // Données d'exemple
-    // =========================
-    let documents = [
-        {
-            id: 1,
-            name: "Rapport annuel 2023.pdf",
-            type: "pdf",
-            size: "2.4 MB",
-            modified: "2023-05-15",
-            author: "Jean Dupont",
-            validated: true,
-            tags: ["Finance", "Rapport"],
-            thumbnail: "https://cdn-icons-png.flaticon.com/512/337/337946.png",
-            url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
-            versions: [
-                { version: "1.3", date: "2023-05-15", author: "Jean Dupont", size: "2.4 MB" },
-                { version: "1.2", date: "2023-04-28", author: "Jean Dupont", size: "2.1 MB" },
-                { version: "1.1", date: "2023-03-10", author: "Jean Dupont", size: "1.8 MB" }
-            ]
-        },
-        {
-            id: 2,
-            name: "Présentation stratégie.pptx",
-            type: "pptx",
-            size: "5.7 MB",
-            modified: "2023-06-02",
-            author: "Marie Lambert",
-            validated: false,
-            tags: ["Marketing", "Présentation"],
-            thumbnail: "https://cdn-icons-png.flaticon.com/512/337/337953.png",
-            url: "#",
-            versions: [
-                { version: "2.1", date: "2023-06-02", author: "Marie Lambert", size: "5.7 MB" },
-                { version: "2.0", date: "2023-05-20", author: "Marie Lambert", size: "4.9 MB" }
-            ]
-        },
-        {
-            id: 3,
-            name: "Budget Q3.xlsx",
-            type: "xlsx",
-            size: "1.2 MB",
-            modified: "2023-07-10",
-            author: "Pierre Martin",
-            validated: true,
-            tags: ["Finance", "Budget"],
-            thumbnail: "https://cdn-icons-png.flaticon.com/512/337/337932.png",
-            url: "#",
-            versions: [
-                { version: "3.2", date: "2023-07-10", author: "Pierre Martin", size: "1.2 MB" },
-                { version: "3.1", date: "2023-06-25", author: "Pierre Martin", size: "1.1 MB" }
-            ]
-        },
-        {
-            id: 4,
-            name: "Contrat client.docx",
-            type: "docx",
-            size: "850 KB",
-            modified: "2023-06-28",
-            author: "Sophie Bernard",
-            validated: true,
-            tags: ["Juridique", "Client"],
-            thumbnail: "https://cdn-icons-png.flaticon.com/512/337/337949.png",
-            url: "#",
-            versions: [
-                { version: "4.5", date: "2023-06-28", author: "Sophie Bernard", size: "850 KB" },
-                { version: "4.4", date: "2023-06-20", author: "Sophie Bernard", size: "820 KB" }
-            ]
-        },
-        {
-            id: 5,
-            name: "Logo entreprise.png",
-            type: "png",
-            size: "320 KB",
-            modified: "2023-01-15",
-            author: "Thomas Leroy",
-            validated: true,
-            tags: ["Design", "Branding"],
-            thumbnail: "https://cdn-icons-png.flaticon.com/512/337/337943.png",
-            url: "https://via.placeholder.com/600x400.png",
-            versions: [
-                { version: "1.0", date: "2023-01-15", author: "Thomas Leroy", size: "320 KB" }
-            ]
-        },
-        {
-            id: 6,
-            name: "Procédure RH.pdf",
-            type: "pdf",
-            size: "1.8 MB",
-            modified: "2023-05-30",
-            author: "Laura Petit",
-            validated: false,
-            tags: ["RH", "Process"],
-            thumbnail: "https://cdn-icons-png.flaticon.com/512/337/337946.png",
-            url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
-            versions: [
-                { version: "2.0", date: "2023-05-30", author: "Laura Petit", size: "1.8 MB" },
-                { version: "1.5", date: "2023-04-12", author: "Laura Petit", size: "1.6 MB" }
-            ]
-        }
-    ];
+var currentCompany = "{{ company or (companies[0].name if companies else '') }}";
+var isClient = {{ 'true' if is_client else 'false' }};
 
-    // =========================
-    // Sélection des éléments
-    // =========================
-    const dropzone           = document.getElementById('dropzone');
-    const fileInput          = document.getElementById('file-input');
-    const documentsContainer = document.getElementById('documents-container');
-    const emptyState         = document.getElementById('empty-state');
-    const docsCount          = document.getElementById('docs-count');
-    const currentViewLabel   = document.getElementById('current-view-label');
+frappe.ready(function () {
+    if (window.feather) feather.replace({ 'stroke-width': 1.75 });
 
-    const searchInput  = document.getElementById('search-input');
-    const sortSelect   = document.getElementById('sort-select');
-    const typeFilter   = document.getElementById('type-filter');
-    const gridViewBtn  = document.getElementById('grid-view-btn');
-    const listViewBtn  = document.getElementById('list-view-btn');
+    // Drop zone
+    var dropZone  = document.getElementById('drop-zone');
+    var fileInput = document.getElementById('file-input');
+    var fileLabel = document.getElementById('file-name');
 
-    const prevPageBtn  = document.getElementById('prev-page');
-    const nextPageBtn  = document.getElementById('next-page');
-    const pageNumbers  = document.getElementById('page-numbers');
-
-    const contextMenu  = document.getElementById('context-menu');
-
-    const pdfPreviewModal = document.getElementById('pdf-preview-modal');
-    const pdfIframe       = document.getElementById('pdf-iframe');
-    const closePdfPreview = document.getElementById('close-pdf-preview');
-    const pdfDownloadBtn  = document.getElementById('pdf-download-btn');
-
-    const versionHistoryModal = document.getElementById('version-history-modal');
-    const versionHistoryBody  = document.getElementById('version-history-body');
-    const closeVersionHistory = document.getElementById('close-version-history');
-    const versionComparison   = document.getElementById('version-comparison');
-    const cancelComparisonBtn = document.getElementById('cancel-comparison-btn');
-    const restoreComparisonBtn = document.getElementById('restore-comparison-btn');
-
-    const progressContainer   = dropzone.querySelector('.progress-container');
-    const progressBar         = dropzone.querySelector('.progress-bar');
-    const progressPercentage  = dropzone.querySelector('.progress-percentage');
-
-    // =========================
-    // Etat courant
-    // =========================
-    let currentView = 'grid';
-    let currentPage = 1;
-    const pageSize  = 8;
-    let filteredDocs = [...documents];
-    let selectedDocumentId = null;
-    let currentPreviewDoc = null;
-
-    // =========================
-    // Utilitaires
-    // =========================
-    function formatDate(dateString) {
-        const options = { day: 'numeric', month: 'long', year: 'numeric' };
-        return new Date(dateString).toLocaleDateString('fr-FR', options);
-    }
-
-    function parseSize(sizeStr) {
-        const [num, unit] = sizeStr.split(' ');
-        const value = parseFloat(num) || 0;
-        const u = (unit || '').toUpperCase();
-        const factor =
-            u === 'KB' ? 1024 :
-            u === 'MB' ? 1024 * 1024 :
-            u === 'GB' ? 1024 * 1024 * 1024 : 1;
-        return value * factor;
-    }
-
-    function formatFileSize(bytes) {
-        if (!bytes || bytes <= 0) return '0 Bytes';
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
-    }
-
-    function getThumbnailForType(type) {
-        const t = (type || '').toLowerCase();
-        const map = {
-            pdf:  "https://cdn-icons-png.flaticon.com/512/337/337946.png",
-            doc:  "https://cdn-icons-png.flaticon.com/512/337/337949.png",
-            docx: "https://cdn-icons-png.flaticon.com/512/337/337949.png",
-            xls:  "https://cdn-icons-png.flaticon.com/512/337/337932.png",
-            xlsx: "https://cdn-icons-png.flaticon.com/512/337/337932.png",
-            ppt:  "https://cdn-icons-png.flaticon.com/512/337/337953.png",
-            pptx: "https://cdn-icons-png.flaticon.com/512/337/337953.png",
-            png:  "https://cdn-icons-png.flaticon.com/512/337/337943.png",
-            jpg:  "https://cdn-icons-png.flaticon.com/512/337/337943.png",
-            jpeg: "https://cdn-icons-png.flaticon.com/512/337/337943.png",
-            gif:  "https://cdn-icons-png.flaticon.com/512/337/337943.png"
-        };
-        return map[t] || "https://cdn-icons-png.flaticon.com/512/337/337958.png";
-    }
-
-    // =========================
-    // Construction d'une carte
-    // =========================
-    function createDocumentElement(doc) {
-        const card = document.createElement('article');
-        card.className = currentView === 'grid'
-            ? 'document-card h-64 flex flex-col'
-            : 'document-card flex h-24';
-        card.dataset.id = String(doc.id);
-
-        if (currentView === 'grid') {
-            card.innerHTML = `
-                <div class="flex-1 flex items-center justify-center bg-slate-50 relative">
-                    <img src="${doc.thumbnail}" alt="${doc.name}" class="max-h-16 max-w-[70%] object-contain">
-                    ${!doc.validated
-                        ? '<span class="absolute top-2 right-2 inline-flex w-3 h-3 rounded-full bg-amber-500" title="Document non validé"></span>'
-                        : ''
-                    }
-                </div>
-                <div class="px-3 py-3 space-y-1">
-                    <div class="flex items-start justify-between gap-2">
-                        <h3 class="text-xs font-semibold text-slate-900 truncate" title="${doc.name}">
-                            ${doc.name}
-                        </h3>
-                        <button type="button"
-                                class="document-more text-slate-400 hover:text-slate-600 text-[11px]"
-                                data-id="${doc.id}">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </button>
-                    </div>
-                    <p class="text-[11px] text-slate-500">
-                        ${doc.size} • Modifié le ${formatDate(doc.modified)}
-                    </p>
-                    <p class="text-[11px] text-slate-500 truncate">
-                        ${doc.author}
-                    </p>
-                    <div class="flex flex-wrap gap-1 mt-1">
-                        ${doc.tags.map(tag => `
-                            <span class="inline-flex items-center px-2 py-[2px] rounded-full bg-blue-50 text-blue-700 text-[10px]">
-                                ${tag}
-                            </span>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
-        } else {
-            // Vue liste
-            card.innerHTML = `
-                <div class="flex items-center justify-center w-16 bg-slate-50">
-                    <img src="${doc.thumbnail}" alt="${doc.name}" class="max-h-10 max-w-full object-contain">
-                </div>
-                <div class="flex-1 px-3 py-2 flex flex-col justify-center">
-                    <div class="flex items-center justify-between gap-2 mb-1">
-                        <h3 class="text-xs font-semibold text-slate-900 truncate" title="${doc.name}">
-                            ${doc.name}
-                        </h3>
-                        <button type="button"
-                                class="document-more text-slate-400 hover:text-slate-600 text-[11px]"
-                                data-id="${doc.id}">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </button>
-                    </div>
-                    <p class="text-[11px] text-slate-500 truncate">
-                        ${doc.size} • Modifié le ${formatDate(doc.modified)} • ${doc.author}
-                    </p>
-                </div>
-                <div class="px-3 py-2 flex items-center gap-2">
-                    ${!doc.validated
-                        ? '<span class="inline-flex w-3 h-3 rounded-full bg-amber-500" title="Document non validé"></span>'
-                        : ''
-                    }
-                    <div class="flex flex-wrap gap-1">
-                        ${doc.tags.map(tag => `
-                            <span class="inline-flex items-center px-2 py-[2px] rounded-full bg-blue-50 text-blue-700 text-[10px]">
-                                ${tag}
-                            </span>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
-        }
-
-        return card;
-    }
-
-    // =========================
-    // Filtres + tri
-    // =========================
-    function applySort() {
-        const value = sortSelect.value;
-        filteredDocs.sort((a, b) => {
-            if (value === 'name') {
-                return a.name.localeCompare(b.name, 'fr', { sensitivity: 'base' });
-            }
-            if (value === 'size') {
-                return parseSize(b.size) - parseSize(a.size);
-            }
-            // Tri par date (défaut)
-            return new Date(b.modified) - new Date(a.modified);
-        });
-    }
-
-    function applyFilters() {
-        const query = (searchInput.value || '').trim().toLowerCase();
-        const typeVal = typeFilter.value;
-
-        filteredDocs = documents.filter(doc => {
-            let ok = true;
-
-            if (query) {
-                const text = (doc.name + ' ' + doc.author + ' ' + doc.tags.join(' ')).toLowerCase();
-                if (!text.includes(query)) ok = false;
-            }
-
-            if (typeVal && typeVal !== 'all') {
-                const t = (doc.type || '').toLowerCase();
-                const docTypes = ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'];
-                const imgTypes = ['png', 'jpg', 'jpeg', 'gif'];
-
-                if (typeVal === 'documents' && !docTypes.includes(t)) ok = false;
-                if (typeVal === 'images' && !imgTypes.includes(t)) ok = false;
-                if (typeVal === 'pdf' && t !== 'pdf') ok = false;
-                if (typeVal === 'non-valides' && doc.validated) ok = false;
-            }
-
-            return ok;
-        });
-
-        applySort();
-        currentPage = 1;
-        render();
-    }
-
-    // =========================
-    // Pagination
-    // =========================
-    function updatePagination(totalPages) {
-        pageNumbers.innerHTML = '';
-
-        for (let i = 1; i <= totalPages; i++) {
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.textContent = i;
-            btn.className = 'page-number';
-            if (i === currentPage) {
-                btn.classList.add('is-active');
-            }
-            btn.addEventListener('click', () => {
-                currentPage = i;
-                render();
-            });
-            pageNumbers.appendChild(btn);
-        }
-
-        prevPageBtn.disabled = currentPage <= 1;
-        nextPageBtn.disabled = currentPage >= totalPages;
-    }
-
-    // =========================
-    // Rendu principal
-    // =========================
-    function render() {
-        documentsContainer.innerHTML = '';
-
-        docsCount.textContent = filteredDocs.length.toString();
-
-        if (!filteredDocs.length) {
-            emptyState.classList.remove('hidden');
-            updatePagination(1);
-            return;
-        } else {
-            emptyState.classList.add('hidden');
-        }
-
-        const totalPages = Math.max(1, Math.ceil(filteredDocs.length / pageSize));
-        if (currentPage > totalPages) currentPage = totalPages;
-
-        const start = (currentPage - 1) * pageSize;
-        const end   = start + pageSize;
-        const slice = filteredDocs.slice(start, end);
-
-        slice.forEach(doc => {
-            const card = createDocumentElement(doc);
-            documentsContainer.appendChild(card);
-        });
-
-        updatePagination(totalPages);
-    }
-
-    // =========================
-    // Vue grille / liste
-    // =========================
-    function setView(view) {
-        currentView = view;
-        if (view === 'list') {
-            documentsContainer.classList.remove('grid-view');
-            documentsContainer.classList.add('list-view');
-            gridViewBtn.classList.remove('view-toggle--active');
-            listViewBtn.classList.add('view-toggle--active');
-            currentViewLabel.textContent = 'liste';
-        } else {
-            documentsContainer.classList.add('grid-view');
-            documentsContainer.classList.remove('list-view');
-            listViewBtn.classList.remove('view-toggle--active');
-            gridViewBtn.classList.add('view-toggle--active');
-            currentViewLabel.textContent = 'grille';
-        }
-        render();
-    }
-
-    // =========================
-    // Upload (simulation, avec vrai téléchargement via blob)
-    // =========================
-    function handleFiles(files) {
-        if (!files || !files.length) return;
-
-        progressContainer.classList.remove('hidden');
-        let progress = 0;
-
-        const interval = setInterval(() => {
-            progress += Math.random() * 18;
-            if (progress >= 100) {
-                progress = 100;
-                clearInterval(interval);
-
-                setTimeout(() => {
-                    progressContainer.classList.add('hidden');
-                    progressBar.style.width = '0%';
-                    progressPercentage.textContent = '0%';
-
-                    Array.from(files).forEach((file, index) => {
-                        const ext = (file.name.split('.').pop() || '').toLowerCase();
-                        const blobUrl = URL.createObjectURL(file);
-
-                        const newDoc = {
-                            id: documents.length + index + 1,
-                            name: file.name,
-                            type: ext,
-                            size: formatFileSize(file.size),
-                            modified: new Date().toISOString().slice(0, 10),
-                            author: "Utilisateur actuel",
-                            validated: false,
-                            tags: ["Nouveau"],
-                            thumbnail: getThumbnailForType(ext),
-                            url: blobUrl,
-                            versions: [
-                                {
-                                    version: "1.0",
-                                    date: new Date().toISOString().slice(0, 10),
-                                    author: "Utilisateur actuel",
-                                    size: formatFileSize(file.size)
-                                }
-                            ]
-                        };
-                        documents.unshift(newDoc);
-                    });
-
-                    applyFilters();
-                }, 400);
-            }
-
-            progressBar.style.width = progress + '%';
-            progressPercentage.textContent = Math.round(progress) + '%';
-        }, 200);
-    }
-
-    // =========================
-    // Menu contextuel
-    // =========================
-    function hideContextMenu() {
-        contextMenu.classList.add('hidden');
-        contextMenu.classList.remove('visible');
-        contextMenu.style.left = '-9999px';
-        contextMenu.style.top  = '-9999px';
-    }
-
-    function showContextMenu(event, docId) {
-        event.preventDefault();
-        selectedDocumentId = docId;
-
-        const menuWidth  = 220;
-        const menuHeight = 220;
-        let x = event.clientX;
-        let y = event.clientY;
-
-        if (x + menuWidth > window.innerWidth) {
-            x = window.innerWidth - menuWidth - 12;
-        }
-        if (y + menuHeight > window.innerHeight) {
-            y = window.innerHeight - menuHeight - 12;
-        }
-
-        contextMenu.style.left = x + 'px';
-        contextMenu.style.top  = y + 'px';
-        contextMenu.classList.remove('hidden');
-        contextMenu.classList.add('visible');
-    }
-
-    function showPreview(docId) {
-        const doc = documents.find(d => d.id === docId);
-        if (!doc) return;
-
-        const ext = (doc.type || '').toLowerCase();
-        const canEmbed = ext === 'pdf' || ['png', 'jpg', 'jpeg', 'gif'].includes(ext);
-
-        if (!doc.url || doc.url === '#') {
-            alert("Ce document n'a pas encore d'URL de prévisualisation (exemple statique).");
-            return;
-        }
-
-        if (canEmbed) {
-            currentPreviewDoc = doc;
-            pdfIframe.src = doc.url;
-            pdfPreviewModal.classList.remove('hidden');
-        } else {
-            // Pour docx, xlsx, pptx → ouverture dans un nouvel onglet
-            window.open(doc.url, '_blank');
-        }
-    }
-
-    function showVersionHistory(docId) {
-        const doc = documents.find(d => d.id === docId);
-        if (!doc) return;
-
-        versionHistoryBody.innerHTML = '';
-        if (versionComparison) versionComparison.classList.add('hidden');
-
-        doc.versions.forEach((v, index) => {
-            const tr = document.createElement('tr');
-            tr.className = index % 2 === 0 ? 'bg-white' : 'bg-slate-50';
-            tr.innerHTML = `
-                <td class="px-4 py-2 whitespace-nowrap text-[11px] font-semibold text-slate-800">
-                    ${v.version}
-                </td>
-                <td class="px-4 py-2 whitespace-nowrap text-[11px] text-slate-600">
-                    ${formatDate(v.date)}
-                </td>
-                <td class="px-4 py-2 whitespace-nowrap text-[11px] text-slate-600">
-                    ${v.author}
-                </td>
-                <td class="px-4 py-2 whitespace-nowrap text-[11px] text-slate-600">
-                    ${v.size}
-                </td>
-                <td class="px-4 py-2 whitespace-nowrap text-[11px] text-slate-600">
-                    <button type="button"
-                            class="text-blue-600 hover:text-blue-800 mr-2 compare-version"
-                            data-version="${v.version}">
-                        Comparer
-                    </button>
-                    <button type="button"
-                            class="text-blue-600 hover:text-blue-800 restore-version"
-                            data-version="${v.version}">
-                        Restaurer
-                    </button>
-                </td>
-            `;
-            versionHistoryBody.appendChild(tr);
-        });
-
-        versionHistoryModal.classList.remove('hidden');
-    }
-
-    function downloadDocument(docId) {
-        const doc = documents.find(d => d.id === docId);
-        if (!doc) return;
-
-        if (!doc.url || doc.url === '#') {
-            alert("Aucune URL de téléchargement configurée pour ce document (exemple statique).");
-            return;
-        }
-
-        const link = document.createElement('a');
-        link.href = doc.url;
-        link.download = doc.name || '';
-        link.target = '_blank';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-
-    function shareDocument(docId) {
-        const doc = documents.find(d => d.id === docId);
-        if (!doc) return;
-        alert(`Lien de partage généré pour "${doc.name}" (démo).`);
-    }
-
-    function deleteDocument(docId) {
-        if (!confirm('Êtes-vous sûr de vouloir supprimer ce document ?')) return;
-        documents = documents.filter(d => d.id !== docId);
-        applyFilters();
-    }
-
-    // =========================
-    // LISTENERS
-    // =========================
-
-    // Dropzone
-    dropzone.addEventListener('click', () => fileInput.click());
-
-    dropzone.addEventListener('dragover', (e) => {
+    dropZone.addEventListener('click', function () { fileInput.click(); });
+    dropZone.addEventListener('dragover', function (e) { e.preventDefault(); dropZone.classList.add('border-emerald-400'); });
+    dropZone.addEventListener('dragleave', function () { dropZone.classList.remove('border-emerald-400'); });
+    dropZone.addEventListener('drop', function (e) {
         e.preventDefault();
-        dropzone.classList.add('active');
+        dropZone.classList.remove('border-emerald-400');
+        if (e.dataTransfer.files.length) {
+            fileInput.files = e.dataTransfer.files;
+            fileLabel.textContent = fileInput.files[0].name;
+            fileLabel.classList.remove('hidden');
+        }
     });
-
-    ['dragleave', 'dragend'].forEach(evt => {
-        dropzone.addEventListener(evt, () => dropzone.classList.remove('active'));
-    });
-
-    dropzone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropzone.classList.remove('active');
-        handleFiles(e.dataTransfer.files);
-    });
-
-    fileInput.addEventListener('change', () => {
-        if (fileInput.files && fileInput.files.length) {
-            handleFiles(fileInput.files);
-            fileInput.value = '';
+    fileInput.addEventListener('change', function () {
+        if (fileInput.files.length) {
+            fileLabel.textContent = fileInput.files[0].name;
+            fileLabel.classList.remove('hidden');
         }
     });
 
-    // Recherche + filtres
-    searchInput.addEventListener('input', () => applyFilters());
-    sortSelect.addEventListener('change', () => applyFilters());
-    typeFilter.addEventListener('change', () => applyFilters());
-
-    // Vue grille / liste
-    gridViewBtn.addEventListener('click', () => setView('grid'));
-    listViewBtn.addEventListener('click', () => setView('list'));
-
-    // Pagination boutons
-    prevPageBtn.addEventListener('click', () => {
-        if (currentPage > 1) {
-            currentPage--;
-            render();
-        }
-    });
-
-    nextPageBtn.addEventListener('click', () => {
-        const totalPages = Math.max(1, Math.ceil(filteredDocs.length / pageSize));
-        if (currentPage < totalPages) {
-            currentPage++;
-            render();
-        }
-    });
-
-    // Délégation : menu "..."
-    documentsContainer.addEventListener('click', (e) => {
-        const moreBtn = e.target.closest('.document-more');
-        if (!moreBtn) return;
-        const id = parseInt(moreBtn.dataset.id, 10);
-        if (isNaN(id)) return;
-        showContextMenu(e, id);
-    });
-
-    // Double clic sur carte → aperçu
-    documentsContainer.addEventListener('dblclick', (e) => {
-        const card = e.target.closest('.document-card');
-        if (!card) return;
-        const id = parseInt(card.dataset.id, 10);
-        if (isNaN(id)) return;
-        showPreview(id);
-    });
-
-    // Clic global : fermer menu contextuel
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('#context-menu') && !e.target.closest('.document-more')) {
-            hideContextMenu();
-        }
-    });
-
-    // Clic sur menu contextuel
-    contextMenu.addEventListener('click', (e) => {
-        const item = e.target.closest('.context-menu-item');
-        if (!item) return;
-        const action = item.dataset.action;
-        hideContextMenu();
-        if (!selectedDocumentId) return;
-        const id = selectedDocumentId;
-
-        switch (action) {
-            case 'preview':
-                showPreview(id);
-                break;
-            case 'download':
-                downloadDocument(id);
-                break;
-            case 'share':
-                shareDocument(id);
-                break;
-            case 'history':
-                showVersionHistory(id);
-                break;
-            case 'delete':
-                deleteDocument(id);
-                break;
-        }
-    });
-
-    // Modale preview
-    closePdfPreview.addEventListener('click', () => {
-        pdfPreviewModal.classList.add('hidden');
-        pdfIframe.src = '';
-        currentPreviewDoc = null;
-    });
-
-    pdfPreviewModal.addEventListener('click', (e) => {
-        if (e.target === pdfPreviewModal) {
-            pdfPreviewModal.classList.add('hidden');
-            pdfIframe.src = '';
-            currentPreviewDoc = null;
-        }
-    });
-
-    // Bouton télécharger dans la modale
-    pdfDownloadBtn.addEventListener('click', () => {
-        if (!currentPreviewDoc) return;
-        downloadDocument(currentPreviewDoc.id);
-    });
-
-    // Modale historique
-    closeVersionHistory.addEventListener('click', () => {
-        versionHistoryModal.classList.add('hidden');
-    });
-
-    versionHistoryModal.addEventListener('click', (e) => {
-        if (e.target === versionHistoryModal) {
-            versionHistoryModal.classList.add('hidden');
-        }
-    });
-
-    versionHistoryBody.addEventListener('click', (e) => {
-        const compareBtn = e.target.closest('.compare-version');
-        const restoreBtn = e.target.closest('.restore-version');
-
-        if (compareBtn) {
-            if (versionComparison) versionComparison.classList.remove('hidden');
-        }
-
-        if (restoreBtn) {
-            const v = restoreBtn.dataset.version;
-            if (confirm(`Restaurer la version ${v} ? (démo)`)) {
-                alert(`Version ${v} restaurée (simulation).`);
-                versionHistoryModal.classList.add('hidden');
-            }
-        }
-    });
-
-    if (cancelComparisonBtn) {
-        cancelComparisonBtn.addEventListener('click', () => {
-            versionComparison.classList.add('hidden');
+    // Document filters
+    function filterDocs() {
+        var q = (document.getElementById('search-input').value || '').toLowerCase();
+        var t = document.getElementById('type-filter').value;
+        var cards = document.querySelectorAll('.doc-card');
+        var n = 0;
+        cards.forEach(function (c) {
+            var ok = (!t || c.dataset.type === t) && (!q || c.dataset.search.includes(q));
+            c.style.display = ok ? '' : 'none';
+            if (ok) n++;
         });
+        document.getElementById('no-results').classList.toggle('hidden', n > 0 || cards.length === 0);
     }
-
-    if (restoreComparisonBtn) {
-        restoreComparisonBtn.addEventListener('click', () => {
-            alert('Cette version serait restaurée en vrai backend (démo).');
-            versionComparison.classList.add('hidden');
-            versionHistoryModal.classList.add('hidden');
-        });
-    }
-
-    // =========================
-    // Initialisation
-    // =========================
-    applyFilters();
+    document.getElementById('search-input').addEventListener('input', filterDocs);
+    document.getElementById('type-filter').addEventListener('change', filterDocs);
 });
+
+function uploadDocument() {
+    var titre = document.getElementById('doc-titre').value.trim();
+    var type  = document.getElementById('doc-type').value;
+    var desc  = document.getElementById('doc-desc').value.trim();
+    var vis   = isClient ? 'Client' : (document.getElementById('doc-visibility') ? document.getElementById('doc-visibility').value : 'Client');
+    var file  = document.getElementById('file-input').files[0];
+
+    if (!titre) { showToast('Le titre est obligatoire', 'warning'); return; }
+
+    var btn = document.getElementById('upload-btn');
+    btn.disabled = true;
+    btn.textContent = 'Téléversement…';
+
+    function createDoc(fileUrl) {
+        frappe.call({
+            method: 'grc_module.api.create_grc_document',
+            args: { entreprise: currentCompany, titre: titre, type_document: type, description: desc, fichier: fileUrl || '' },
+            callback: function (r) {
+                btn.disabled = false;
+                btn.innerHTML = '<svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>Téléverser';
+                if (r.message && r.message.status === 'created') {
+                    showToast('Document ajouté', 'success');
+                    setTimeout(function () { location.reload(); }, 1200);
+                }
+            },
+            error: function () { btn.disabled = false; btn.textContent = 'Téléverser'; showToast('Erreur', 'error'); }
+        });
+    }
+
+    if (file) {
+        var fd = new FormData();
+        fd.append('file', file);
+        fd.append('is_private', 0);
+        fd.append('doctype', 'grc_document');
+        fd.append('docfield', 'fichier');
+        fetch('/api/method/upload_file', {
+            method: 'POST',
+            headers: { 'X-Frappe-CSRF-Token': frappe.csrf_token },
+            body: fd,
+        })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+            var url = data.message && data.message.file_url ? data.message.file_url : '';
+            createDoc(url);
+        })
+        .catch(function () { createDoc(''); });
+    } else {
+        createDoc('');
+    }
+}
 </script>
 {% endblock %}

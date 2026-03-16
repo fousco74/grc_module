@@ -132,42 +132,49 @@
             <ul class="space-y-0.5 text-sm" id="main-nav">
 
                 <li>
-                    <a href="/dashboard" data-path="/dashboard"
+                    <a href="/grc/dashboard" data-path="/grc/dashboard"
                        class="nav-link flex items-center px-3 py-2.5 gap-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white">
                         <i data-feather="home" class="w-4 h-4 flex-shrink-0"></i>
                         <span class="truncate">Dashboard</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/audit" data-path="/audit"
+                    <a href="/grc/violations" data-path="/grc/violations"
+                       class="nav-link flex items-center px-3 py-2.5 gap-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white">
+                        <i data-feather="alert-triangle" class="w-4 h-4 flex-shrink-0"></i>
+                        <span class="truncate">Violations</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/grc/audit" data-path="/grc/audit"
                        class="nav-link flex items-center px-3 py-2.5 gap-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white">
                         <i data-feather="clipboard" class="w-4 h-4 flex-shrink-0"></i>
                         <span class="truncate">Audit</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/registre-processing" data-path="/registre-processing"
+                    <a href="/grc/registre-processing" data-path="/grc/registre-processing"
                        class="nav-link flex items-center px-3 py-2.5 gap-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white">
                         <i data-feather="file-text" class="w-4 h-4 flex-shrink-0"></i>
                         <span class="truncate">Registre de traitement</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/action-plan" data-path="/action-plan"
+                    <a href="/grc/action-plan" data-path="/grc/action-plan"
                        class="nav-link flex items-center px-3 py-2.5 gap-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white">
                         <i data-feather="target" class="w-4 h-4 flex-shrink-0"></i>
                         <span class="truncate">Plan d'action</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/make-right" data-path="/make-right"
+                    <a href="/grc/make-right" data-path="/grc/make-right"
                        class="nav-link flex items-center px-3 py-2.5 gap-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white">
                         <i data-feather="user-check" class="w-4 h-4 flex-shrink-0"></i>
                         <span class="truncate">Demande de droit</span>
                     </a>
                 </li>
                 <li>
-                    <a href="/documents" data-path="/documents"
+                    <a href="/grc/documents" data-path="/grc/documents"
                        class="nav-link flex items-center px-3 py-2.5 gap-3 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white">
                         <i data-feather="folder" class="w-4 h-4 flex-shrink-0"></i>
                         <span class="truncate">Gestion documentaire</span>
@@ -186,7 +193,7 @@
                 <div class="leading-tight min-w-0">
                     {# frappe.session expose le user côté Jinja #}
                     <p class="text-xs font-medium truncate">{{ frappe.session.user_fullname or "Admin" }}</p>
-                    <p class="text-[10px] text-slate-500">Administrateur RGPD</p>
+                    <p class="text-[10px] text-slate-500">{{ frappe.session.user }}</p>
                 </div>
             </div>
            <button onclick="logout()"
@@ -481,12 +488,7 @@ frappe.ready(function () {
     /* ════════════════════════════════════════════════════════════
        NOTIFICATIONS
     ════════════════════════════════════════════════════════════ */
-    var notifData = [
-        { id:1, read:false, color:'bg-red-500',     title:'Incident de sécurité déclaré',      body:"L'équipe IT a signalé un accès suspect au SI.",   time:'Il y a 10 min' },
-        { id:2, read:false, color:'bg-amber-400',   title:'3 demandes de droits en attente',   body:'Des personnes concernées attendent une réponse.', time:'Il y a 1 h'    },
-        { id:3, read:false, color:'bg-emerald-500', title:'Registre de traitement mis à jour', body:'Le service Marketing a complété ses fiches.',      time:'Il y a 2 j'    },
-        { id:4, read:false, color:'bg-slate-400',   title:"Plan d'action à réviser",           body:"Certaines actions sont arrivées à échéance.",     time:'Il y a 5 j'    },
-    ];
+    var notifData = [];
 
     function renderNotifs() {
         var list    = document.getElementById('notif-list');
@@ -535,8 +537,12 @@ frappe.ready(function () {
                 e.stopPropagation();
                 var id  = parseInt(btn.dataset.id);
                 var idx = notifData.findIndex(function (n) { return n.id === id; });
-                if (btn.dataset.action === 'read'   && idx !== -1) { notifData[idx].read = true; showToast('Marquée comme lue', 'success'); }
-                if (btn.dataset.action === 'delete' && idx !== -1) { notifData.splice(idx, 1);   showToast('Notification supprimée', 'info'); }
+                if (btn.dataset.action === 'read' && idx !== -1) {
+                    notifData[idx].read = true;
+                    frappe.call({ method: 'grc_module.api.mark_notification_read', args: { name: id } });
+                    showToast('Marquée comme lue', 'success');
+                }
+                if (btn.dataset.action === 'delete' && idx !== -1) { notifData.splice(idx, 1); showToast('Notification supprimée', 'info'); }
                 renderNotifs();
             });
         });
@@ -548,9 +554,31 @@ frappe.ready(function () {
         markAllBtn.addEventListener('click', function () {
             notifData.forEach(function (n) { n.read = true; });
             renderNotifs();
+            frappe.call({ method: 'grc_module.api.mark_all_notifications_read' });
             showToast('Toutes les notifications lues', 'success');
         });
     }
+
+    /* Load real notifications from Frappe */
+    frappe.call({
+        method: 'grc_module.api.get_notifications',
+        args: { limit: 10 },
+        callback: function (r) {
+            if (r.message) {
+                notifData = (r.message || []).map(function (n) {
+                    return {
+                        id: n.name,
+                        read: !!n.read,
+                        color: n.read ? 'bg-slate-400' : 'bg-emerald-500',
+                        title: n.subject || 'Notification',
+                        body: (n.email_content || '').replace(/<[^>]*>/g, '').slice(0, 80),
+                        time: frappe.datetime.prettyDate(n.creation),
+                    };
+                });
+                renderNotifs();
+            }
+        }
+    });
 
     renderNotifs();
 

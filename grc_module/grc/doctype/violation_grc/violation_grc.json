@@ -7,12 +7,18 @@
  "field_order": [
   "cr\u00e9ation_de_violation_section",
   "entreprise",
+  "titre",
   "description",
   "date_de_cr\u00e9ation",
   "column_break_xteq",
   "statut",
+  "gravite",
+  "type_violation",
+  "responsable",
+  "date_de_fin",
+  "resolution_section",
   "observation",
-  "date_de_fin"
+  "notes_resolution"
  ],
  "fields": [
   {
@@ -30,12 +36,20 @@
    "reqd": 1
   },
   {
+   "fieldname": "titre",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Titre",
+   "reqd": 1
+  },
+  {
    "fieldname": "description",
    "fieldtype": "Small Text",
    "label": "Description",
    "reqd": 1
   },
   {
+   "default": "Today",
    "fieldname": "date_de_cr\u00e9ation",
    "fieldtype": "Date",
    "label": "Date de cr\u00e9ation",
@@ -46,6 +60,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "default": "A faire",
    "fieldname": "statut",
    "fieldtype": "Select",
    "in_list_view": 1,
@@ -55,21 +70,50 @@
    "reqd": 1
   },
   {
-   "fieldname": "observation",
-   "fieldtype": "Small Text",
-   "label": "Observation",
-   "reqd": 1
+   "fieldname": "gravite",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Gravit\u00e9",
+   "options": "\nCritique\nHaute\nMoyenne\nFaible"
+  },
+  {
+   "fieldname": "type_violation",
+   "fieldtype": "Select",
+   "label": "Type",
+   "options": "\nRGPD\nS\u00e9curit\u00e9\nOrganisationnelle\nTechnique\nL\u00e9gale"
+  },
+  {
+   "fieldname": "responsable",
+   "fieldtype": "Link",
+   "label": "Responsable",
+   "options": "User"
   },
   {
    "fieldname": "date_de_fin",
    "fieldtype": "Date",
    "label": "Date de Fin"
+  },
+  {
+   "fieldname": "resolution_section",
+   "fieldtype": "Section Break",
+   "label": "R\u00e9solution"
+  },
+  {
+   "fieldname": "observation",
+   "fieldtype": "Small Text",
+   "label": "Observation"
+  },
+  {
+   "fieldname": "notes_resolution",
+   "fieldtype": "Small Text",
+   "label": "Notes de r\u00e9solution"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-19 10:13:33.686849",
+ "modified": "2026-03-16 08:00:00.000000",
  "modified_by": "Administrator",
  "module": "GRC",
  "name": "violation_grc",
@@ -86,6 +130,33 @@
    "role": "System Manager",
    "share": 1,
    "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "GRC Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "GRC Analyst",
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "GRC Client",
+   "select": 1
   },
   {
    "create": 1,

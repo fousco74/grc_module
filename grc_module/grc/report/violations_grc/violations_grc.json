@@ -1,0 +1,64 @@
+{
+ "add_total_row": 0,
+ "columns": [],
+ "creation": "2026-03-16 08:00:00.000000",
+ "disabled": 0,
+ "doctype": "Report",
+ "filters": [
+  {
+   "default": "",
+   "fieldname": "entreprise",
+   "fieldtype": "Link",
+   "label": "Entreprise",
+   "options": "customer_grc"
+  },
+  {
+   "default": "",
+   "fieldname": "gravite",
+   "fieldtype": "Select",
+   "label": "Gravit\u00e9",
+   "options": "\nCritique\nHaute\nMoyenne\nFaible"
+  },
+  {
+   "default": "",
+   "fieldname": "statut",
+   "fieldtype": "Select",
+   "label": "Statut",
+   "options": "\nA faire\nEn Cours\nTerminer"
+  },
+  {
+   "default": "",
+   "fieldname": "type_violation",
+   "fieldtype": "Select",
+   "label": "Type",
+   "options": "\nRGPD\nS\u00e9curit\u00e9\nOrganisationnelle\nTechnique\nL\u00e9gale"
+  },
+  {
+   "default": "",
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "label": "Du"
+  },
+  {
+   "default": "",
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "label": "Au"
+  }
+ ],
+ "is_standard": "Yes",
+ "modified": "2026-03-16 08:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "GRC",
+ "name": "Violations GRC",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "ref_doctype": "violation_grc",
+ "report_name": "Violations GRC",
+ "report_type": "Script Report",
+ "roles": [
+  {"role": "System Manager"},
+  {"role": "GRC Manager"},
+  {"role": "GRC Analyst"}
+ ]
+}

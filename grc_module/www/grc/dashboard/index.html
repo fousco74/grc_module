@@ -1,432 +1,337 @@
 {% extends base_template %}
 
-{% block title %}Tableau de Bord Conformité{% endblock %}
-
-{% block link %}
-<link rel="stylesheet" href="/assets/grc_module/css/dashboard.css">
-{% endblock %}
+{% block page_tab_title %}Dashboard{% endblock %}
+{% block page_title %}Tableau de Bord{% endblock %}
+{% block page_subtitle %}Vue d'ensemble de votre conformité RGPD{% endblock %}
 
 {% block page_body %}
 
-    <!-- GRID SCORE + KPIs -->
-    <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Score global de conformité -->
-        <div class="bg-white rounded-lg shadow-sm border border-slate-100 p-6">
-            <h3 class="text-lg font-semibold text-slate-800 mb-4">
-                Score global de conformité
-            </h3>
-            <div class="flex flex-col items-center">
-                <div class="circular-progress mb-6">
-                    <svg width="220" height="220" viewBox="0 0 220 220">
-                        <circle cx="110" cy="110" r="100"></circle>
-                        <circle id="progress-circle" cx="110" cy="110" r="100"></circle>
-                    </svg>
-                    <div class="progress-value" id="compliance-score">0%</div>
-                </div>
-                <div class="w-full max-w-xs space-y-1">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <div class="w-3 h-3 rounded-full bg-emerald-500 mr-2"></div>
-                            <span class="text-sm text-slate-700">Conforme</span>
-                        </div>
-                        <span class="text-sm font-medium text-slate-900" id="conforme-count">65</span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <div class="w-3 h-3 rounded-full bg-red-500 mr-2"></div>
-                            <span class="text-sm text-slate-700">Non conforme</span>
-                        </div>
-                        <span class="text-sm font-medium text-slate-900" id="non-conforme-count">10</span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <div class="w-3 h-3 rounded-full bg-amber-400 mr-2"></div>
-                            <span class="text-sm text-slate-700">Conforme partiellement</span>
-                        </div>
-                        <span class="text-sm font-medium text-slate-900" id="partiel-count">15</span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <div class="w-3 h-3 rounded-full bg-slate-300 mr-2"></div>
-                            <span class="text-sm text-slate-700">Non applicable</span>
-                        </div>
-                        <span class="text-sm font-medium text-slate-900" id="non-applicable-count">6</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Indicateurs clés -->
-        <div class="bg-white rounded-lg shadow-sm border border-slate-100 p-6">
-            <h3 class="text-lg font-semibold text-slate-800 mb-4">
-                Indicateurs Clés
-            </h3>
-            <div class="grid grid-cols-2 gap-4">
-
-                <!-- Violations -->
-                <div class="kpi-card p-4 rounded-lg bg-gradient-to-br from-red-50 to-red-100 border border-red-100 transition-all">
-                    <div class="flex items-center">
-                        <div class="p-2 bg-red-100 rounded-lg mr-3">
-                            <i data-feather="alert-circle" class="w-6 h-6 text-red-600"></i>
-                        </div>
-                        <div>
-                            <p class="text-xs text-slate-500">Violations</p>
-                            <p class="text-xl font-bold text-slate-900" id="violation-count">42</p>
-                        </div>
-                    </div>
-                    <div class="mt-2 flex items-center text-red-600 text-xs">
-                        <i data-feather="trending-up" class="w-3 h-3 mr-1"></i>
-                        <span>+5% ce trimestre</span>
-                    </div>
-                </div>
-
-                <!-- Plans d'action -->
-                <div class="kpi-card p-4 rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-100 transition-all">
-                    <div class="flex items-center">
-                        <div class="p-2 bg-blue-100 rounded-lg mr-3">
-                            <i data-feather="clipboard" class="w-6 h-6 text-blue-600"></i>
-                        </div>
-                        <div>
-                            <p class="text-xs text-slate-500">Plans d'action</p>
-                            <p class="text-xl font-bold text-slate-900" id="action-plan-count">18</p>
-                        </div>
-                    </div>
-                    <div class="mt-2 flex items-center text-blue-600 text-xs">
-                        <i data-feather="activity" class="w-3 h-3 mr-1"></i>
-                        <span>+8% ce trimestre</span>
-                    </div>
-                </div>
-
-                <!-- Demandes de droits -->
-                <div class="kpi-card p-4 rounded-lg bg-gradient-to-br from-amber-50 to-amber-100 border border-amber-100 transition-all">
-                    <div class="flex items-center">
-                        <div class="p-2 bg-amber-100 rounded-lg mr-3">
-                            <i data-feather="mail" class="w-6 h-6 text-amber-600"></i>
-                        </div>
-                        <div>
-                            <p class="text-xs text-slate-500">Demandes de droits</p>
-                            <p class="text-xl font-bold text-slate-900" id="make-right-count">9</p>
-                        </div>
-                    </div>
-                    <div class="mt-2 flex items-center text-amber-600 text-xs">
-                        <i data-feather="trending-down" class="w-3 h-3 mr-1"></i>
-                        <span>-2% ce trimestre</span>
-                    </div>
-                </div>
-
-                <!-- Fiches de traitements -->
-                <div class="kpi-card p-4 rounded-lg bg-gradient-to-br from-emerald-50 to-emerald-100 border border-emerald-100 transition-all">
-                    <div class="flex items-center">
-                        <div class="p-2 bg-emerald-100 rounded-lg mr-3">
-                            <i data-feather="file-text" class="w-6 h-6 text-emerald-600"></i>
-                        </div>
-                        <div>
-                            <p class="text-xs text-slate-500">Fiches de traitements</p>
-                            <p class="text-xl font-bold text-slate-900" id="file-processing-count">23</p>
-                        </div>
-                    </div>
-                    <div class="mt-2 flex items-center text-emerald-600 text-xs">
-                        <i data-feather="trending-up" class="w-3 h-3 mr-1"></i>
-                        <span>+3% ce trimestre</span>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- Démarches & Planning -->
-    <section class="bg-white rounded-lg shadow-sm border border-slate-100 p-6 my-4">
-        <h3 class="text-lg font-semibold text-slate-800 mb-6">Démarches et Planning</h3>
-
-        <div class="relative">
-            <!-- Ligne de progression horizontale grisée -->
-            <div class="absolute top-4 left-0 right-0 h-1 bg-slate-200 z-0"></div>
-
-            <!-- Remplissage jusqu'à l'étape actuelle (ex : 50%) -->
-            <div class="absolute top-4 left-0 h-1 bg-blue-500 z-0 w-1/2"></div>
-
-            <div class="flex flex-wrap justify-between sm:flex-nowrap sm:justify-between relative">
-
-                <!-- Étape 1 -->
-                <div class="relative z-10 flex flex-col items-center text-center w-1/3 sm:w-1/6 mb-8 sm:mb-0 px-1">
-                    <div class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-xs mb-2">
-                        1
-                    </div>
-                    <div class="text-xs sm:text-sm font-semibold text-slate-800 mb-1 sm:mb-2">Formation</div>
-                    <div class="text-xs text-slate-500">1-2 j</div>
-                    <span class="mt-1 text-xs px-2 py-1 rounded bg-emerald-50 text-emerald-700">
-                        Terminé
-                    </span>
-                </div>
-
-                <!-- Étape 2 -->
-                <div class="relative z-10 flex flex-col items-center text-center w-1/3 sm:w-1/6 mb-8 sm:mb-0 px-1">
-                    <div class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-xs mb-2">
-                        2
-                    </div>
-                    <div class="text-xs sm:text-sm font-semibold text-slate-800 mb-1 sm:mb-2">Audit</div>
-                    <div class="text-xs text-slate-500">2-3 j</div>
-                    <span class="mt-1 text-xs px-2 py-1 rounded bg-emerald-50 text-emerald-700">
-                        Terminé
-                    </span>
-                </div>
-
-                <!-- Étape 3 (en cours) -->
-                <div class="relative z-10 flex flex-col items-center text-center w-1/3 sm:w-1/6 mb-8 sm:mb-0 px-1">
-                    <div class="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-xs mb-2">
-                        3
-                    </div>
-                    <div class="text-xs sm:text-sm font-semibold text-slate-800 mb-1 sm:mb-2">Rapport provisoire</div>
-                    <div class="text-xs text-slate-500">3 sem.</div>
-                    <span class="mt-1 text-xs px-2 py-1 rounded bg-blue-50 text-blue-700">
-                        En cours
-                    </span>
-                </div>
-
-                <!-- Étape 4 -->
-                <div class="relative z-10 flex flex-col items-center text-center w-1/3 sm:w-1/6 mb-8 sm:mb-0 px-1">
-                    <div class="w-8 h-8 rounded-full bg-slate-300 text-white flex items-center justify-center font-bold text-xs mb-2">
-                        4
-                    </div>
-                    <div class="text-xs sm:text-sm font-semibold text-slate-800 mb-1 sm:mb-2">Correction</div>
-                    <div class="text-xs text-slate-500">4-6 sem.</div>
-                    <span class="mt-1 text-xs px-2 py-1 rounded bg-slate-50 text-slate-600">
-                        À venir
-                    </span>
-                </div>
-
-                <!-- Étape 5 -->
-                <div class="relative z-10 flex flex-col items-center text-center w-1/3 sm:w-1/6 mb-8 sm:mb-0 px-1">
-                    <div class="w-8 h-8 rounded-full bg-slate-300 text-white flex items-center justify-center font-bold text-xs mb-2">
-                        5
-                    </div>
-                    <div class="text-xs sm:text-sm font-semibold text-slate-800 mb-1 sm:mb-2">Rapport définitif</div>
-                    <div class="text-xs text-slate-500">3 sem.</div>
-                    <span class="mt-1 text-xs px-2 py-1 rounded bg-slate-50 text-slate-600">
-                        À venir
-                    </span>
-                </div>
-
-                <!-- Étape 6 -->
-                <div class="relative z-10 flex flex-col items-center text-center w-1/3 sm:w-1/6 mb-8 sm:mb-0 px-1">
-                    <div class="w-8 h-8 rounded-full bg-slate-300 text-white flex items-center justify-center font-bold text-xs mb-2">
-                        6
-                    </div>
-                    <div class="text-xs sm:text-sm font-semibold text-slate-800 mb-1 sm:mb-2">Dépôt &amp; ARTCI</div>
-                    <div class="text-xs text-slate-500">3-4 sem.</div>
-                    <span class="mt-1 text-xs px-2 py-1 rounded bg-slate-50 text-slate-600">
-                        À venir
-                    </span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Points de contrôle prioritaires -->
-    <section class="bg-white rounded-lg shadow-sm border border-slate-100 p-6 mb-4">
-        <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-            <h3 class="text-lg font-semibold text-slate-800">
-                Points de contrôle prioritaires
-            </h3>
-            <div class="relative">
-                <select
-                    class="appearance-none bg-slate-50 border border-slate-200 rounded-md pl-3 pr-8 py-1.5 text-xs md:text-sm text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500">
-                    <option>Trier par service</option>
-                    <option>Trier par statut</option>
-                </select>
-                <i data-feather="chevron-down"
-                   class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500"></i>
-            </div>
-        </div>
-
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-slate-200 text-sm">
-                <thead class="bg-slate-50">
-                    <tr>
-                        <th class="px-4 py-2 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                            Service
-                        </th>
-                        <th class="px-4 py-2 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                            Titre
-                        </th>
-                        <th class="px-4 py-2 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                            Description
-                        </th>
-                        <th class="px-4 py-2 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                            Statut
-                        </th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-slate-100">
-                    <!-- Exemple de données -->
-                    <tr class="hover:bg-slate-50">
-                        <td class="px-4 py-3 whitespace-nowrap text-slate-600">Ressources humaines</td>
-                        <td class="px-4 py-3 whitespace-nowrap font-medium text-slate-900">
-                            Gestion des dossiers salariés
-                        </td>
-                        <td class="px-4 py-3 text-slate-600">
-                            Absence de registre des accès aux dossiers RH.
-                        </td>
-                        <td class="px-4 py-3 whitespace-nowrap">
-                            <span class="inline-flex items-center px-2 py-1 text-[11px] font-semibold rounded-full bg-red-50 text-red-700 border border-red-100">
-                                Non conforme
-                            </span>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-slate-50">
-                        <td class="px-4 py-3 whitespace-nowrap text-slate-600">Marketing</td>
-                        <td class="px-4 py-3 whitespace-nowrap font-medium text-slate-900">
-                            Base de données clients
-                        </td>
-                        <td class="px-4 py-3 text-slate-600">
-                            Durées de conservation non documentées.
-                        </td>
-                        <td class="px-4 py-3 whitespace-nowrap">
-                            <span class="inline-flex items-center px-2 py-1 text-[11px] font-semibold rounded-full bg-red-50 text-red-700 border border-red-100">
-                                Non conforme
-                            </span>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-slate-50">
-                        <td class="px-4 py-3 whitespace-nowrap text-slate-600">Informatique</td>
-                        <td class="px-4 py-3 whitespace-nowrap font-medium text-slate-900">
-                            Sauvegardes
-                        </td>
-                        <td class="px-4 py-3 text-slate-600">
-                            Chiffrement des backups partiel.
-                        </td>
-                        <td class="px-4 py-3 whitespace-nowrap">
-                            <span class="inline-flex items-center px-2 py-1 text-[11px] font-semibold rounded-full bg-amber-50 text-amber-700 border border-amber-100">
-                                Partiellement conforme
-                            </span>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-slate-50">
-                        <td class="px-4 py-3 whitespace-nowrap text-slate-600">Juridique</td>
-                        <td class="px-4 py-3 whitespace-nowrap font-medium text-slate-900">
-                            Contrats sous-traitants
-                        </td>
-                        <td class="px-4 py-3 text-slate-600">
-                            Clauses RGPD manquantes sur 2 sous-traitants.
-                        </td>
-                        <td class="px-4 py-3 whitespace-nowrap">
-                            <span class="inline-flex items-center px-2 py-1 text-[11px] font-semibold rounded-full bg-red-50 text-red-700 border border-red-100">
-                                Non conforme
-                            </span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </section>
-
-    <!-- Niveau d'avancement par service -->
-    <section class="bg-white rounded-lg shadow-sm border border-slate-100 p-6">
-        <h3 class="text-lg font-semibold text-slate-800 mb-4">
-            Niveau d'avancement par service
-        </h3>
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-slate-200 text-sm">
-                <thead class="bg-slate-50">
-                    <tr>
-                        <th class="px-4 py-2 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                            Service
-                        </th>
-                        <th class="px-4 py-2 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                            Niveau d'avancement
-                        </th>
-                        <th class="px-4 py-2 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                            Statut
-                        </th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-slate-100">
-                    <!-- Exemple de données -->
-                    <tr class="hover:bg-slate-50">
-                        <td class="px-4 py-3 whitespace-nowrap text-slate-600">Ressources humaines</td>
-                        <td class="px-4 py-3 whitespace-nowrap font-medium text-slate-900">
-                            En cours d’avancement
-                        </td>
-                        <td class="px-4 py-3 whitespace-nowrap">
-                            <div class="w-4 h-4 rounded-full bg-amber-400"></div>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-slate-50">
-                        <td class="px-4 py-3 whitespace-nowrap text-slate-600">Informatique</td>
-                        <td class="px-4 py-3 whitespace-nowrap font-medium text-slate-900">
-                            Avancé
-                        </td>
-                        <td class="px-4 py-3 whitespace-nowrap">
-                            <div class="w-4 h-4 rounded-full bg-blue-500"></div>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-slate-50">
-                        <td class="px-4 py-3 whitespace-nowrap text-slate-600">Marketing</td>
-                        <td class="px-4 py-3 whitespace-nowrap font-medium text-slate-900">
-                            Initié
-                        </td>
-                        <td class="px-4 py-3 whitespace-nowrap">
-                            <div class="w-4 h-4 rounded-full bg-slate-400"></div>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-slate-50">
-                        <td class="px-4 py-3 whitespace-nowrap text-slate-600">Juridique</td>
-                        <td class="px-4 py-3 whitespace-nowrap font-medium text-slate-900">
-                            Maîtrisé
-                        </td>
-                        <td class="px-4 py-3 whitespace-nowrap">
-                            <div class="w-4 h-4 rounded-full bg-emerald-500"></div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </section>
-
-    <!-- Tooltip (placeholder pour évolutions futures) -->
-    <div id="heatmap-tooltip"
-         class="absolute hidden bg-white p-3 rounded shadow-lg border border-slate-200 text-xs z-50">
-        <div class="font-semibold" id="tooltip-service"></div>
-        <div id="tooltip-risk"></div>
-        <div id="tooltip-count" class="text-slate-500"></div>
+{# ── Company banner (clients only) ── #}
+{% if company_info and company_info.entreprise %}
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-wrap items-center justify-between gap-3">
+  <div class="flex items-center gap-3">
+    <div class="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+      <i data-feather="briefcase" class="w-5 h-5 text-emerald-500"></i>
     </div>
+    <div>
+      <p class="text-sm font-semibold text-slate-800 dark:text-slate-100">{{ company_info.entreprise }}</p>
+      <p class="text-xs text-slate-500">{{ company_info.email_company or "" }}</p>
+    </div>
+  </div>
+  <div class="flex items-center gap-4 text-xs text-slate-500">
+    {% if company_info.grc_manager_name %}
+    <span class="flex items-center gap-1"><i data-feather="user-check" class="w-3 h-3"></i>{{ company_info.grc_manager_name }}</span>
+    {% endif %}
+    <span class="px-2 py-0.5 rounded-full text-[11px] font-medium
+      {% if company_info.statut == 'Actif' %}bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400
+      {% elif company_info.statut == 'Inactif' %}bg-red-100 text-red-700
+      {% else %}bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400{% endif %}">
+      {{ company_info.statut or "En cours d'intégration" }}
+    </span>
+  </div>
+</div>
+{% endif %}
+
+{# ── Score + KPIs ── #}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+  {# Score card #}
+  <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 flex flex-col items-center">
+    <p class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4">Score de conformité</p>
+    <div class="relative w-40 h-40">
+      <svg class="w-full h-full -rotate-90" viewBox="0 0 120 120">
+        <circle cx="60" cy="60" r="50" fill="none" stroke="#e2e8f0" stroke-width="10"/>
+        <circle id="score-ring" cx="60" cy="60" r="50" fill="none"
+                stroke="#10b981" stroke-width="10"
+                stroke-linecap="round"
+                stroke-dasharray="314"
+                stroke-dashoffset="314"
+                class="transition-all duration-1000"/>
+      </svg>
+      <div class="absolute inset-0 flex flex-col items-center justify-center">
+        <span id="score-val" class="text-3xl font-bold text-slate-800 dark:text-slate-100">0</span>
+        <span class="text-xs text-slate-500">/ 100</span>
+      </div>
+    </div>
+    <p class="mt-3 text-xs text-slate-500">
+      {% if compliance_score >= 80 %}Bon niveau de conformité
+      {% elif compliance_score >= 50 %}Conformité partielle
+      {% else %}Attention requise{% endif %}
+    </p>
+  </div>
+
+  {# KPI grid #}
+  <div class="lg:col-span-2 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4 gap-4">
+
+    {# Violations #}
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-xs text-slate-500 font-medium">Violations</span>
+        <span class="w-7 h-7 rounded-lg bg-red-100 dark:bg-red-900/20 flex items-center justify-center">
+          <i data-feather="alert-triangle" class="w-3.5 h-3.5 text-red-500"></i>
+        </span>
+      </div>
+      <p class="text-2xl font-bold text-slate-800 dark:text-slate-100">{{ kpi.total_violations }}</p>
+      <p class="text-xs text-red-500 mt-1">{{ kpi.critical_violations }} critique{{ 's' if kpi.critical_violations != 1 }}</p>
+    </div>
+
+    {# Plans d'action #}
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-xs text-slate-500 font-medium">Plans d'action</span>
+        <span class="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center">
+          <i data-feather="target" class="w-3.5 h-3.5 text-blue-500"></i>
+        </span>
+      </div>
+      <p class="text-2xl font-bold text-slate-800 dark:text-slate-100">{{ kpi.total_action_plans }}</p>
+      <p class="text-xs text-slate-400 mt-1">{{ kpi.completed_action_plans }} terminé{{ 's' if kpi.completed_action_plans != 1 }}</p>
+    </div>
+
+    {# Demandes de droits #}
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-xs text-slate-500 font-medium">Droits RGPD</span>
+        <span class="w-7 h-7 rounded-lg bg-violet-100 dark:bg-violet-900/20 flex items-center justify-center">
+          <i data-feather="user-check" class="w-3.5 h-3.5 text-violet-500"></i>
+        </span>
+      </div>
+      <p class="text-2xl font-bold text-slate-800 dark:text-slate-100">{{ kpi.total_make_rights }}</p>
+      <p class="text-xs text-amber-500 mt-1">{{ kpi.pending_make_rights }} en attente</p>
+    </div>
+
+    {# Traitements #}
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-xs text-slate-500 font-medium">Traitements</span>
+        <span class="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-900/20 flex items-center justify-center">
+          <i data-feather="file-text" class="w-3.5 h-3.5 text-emerald-500"></i>
+        </span>
+      </div>
+      <p class="text-2xl font-bold text-slate-800 dark:text-slate-100">{{ kpi.total_traitements }}</p>
+      <p class="text-xs text-slate-400 mt-1">registre RGPD</p>
+    </div>
+
+  </div>
+</div>
+
+{# ── Charts row ── #}
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5">
+    <p class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4">Violations par gravité</p>
+    <canvas id="severityChart" height="180"></canvas>
+  </div>
+  <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5">
+    <p class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4">Plans d'action par statut</p>
+    <canvas id="apChart" height="180"></canvas>
+  </div>
+</div>
+
+{# ── Recent violations ── #}
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
+  <div class="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+    <p class="text-sm font-semibold text-slate-800 dark:text-slate-100">Violations récentes</p>
+    <a href="/grc/audit" class="text-xs text-emerald-600 dark:text-emerald-400 hover:underline">Voir tout</a>
+  </div>
+  {% if recent_violations %}
+  <div class="overflow-x-auto">
+    <table class="w-full text-xs">
+      <thead class="bg-slate-50 dark:bg-slate-800/50 text-slate-500">
+        <tr>
+          <th class="px-4 py-2.5 text-left font-medium">Titre</th>
+          <th class="px-4 py-2.5 text-left font-medium">Gravité</th>
+          <th class="px-4 py-2.5 text-left font-medium">Statut</th>
+          <th class="px-4 py-2.5 text-left font-medium hidden md:table-cell">Date</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+        {% for v in recent_violations %}
+        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30">
+          <td class="px-4 py-3 text-slate-800 dark:text-slate-200 font-medium max-w-xs truncate">
+            {{ v.titre or v.description or v.name }}
+          </td>
+          <td class="px-4 py-3">
+            {% set g = v.gravite or "" %}
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium
+              {% if g == 'Critique' %}bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400
+              {% elif g == 'Haute' %}bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400
+              {% elif g == 'Moyenne' %}bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400
+              {% elif g == 'Faible' %}bg-yellow-100 text-yellow-700
+              {% else %}bg-slate-100 text-slate-600{% endif %}">
+              {{ g or "—" }}
+            </span>
+          </td>
+          <td class="px-4 py-3">
+            {% set s = v.statut or "" %}
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium
+              {% if s == 'Terminer' %}bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400
+              {% elif s == 'En Cours' %}bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400
+              {% else %}bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400{% endif %}">
+              {{ s }}
+            </span>
+          </td>
+          <td class="px-4 py-3 text-slate-400 hidden md:table-cell">{{ v.get("date_de_création") or "—" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="px-5 py-10 text-center text-xs text-slate-400">
+    <i data-feather="check-circle" class="w-8 h-8 mx-auto mb-2 text-emerald-400"></i>
+    Aucune violation enregistrée
+  </div>
+  {% endif %}
+</div>
+
+{# ── Recent action plans ── #}
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
+  <div class="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+    <p class="text-sm font-semibold text-slate-800 dark:text-slate-100">Plans d'action récents</p>
+    <a href="/grc/action-plan" class="text-xs text-emerald-600 dark:text-emerald-400 hover:underline">Voir tout</a>
+  </div>
+  {% if recent_action_plans %}
+  <div class="overflow-x-auto">
+    <table class="w-full text-xs">
+      <thead class="bg-slate-50 dark:bg-slate-800/50 text-slate-500">
+        <tr>
+          <th class="px-4 py-2.5 text-left font-medium">Titre</th>
+          <th class="px-4 py-2.5 text-left font-medium">Statut</th>
+          <th class="px-4 py-2.5 text-left font-medium">Avancement</th>
+          <th class="px-4 py-2.5 text-left font-medium hidden md:table-cell">Échéance</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+        {% for a in recent_action_plans %}
+        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30">
+          <td class="px-4 py-3 text-slate-800 dark:text-slate-200 font-medium max-w-xs truncate">
+            {{ a.titre or a.description or a.name }}
+          </td>
+          <td class="px-4 py-3">
+            {% set s = a.statut or "" %}
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium
+              {% if s == 'Terminer' %}bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400
+              {% elif s == 'En cours' %}bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400
+              {% else %}bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400{% endif %}">
+              {{ s }}
+            </span>
+          </td>
+          <td class="px-4 py-3">
+            {% set pct = (a.avancement or 0)|int %}
+            <div class="flex items-center gap-2">
+              <div class="flex-1 bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 w-20">
+                <div class="h-1.5 rounded-full {% if pct == 100 %}bg-emerald-500{% elif pct >= 50 %}bg-blue-500{% else %}bg-amber-500{% endif %}"
+                     style="width:{{ pct }}%"></div>
+              </div>
+              <span class="text-slate-500 tabular-nums">{{ pct }}%</span>
+            </div>
+          </td>
+          <td class="px-4 py-3 text-slate-400 hidden md:table-cell">{{ a.get("délais_dexécution") or "—" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="px-5 py-10 text-center text-xs text-slate-400">
+    <i data-feather="clipboard" class="w-8 h-8 mx-auto mb-2 text-slate-300"></i>
+    Aucun plan d'action
+  </div>
+  {% endif %}
+</div>
 
 {% endblock %}
 
 
-{% block child_script %}
+{% block script %}
+{{ super() }}
 <script>
+frappe.ready(function () {
+    if (window.feather) feather.replace({ 'stroke-width': 1.75 });
 
-    // Sidebar toggle (mobile)
-    function toggleSidebar(open) {
-        const sidebar = document.getElementById('sidebar');
-        if (open) {
-            sidebar.classList.add('active');
-        } else {
-            sidebar.classList.remove('active');
+    // ── Score gauge ──────────────────────────────────────────────
+    var score   = {{ compliance_score or 0 }};
+    var ring    = document.getElementById('score-ring');
+    var valEl   = document.getElementById('score-val');
+    var circum  = 314;
+
+    if (ring) {
+        setTimeout(function () {
+            var offset = circum - (score / 100) * circum;
+            ring.style.strokeDashoffset = offset;
+            if (score < 40) ring.style.stroke = '#ef4444';
+            else if (score < 70) ring.style.stroke = '#f59e0b';
+        }, 100);
+
+        var current = 0;
+        var step    = score / 60;
+        var timer   = setInterval(function () {
+            current += step;
+            if (current >= score) { current = score; clearInterval(timer); }
+            if (valEl) valEl.textContent = Math.round(current);
+        }, 16);
+    }
+
+    // ── Charts ───────────────────────────────────────────────────
+    if (window.Chart) {
+
+        var isDark = document.documentElement.classList.contains('dark');
+        var textColor = isDark ? '#94a3b8' : '#64748b';
+
+        // Severity chart
+        var sevCtx = document.getElementById('severityChart');
+        if (sevCtx) {
+            new Chart(sevCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Critique', 'Haute', 'Moyenne', 'Faible'],
+                    datasets: [{
+                        data: [
+                            {{ severity_chart.Critique }},
+                            {{ severity_chart.Haute }},
+                            {{ severity_chart.Moyenne }},
+                            {{ severity_chart.Faible }}
+                        ],
+                        backgroundColor: ['#ef4444','#f97316','#f59e0b','#eab308'],
+                        borderWidth: 0,
+                    }]
+                },
+                options: {
+                    cutout: '68%',
+                    plugins: {
+                        legend: { position: 'right', labels: { color: textColor, font: { size: 11 } } }
+                    }
+                }
+            });
+        }
+
+        // Action plan status chart
+        var apCtx = document.getElementById('apChart');
+        if (apCtx) {
+            new Chart(apCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['À faire', 'En cours', 'Terminé'],
+                    datasets: [{
+                        data: [
+                            {{ ap_status_chart['A faire'] }},
+                            {{ ap_status_chart['En cours'] }},
+                            {{ ap_status_chart['Terminer'] }}
+                        ],
+                        backgroundColor: ['#94a3b8','#3b82f6','#10b981'],
+                        borderRadius: 6,
+                        borderSkipped: false,
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { ticks: { color: textColor, stepSize: 1 }, grid: { color: isDark ? '#1e293b' : '#f1f5f9' } },
+                        x: { ticks: { color: textColor } }
+                    }
+                }
+            });
         }
     }
-
-    // Placeholder logout
-    function logout() {
-        alert("Déconnexion (exemple statique)");
-    }
-
-    // Circular progress (score de conformité)
-    (function initComplianceGauge() {
-        const score = 72; // Exemple : 72% de conformité
-        const circle = document.getElementById('progress-circle');
-        const scoreText = document.getElementById('compliance-score');
-        console.log(scoreText)
-        const radius = 100;
-        const circumference = 2 * Math.PI * radius;
-
-        circle.style.strokeDasharray = circumference;
-        const offset = circumference - (score / 100) * circumference;
-        circle.style.strokeDashoffset = offset;
-
-        scoreText.textContent = score + "%";
-    })();
+});
 </script>
 {% endblock %}

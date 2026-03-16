@@ -1,765 +1,105 @@
 {% extends base_template %}
 
-{% block title %}Registre des traitements {% endblock %}
+{% block page_tab_title %}Registre des traitements{% endblock %}
+{% block page_title %}Registre des traitements{% endblock %}
+{% block page_subtitle %}Registre RGPD des activités de traitement des données personnelles{% endblock %}
 
-{% block link %}
-<link rel="stylesheet" href="/assets/grc_module/css/registre_processing.css">
-{% endblock %}
+{% block page_body %}
 
-{% block content %}
-
-<main class="rp-page max-w-100 mx-auto px-4 py-6 space-y-6">
-
-    <!-- 1. Barre de stats -->
-    <section class="rp-stats-bar">
-        <div class="rp-stats-item">
-            <i data-feather="database" class="w-4 h-4"></i>
-            <span>Total : <strong id="rp-total-count">6</strong> traitements</span>
-        </div>
-        <div class="rp-stats-item">
-            <i data-feather="filter" class="w-4 h-4"></i>
-            <span>Filtres actifs : <strong id="rp-active-filters">0</strong></span>
-        </div>
-        <div class="rp-stats-item">
-            <i data-feather="eye" class="w-4 h-4"></i>
-            <span>Affichage : <strong id="rp-current-view">Grille</strong></span>
-        </div>
-    </section>
-
-    <!-- 2. Filtres -->
-    <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 rp-filters-card">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <!-- Service -->
-            <div>
-                <label class="rp-label">Service</label>
-                <select id="rp-filter-service" class="rp-select">
-                    <option value="all">Tous les services</option>
-                    <option value="Ressources humaines">Ressources humaines</option>
-                    <option value="Marketing">Marketing</option>
-                    <option value="IT">IT</option>
-                    <option value="Support client">Support client</option>
-                    <option value="Comptabilité">Comptabilité</option>
-                </select>
-            </div>
-
-            <!-- Statut -->
-            <div>
-                <label class="rp-label">Statut de la personne</label>
-                <select id="rp-filter-status" class="rp-select">
-                    <option value="all">Tous les statuts</option>
-                    <option value="Candidat">Candidat</option>
-                    <option value="Salarié">Salarié</option>
-                    <option value="Client">Client</option>
-                    <option value="Prospect">Prospect</option>
-                </select>
-            </div>
-
-            <!-- Recherche -->
-            <div>
-                <label class="rp-label">Recherche</label>
-                <div class="relative">
-                    <input
-                        id="rp-search-input"
-                        type="text"
-                        placeholder="Nom, email, fonction..."
-                        class="rp-input pl-8"
-                    >
-                    <i data-feather="search" class="w-4 h-4 text-slate-400 absolute left-2.5 top-2.5"></i>
-                </div>
-            </div>
-
-            <!-- Boutons -->
-            <div class="flex items-end gap-2">
-                <button
-                    id="rp-apply-filters"
-                    type="button"
-                    class="rp-btn rp-btn-primary flex-1 flex items-center justify-center gap-2">
-                    <i data-feather="filter" class="w-4 h-4"></i>
-                    <span>Appliquer</span>
-                </button>
-                <button
-                    id="rp-reset-filters"
-                    type="button"
-                    class="rp-btn rp-btn-ghost">
-                    <i data-feather="refresh-cw" class="w-4 h-4"></i>
-                </button>
-            </div>
-        </div>
-    </section>
-
-    <!-- 3. Toolbar : vue + pagination (haut) -->
-    <section class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <!-- Boutons vue -->
-        <div class="inline-flex rounded-md border border-slate-200 bg-white shadow-sm overflow-hidden">
-            <button
-                id="rp-card-view-btn"
-                type="button"
-                class="rp-view-toggle rp-view-toggle--active">
-                <i data-feather="grid" class="w-4 h-4 mr-1"></i>
-                Grille
-            </button>
-            <button
-                id="rp-list-view-btn"
-                type="button"
-                class="rp-view-toggle">
-                <i data-feather="list" class="w-4 h-4 mr-1"></i>
-                Liste
-            </button>
-        </div>
-
-        <!-- Pagination haut -->
-        <div class="rp-pagination">
-            <button id="rp-prev-page-top" type="button" class="rp-page-btn" disabled>
-                <i data-feather="chevron-left" class="w-4 h-4"></i>
-            </button>
-            <div id="rp-page-numbers-top" class="rp-page-numbers"></div>
-            <button id="rp-next-page-top" type="button" class="rp-page-btn">
-                <i data-feather="chevron-right" class="w-4 h-4"></i>
-            </button>
-        </div>
-    </section>
-
-    <!-- 4. Contenu : cartes / liste -->
-    <section>
-        <!-- Conteneur des enregistrements -->
-        <div
-            id="rp-records-container"
-            class="rp-records-container rp-view-card">
-
-            <!-- Enregistrement 1 -->
-            <article
-                class="rp-record-item"
-                data-record
-                data-id="REC-001"
-                data-nom="Dossier candidats RH"
-                data-email="recrutement@entreprise.com"
-                data-service="Ressources humaines"
-                data-status="Candidat"
-                data-fonction="Responsable recrutement"
-                data-finalite="Gestion des candidatures et du processus de recrutement."
-                data-base="Exécution de mesures précontractuelles"
-                data-categorie="Données d’identification, CV, lettres de motivation, notes d’entretien"
-                data-duree="24 mois après la dernière interaction avec le candidat"
-                data-mesures="Accès restreint, journalisation des accès, suppression automatique à échéance">
-                <div class="rp-record-header">
-                    <div>
-                        <h3 class="rp-record-title">Dossier candidats RH</h3>
-                        <p class="rp-record-sub">Ressources humaines • Recrutement</p>
-                    </div>
-                    <span class="rp-badge rp-badge-blue">Candidat</span>
-                </div>
-                <div class="rp-record-body">
-                    <p class="rp-record-field">
-                        <span class="rp-field-label">Email de contact :</span>
-                        recrutement@entreprise.com
-                    </p>
-                    <p class="rp-record-field">
-                        <span class="rp-field-label">Fonction principale :</span>
-                        Responsable recrutement
-                    </p>
-                    <p class="rp-record-field">
-                        <span class="rp-field-label">Finalité :</span>
-                        Gestion des candidatures RH.
-                    </p>
-                </div>
-                <div class="rp-record-footer">
-                    <button
-                        type="button"
-                        class="rp-btn rp-btn-light rp-record-details-btn"
-                        data-id="REC-001">
-                        <i data-feather="eye" class="w-4 h-4 mr-1"></i>
-                        Détails
-                    </button>
-                </div>
-            </article>
-
-            <!-- Enregistrement 2 -->
-            <article
-                class="rp-record-item"
-                data-record
-                data-id="REC-002"
-                data-nom="Dossier salariés"
-                data-email="rh@entreprise.com"
-                data-service="Ressources humaines"
-                data-status="Salarié"
-                data-fonction="Gestionnaire paie"
-                data-finalite="Gestion administrative du personnel, paie et déclarations sociales."
-                data-base="Obligation légale"
-                data-categorie="Données d’identification, données contractuelles, données de paie"
-                data-duree="5 ans après le départ du salarié"
-                data-mesures="Chiffrement des sauvegardes, contrôle d'accès par rôle, traçabilité des consultations">
-                <div class="rp-record-header">
-                    <div>
-                        <h3 class="rp-record-title">Dossier salariés</h3>
-                        <p class="rp-record-sub">Ressources humaines • Administration du personnel</p>
-                    </div>
-                    <span class="rp-badge rp-badge-green">Salarié</span>
-                </div>
-                <div class="rp-record-body">
-                    <p class="rp-record-field">
-                        <span class="rp-field-label">Email de contact :</span>
-                        rh@entreprise.com
-                    </p>
-                    <p class="rp-record-field">
-                        <span class="rp-field-label">Fonction principale :</span>
-                        Gestionnaire paie
-                    </p>
-                    <p class="rp-record-field">
-                        <span class="rp-field-label">Finalité :</span>
-                        Gestion du cycle de vie du salarié.
-                    </p>
-                </div>
-                <div class="rp-record-footer">
-                    <button
-                        type="button"
-                        class="rp-btn rp-btn-light rp-record-details-btn"
-                        data-id="REC-002">
-                        <i data-feather="eye" class="w-4 h-4 mr-1"></i>
-                        Détails
-                    </button>
-                </div>
-            </article>
-
-            <!-- Enregistrement 3 -->
-            <article
-                class="rp-record-item"
-                data-record
-                data-id="REC-003"
-                data-nom="Campagnes emailing marketing"
-                data-email="marketing@entreprise.com"
-                data-service="Marketing"
-                data-status="Prospect"
-                data-fonction="Responsable marketing digital"
-                data-finalite="Prospection commerciale par email et suivi de performance des campagnes."
-                data-base="Intérêt légitime / Consentement selon le scénario"
-                data-categorie="Données de contact, préférences marketing, logs d’ouverture et de clic"
-                data-duree="3 ans après le dernier contact ou jusqu’au retrait du consentement"
-                data-mesures="Lien de désabonnement systématique, anonymisation des rapports, contrôle des sous-traitants">
-                <div class="rp-record-header">
-                    <div>
-                        <h3 class="rp-record-title">Campagnes emailing marketing</h3>
-                        <p class="rp-record-sub">Marketing • Prospection commerciale</p>
-                    </div>
-                    <span class="rp-badge rp-badge-amber">Prospect</span>
-                </div>
-                <div class="rp-record-body">
-                    <p class="rp-record-field">
-                        <span class="rp-field-label">Email de contact :</span>
-                        marketing@entreprise.com
-                    </p>
-                    <p class="rp-record-field">
-                        <span class="rp-field-label">Fonction principale :</span>
-                        Responsable marketing digital
-                    </p>
-                    <p class="rp-record-field">
-                        <span class="rp-field-label">Finalité :</span>
-                        Gestion des campagnes emailing.
-                    </p>
-                </div>
-                <div class="rp-record-footer">
-                    <button
-                        type="button"
-                        class="rp-btn rp-btn-light rp-record-details-btn"
-                        data-id="REC-003">
-                        <i data-feather="eye" class="w-4 h-4 mr-1"></i>
-                        Détails
-                    </button>
-                </div>
-            </article>
-
-            <!-- Enregistrement 4 -->
-            <article
-                class="rp-record-item"
-                data-record
-                data-id="REC-004"
-                data-nom="Support client CRM"
-                data-email="support@entreprise.com"
-                data-service="Support client"
-                data-status="Client"
-                data-fonction="Chargé de support"
-                data-finalite="Gestion des demandes clients, incidents et historique des échanges."
-                data-base="Exécution du contrat"
-                data-categorie="Données d’identification, historique des tickets, enregistrements des réponses"
-                data-duree="5 ans après la clôture du dernier ticket"
-                data-mesures="Authentification forte, journalisation, cloisonnement des comptes clients">
-                <div class="rp-record-header">
-                    <div>
-                        <h3 class="rp-record-title">Support client CRM</h3>
-                        <p class="rp-record-sub">Support client • Service après-vente</p>
-                    </div>
-                    <span class="rp-badge rp-badge-green">Client</span>
-                </div>
-                <div class="rp-record-body">
-                    <p class="rp-record-field">
-                        <span class="rp-field-label">Email de contact :</span>
-                        support@entreprise.com
-                    </p>
-                    <p class="rp-record-field">
-                        <span class="rp-field-label">Fonction principale :</span>
-                        Chargé de support
-                    </p>
-                    <p class="rp-record-field">
-                        <span class="rp-field-label">Finalité :</span>
-                        Suivi des demandes clients.
-                    </p>
-                </div>
-                <div class="rp-record-footer">
-                    <button
-                        type="button"
-                        class="rp-btn rp-btn-light rp-record-details-btn"
-                        data-id="REC-004">
-                        <i data-feather="eye" class="w-4 h-4 mr-1"></i>
-                        Détails
-                    </button>
-                </div>
-            </article>
-
-            <!-- Enregistrement 5 -->
-            <article
-                class="rp-record-item"
-                data-record
-                data-id="REC-005"
-                data-nom="Accès VPN & postes IT"
-                data-email="it@entreprise.com"
-                data-service="IT"
-                data-status="Salarié"
-                data-fonction="Administrateur systèmes"
-                data-finalite="Gestion des comptes techniques, VPN et sécurité d’accès au SI."
-                data-base="Intérêt légitime de sécurisation du SI"
-                data-categorie="Identifiants, traces de connexion, adresses IP, journaux techniques"
-                data-duree="12 mois pour les logs, 6 mois après départ pour les comptes"
-                data-mesures="Chiffrement, MFA, revues régulières des droits, segmentation réseau">
-                <div class="rp-record-header">
-                    <div>
-                        <h3 class="rp-record-title">Accès VPN & postes IT</h3>
-                        <p class="rp-record-sub">IT • Sécurité du SI</p>
-                    </div>
-                    <span class="rp-badge rp-badge-green">Salarié</span>
-                </div>
-                <div class="rp-record-body">
-                    <p class="rp-record-field">
-                        <span class="rp-field-label">Email de contact :</span>
-                        it@entreprise.com
-                    </p>
-                    <p class="rp-record-field">
-                        <span class="rp-field-label">Fonction principale :</span>
-                        Administrateur systèmes
-                    </p>
-                    <p class="rp-record-field">
-                        <span class="rp-field-label">Finalité :</span>
-                        Sécurisation des accès.
-                    </p>
-                </div>
-                <div class="rp-record-footer">
-                    <button
-                        type="button"
-                        class="rp-btn rp-btn-light rp-record-details-btn"
-                        data-id="REC-005">
-                        <i data-feather="eye" class="w-4 h-4 mr-1"></i>
-                        Détails
-                    </button>
-                </div>
-            </article>
-
-            <!-- Enregistrement 6 -->
-            <article
-                class="rp-record-item"
-                data-record
-                data-id="REC-006"
-                data-nom="Facturation clients"
-                data-email="facturation@entreprise.com"
-                data-service="Comptabilité"
-                data-status="Client"
-                data-fonction="Responsable comptable"
-                data-finalite="Émission des factures, suivi des paiements et relances."
-                data-base="Obligation légale et contractuelle"
-                data-categorie="Données d’identification, coordonnées de facturation, historique de paiement"
-                data-duree="10 ans à compter de la clôture de l’exercice"
-                data-mesures="Archivage sécurisé, restriction d’accès aux seuls comptables, sauvegardes chiffrées">
-                <div class="rp-record-header">
-                    <div>
-                        <h3 class="rp-record-title">Facturation clients</h3>
-                        <p class="rp-record-sub">Comptabilité • Facturation</p>
-                    </div>
-                    <span class="rp-badge rp-badge-green">Client</span>
-                </div>
-                <div class="rp-record-body">
-                    <p class="rp-record-field">
-                        <span class="rp-field-label">Email de contact :</span>
-                        facturation@entreprise.com
-                    </p>
-                    <p class="rp-record-field">
-                        <span class="rp-field-label">Fonction principale :</span>
-                        Responsable comptable
-                    </p>
-                    <p class="rp-record-field">
-                        <span class="rp-field-label">Finalité :</span>
-                        Gestion de la facturation.
-                    </p>
-                </div>
-                <div class="rp-record-footer">
-                    <button
-                        type="button"
-                        class="rp-btn rp-btn-light rp-record-details-btn"
-                        data-id="REC-006">
-                        <i data-feather="eye" class="w-4 h-4 mr-1"></i>
-                        Détails
-                    </button>
-                </div>
-            </article>
-
-        </div>
-
-        <!-- Message "aucun résultat" -->
-        <div id="rp-no-results" class="rp-no-results hidden">
-            <i data-feather="search" class="w-10 h-10 mb-2 text-slate-300"></i>
-            <h3 class="text-sm font-semibold text-slate-800 mb-1">Aucun résultat</h3>
-            <p class="text-xs text-slate-500">
-                Aucun traitement ne correspond à vos critères. Essayez d’élargir vos filtres.
-            </p>
-        </div>
-    </section>
-
-    <!-- 5. Pagination bas -->
-    <section class="flex items-center justify-center">
-        <div class="rp-pagination">
-            <button id="rp-prev-page-bottom" type="button" class="rp-page-btn" disabled>
-                <i data-feather="chevron-left" class="w-4 h-4"></i>
-            </button>
-            <div id="rp-page-numbers-bottom" class="rp-page-numbers"></div>
-            <button id="rp-next-page-bottom" type="button" class="rp-page-btn">
-                <i data-feather="chevron-right" class="w-4 h-4"></i>
-            </button>
-        </div>
-    </section>
-
-</main>
-
-<!-- 6. Modale de détails -->
-<div id="rp-detail-modal" class="rp-modal-overlay hidden">
-    <div class="rp-modal-panel">
-        <div class="rp-modal-header">
-            <div>
-                <h3 class="rp-modal-title" id="rp-modal-title">Détails du traitement</h3>
-                <p class="rp-modal-sub" id="rp-modal-sub">Fiche de registre RGPD</p>
-            </div>
-            <button id="rp-modal-close" type="button" class="rp-modal-close-btn">
-                <i data-feather="x" class="w-4 h-4"></i>
-            </button>
-        </div>
-        <div class="rp-modal-body">
-            <div class="rp-detail-grid">
-                <div>
-                    <div class="rp-detail-label">Nom du traitement</div>
-                    <div class="rp-detail-value" id="rp-detail-nom"></div>
-                </div>
-                <div>
-                    <div class="rp-detail-label">Service concerné</div>
-                    <div class="rp-detail-value" id="rp-detail-service"></div>
-                </div>
-                <div>
-                    <div class="rp-detail-label">Statut des personnes</div>
-                    <div class="rp-detail-value" id="rp-detail-status"></div>
-                </div>
-                <div>
-                    <div class="rp-detail-label">Email de contact</div>
-                    <div class="rp-detail-value" id="rp-detail-email"></div>
-                </div>
-                <div>
-                    <div class="rp-detail-label">Fonction principale</div>
-                    <div class="rp-detail-value" id="rp-detail-fonction"></div>
-                </div>
-                <div class="md:col-span-2">
-                    <div class="rp-detail-label">Finalité du traitement</div>
-                    <div class="rp-detail-value" id="rp-detail-finalite"></div>
-                </div>
-                <div>
-                    <div class="rp-detail-label">Base légale</div>
-                    <div class="rp-detail-value" id="rp-detail-base"></div>
-                </div>
-                <div>
-                    <div class="rp-detail-label">Catégories de données</div>
-                    <div class="rp-detail-value" id="rp-detail-categorie"></div>
-                </div>
-                <div>
-                    <div class="rp-detail-label">Durée de conservation</div>
-                    <div class="rp-detail-value" id="rp-detail-duree"></div>
-                </div>
-                <div>
-                    <div class="rp-detail-label">Mesures de sécurité</div>
-                    <div class="rp-detail-value" id="rp-detail-mesures"></div>
-                </div>
-            </div>
-        </div>
-        <div class="rp-modal-footer">
-            <button type="button" class="rp-btn rp-btn-light">
-                <i data-feather="download" class="w-4 h-4 mr-1"></i>
-                Exporter la fiche
-            </button>
-            <button type="button" class="rp-btn rp-btn-primary">
-                <i data-feather="edit" class="w-4 h-4 mr-1"></i>
-                Modifier (démo)
-            </button>
-        </div>
+{# ── Stats bar ── #}
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-5 py-4 flex flex-wrap gap-6 items-center">
+  <div class="flex items-center gap-3">
+    <div class="w-9 h-9 rounded-lg bg-emerald-100 dark:bg-emerald-900/20 flex items-center justify-center">
+      <i data-feather="file-text" class="w-4 h-4 text-emerald-500"></i>
     </div>
+    <div>
+      <p class="text-xl font-bold text-slate-800 dark:text-slate-100">{{ traitements|length }}</p>
+      <p class="text-xs text-slate-500">Traitements enregistrés</p>
+    </div>
+  </div>
 </div>
+
+{# ── Filters ── #}
+<div class="flex flex-wrap gap-3 items-center">
+  <input id="search-input" type="text" placeholder="Rechercher un traitement…"
+         class="flex-1 min-w-48 text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700
+                rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-slate-100">
+  {% if services %}
+  <select id="service-filter"
+          class="text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700
+                 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-slate-100">
+    <option value="">Tous les services</option>
+    {% for s in services %}<option value="{{ s.name }}">{{ s.name_service or s.name }}</option>{% endfor %}
+  </select>
+  {% endif %}
+  <button id="reset-btn" class="text-xs text-slate-500 hover:text-red-500 px-3 py-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20">
+    Réinitialiser
+  </button>
+</div>
+
+{# ── Records grid ── #}
+{% if traitements %}
+<div id="records-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+  {% for t in traitements %}
+  <div class="t-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-col gap-2"
+       data-service="{{ t.service or '' }}" data-search="{{ (t.traitement or '')|lower }}">
+    <div class="flex items-start gap-3">
+      <div class="w-8 h-8 rounded-lg bg-violet-100 dark:bg-violet-900/20 flex items-center justify-center flex-shrink-0">
+        <i data-feather="database" class="w-4 h-4 text-violet-500"></i>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-semibold text-slate-800 dark:text-slate-100 truncate">{{ t.traitement or t.name }}</p>
+        <p class="text-xs text-slate-400 mt-0.5 flex items-center gap-1">
+          <i data-feather="layers" class="w-3 h-3"></i>{{ t.service_name or "—" }}
+        </p>
+      </div>
+    </div>
+    <div class="text-[11px] text-slate-400 flex items-center justify-between mt-1">
+      <span>{{ t.name }}</span>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl py-16 text-center">
+  <i data-feather="file-text" class="w-10 h-10 mx-auto mb-3 text-slate-300"></i>
+  <p class="text-sm text-slate-500">Aucun traitement enregistré</p>
+</div>
+{% endif %}
+<p id="no-results" class="hidden text-center text-sm text-slate-400 py-8">Aucun résultat.</p>
 
 {% endblock %}
 
 {% block script %}
+{{ super() }}
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    if (window.feather) {
-        window.feather.replace();
-    }
+frappe.ready(function () {
+    if (window.feather) feather.replace({ 'stroke-width': 1.75 });
 
-    // === Sélecteurs ===
-    const serviceFilter = document.getElementById('rp-filter-service');
-    const statusFilter = document.getElementById('rp-filter-status');
-    const searchInput = document.getElementById('rp-search-input');
-    const applyFiltersBtn = document.getElementById('rp-apply-filters');
-    const resetFiltersBtn = document.getElementById('rp-reset-filters');
-    const activeFiltersEl = document.getElementById('rp-active-filters');
-
-    const recordsContainer = document.getElementById('rp-records-container');
-    const allRecords = Array.from(recordsContainer.querySelectorAll('[data-record]'));
-    const noResultsEl = document.getElementById('rp-no-results');
-
-    const cardViewBtn = document.getElementById('rp-card-view-btn');
-    const listViewBtn = document.getElementById('rp-list-view-btn');
-    const currentViewEl = document.getElementById('rp-current-view');
-
-    const prevTop = document.getElementById('rp-prev-page-top');
-    const nextTop = document.getElementById('rp-next-page-top');
-    const prevBottom = document.getElementById('rp-prev-page-bottom');
-    const nextBottom = document.getElementById('rp-next-page-bottom');
-    const pageNumsTop = document.getElementById('rp-page-numbers-top');
-    const pageNumsBottom = document.getElementById('rp-page-numbers-bottom');
-
-    const modal = document.getElementById('rp-detail-modal');
-    const modalClose = document.getElementById('rp-modal-close');
-    const modalTitle = document.getElementById('rp-modal-title');
-    const modalSub = document.getElementById('rp-modal-sub');
-    const detailNom = document.getElementById('rp-detail-nom');
-    const detailService = document.getElementById('rp-detail-service');
-    const detailStatus = document.getElementById('rp-detail-status');
-    const detailEmail = document.getElementById('rp-detail-email');
-    const detailFonction = document.getElementById('rp-detail-fonction');
-    const detailFinalite = document.getElementById('rp-detail-finalite');
-    const detailBase = document.getElementById('rp-detail-base');
-    const detailCategorie = document.getElementById('rp-detail-categorie');
-    const detailDuree = document.getElementById('rp-detail-duree');
-    const detailMesures = document.getElementById('rp-detail-mesures');
-
-    let filteredRecords = [...allRecords];
-    let currentPage = 1;
-    const pageSize = 3; // 3 par page pour la démo
-
-    // === Filtres ===
-    function computeActiveFilters() {
-        let count = 0;
-        if (serviceFilter && serviceFilter.value !== 'all') count++;
-        if (statusFilter && statusFilter.value !== 'all') count++;
-        if (searchInput && searchInput.value.trim() !== '') count++;
-        if (activeFiltersEl) activeFiltersEl.textContent = count;
-    }
-
-    function applyFilters() {
-        const serviceVal = serviceFilter ? serviceFilter.value : 'all';
-        const statusVal = statusFilter ? statusFilter.value : 'all';
-        const searchVal = searchInput ? searchInput.value.trim().toLowerCase() : '';
-
-        filteredRecords = allRecords.filter((el) => {
-            const service = (el.dataset.service || '');
-            const status = (el.dataset.status || '');
-            const text = (
-                (el.dataset.nom || '') + ' ' +
-                (el.dataset.email || '') + ' ' +
-                (el.dataset.fonction || '')
-            ).toLowerCase();
-
-            if (serviceVal !== 'all' && service !== serviceVal) return false;
-            if (statusVal !== 'all' && status !== statusVal) return false;
-            if (searchVal && !text.includes(searchVal)) return false;
-
-            return true;
+    function filterCards() {
+        var q = (document.getElementById('search-input').value || '').toLowerCase();
+        var sf = document.getElementById('service-filter');
+        var s = sf ? sf.value : '';
+        var cards = document.querySelectorAll('.t-card');
+        var n = 0;
+        cards.forEach(function (c) {
+            var ok = (!s || c.dataset.service === s) && (!q || c.dataset.search.includes(q));
+            c.style.display = ok ? '' : 'none';
+            if (ok) n++;
         });
-
-        currentPage = 1;
-        computeActiveFilters();
-        render();
+        document.getElementById('no-results').classList.toggle('hidden', n > 0 || cards.length === 0);
     }
 
-    function resetFilters() {
-        if (serviceFilter) serviceFilter.value = 'all';
-        if (statusFilter) statusFilter.value = 'all';
-        if (searchInput) searchInput.value = '';
-        applyFilters();
-    }
-
-    if (applyFiltersBtn) applyFiltersBtn.addEventListener('click', applyFilters);
-    if (resetFiltersBtn) resetFiltersBtn.addEventListener('click', resetFilters);
-    if (searchInput) {
-        searchInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') applyFilters();
-        });
-    }
-
-    // === Vue grille / liste ===
-    function setView(mode) {
-        if (mode === 'list') {
-            recordsContainer.classList.remove('rp-view-card');
-            recordsContainer.classList.add('rp-view-list');
-            cardViewBtn.classList.remove('rp-view-toggle--active');
-            listViewBtn.classList.add('rp-view-toggle--active');
-            if (currentViewEl) currentViewEl.textContent = 'Liste';
-        } else {
-            recordsContainer.classList.remove('rp-view-list');
-            recordsContainer.classList.add('rp-view-card');
-            listViewBtn.classList.remove('rp-view-toggle--active');
-            cardViewBtn.classList.add('rp-view-toggle--active');
-            if (currentViewEl) currentViewEl.textContent = 'Grille';
-        }
-    }
-
-    if (cardViewBtn) cardViewBtn.addEventListener('click', () => setView('card'));
-    if (listViewBtn) listViewBtn.addEventListener('click', () => setView('list'));
-
-    // === Pagination ===
-    const prevButtons = [prevTop, prevBottom];
-    const nextButtons = [nextTop, nextBottom];
-    const pageNumberContainers = [pageNumsTop, pageNumsBottom];
-
-    function buildPageNumbers(totalPages) {
-        pageNumberContainers.forEach((container) => {
-            if (!container) return;
-            container.innerHTML = '';
-            for (let i = 1; i <= totalPages; i++) {
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.textContent = i;
-                btn.className = 'rp-page-btn' + (i === currentPage ? ' rp-page-btn--active' : '');
-                btn.addEventListener('click', () => {
-                    currentPage = i;
-                    render();
-                });
-                container.appendChild(btn);
-            }
-        });
-    }
-
-    function render() {
-        // Masquer tous les enregistrements
-        allRecords.forEach((el) => el.classList.add('hidden'));
-
-        if (!filteredRecords.length) {
-            if (noResultsEl) noResultsEl.classList.remove('hidden');
-        } else {
-            if (noResultsEl) noResultsEl.classList.add('hidden');
-        }
-
-        const totalPages = Math.max(1, Math.ceil(filteredRecords.length / pageSize));
-        if (currentPage > totalPages) currentPage = totalPages;
-        const start = (currentPage - 1) * pageSize;
-        const end = start + pageSize;
-
-        filteredRecords.slice(start, end).forEach((el) => el.classList.remove('hidden'));
-
-        // Màj boutons prev/next
-        prevButtons.forEach((btn) => {
-            if (!btn) return;
-            btn.disabled = currentPage <= 1;
-        });
-        nextButtons.forEach((btn) => {
-            if (!btn) return;
-            btn.disabled = currentPage >= totalPages;
-        });
-
-        buildPageNumbers(totalPages);
-    }
-
-    prevButtons.forEach((btn) => {
-        if (!btn) return;
-        btn.addEventListener('click', () => {
-            if (currentPage > 1) {
-                currentPage--;
-                render();
-            }
-        });
+    var si = document.getElementById('search-input');
+    if (si) si.addEventListener('input', filterCards);
+    var sf = document.getElementById('service-filter');
+    if (sf) sf.addEventListener('change', filterCards);
+    var rb = document.getElementById('reset-btn');
+    if (rb) rb.addEventListener('click', function () {
+        if (si) si.value = '';
+        if (sf) sf.value = '';
+        filterCards();
     });
-
-    nextButtons.forEach((btn) => {
-        if (!btn) return;
-        btn.addEventListener('click', () => {
-            const totalPages = Math.max(1, Math.ceil(filteredRecords.length / pageSize));
-            if (currentPage < totalPages) {
-                currentPage++;
-                render();
-            }
-        });
-    });
-
-    // === Modale de détails ===
-    function openModalFromRecord(recordEl) {
-        if (!recordEl || !modal) return;
-
-        const nom = recordEl.dataset.nom || '';
-        const service = recordEl.dataset.service || '';
-        const status = recordEl.dataset.status || '';
-        const email = recordEl.dataset.email || '';
-        const fonction = recordEl.dataset.fonction || '';
-        const finalite = recordEl.dataset.finalite || '';
-        const base = recordEl.dataset.base || '';
-        const categorie = recordEl.dataset.categorie || '';
-        const duree = recordEl.dataset.duree || '';
-        const mesures = recordEl.dataset.mesures || '';
-
-        modalTitle.textContent = nom || 'Détails du traitement';
-        modalSub.textContent = service ? 'Service : ' + service : 'Fiche de registre RGPD';
-
-        detailNom.textContent = nom;
-        detailService.textContent = service;
-        detailStatus.textContent = status;
-        detailEmail.textContent = email;
-        detailFonction.textContent = fonction;
-        detailFinalite.textContent = finalite;
-        detailBase.textContent = base;
-        detailCategorie.textContent = categorie;
-        detailDuree.textContent = duree;
-        detailMesures.textContent = mesures;
-
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-    }
-
-    const detailButtons = document.querySelectorAll('.rp-record-details-btn');
-    detailButtons.forEach((btn) => {
-        btn.addEventListener('click', () => {
-            const id = btn.dataset.id;
-            const record = allRecords.find((el) => el.dataset.id === id);
-            openModalFromRecord(record);
-        });
-    });
-
-    if (modalClose) {
-        modalClose.addEventListener('click', () => {
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        });
-    }
-
-    if (modal) {
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            }
-        });
-    }
-
-    // Initialisation
-    computeActiveFilters();
-    render();
 });
 </script>
 {% endblock %}

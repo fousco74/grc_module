@@ -1,1035 +1,132 @@
 {% extends base_template %}
 
-{% block title %}Plan d'action{% endblock %}
+{% block page_tab_title %}Plans d'action{% endblock %}
+{% block page_title %}Plans d'action{% endblock %}
+{% block page_subtitle %}Suivi des actions correctives et préventives{% endblock %}
 
-{% block link %}
-<link rel="stylesheet" href="/assets/grc_module/css/action_plan.css">
-{% endblock %}
+{% block page_body %}
 
-{% block content %}
-
-<main class="space-y-6">
-
-    <!-- 1. Statistiques globales -->
-    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <!-- Actions complétées -->
-        <article class="stat-card bg-white rounded-xl shadow-sm border border-slate-200 p-4 flex items-center gap-3">
-            <div class="p-2.5 rounded-lg bg-emerald-50">
-                <i data-feather="check-circle" class="w-5 h-5 text-emerald-600"></i>
-            </div>
-            <div class="flex flex-col">
-                <span class="text-xs font-medium text-slate-500 uppercase tracking-wide">
-                    Actions complétées
-                </span>
-                <span class="text-2xl font-semibold text-slate-900 leading-none mt-1">
-                    60%
-                </span>
-                <span class="text-[11px] text-slate-500 mt-1">
-                    3 actions sur 5 réalisées
-                </span>
-            </div>
-        </article>
-
-        <!-- En cours -->
-        <article class="stat-card bg-white rounded-xl shadow-sm border border-slate-200 p-4 flex items-center gap-3">
-            <div class="p-2.5 rounded-lg bg-blue-50">
-                <i data-feather="clock" class="w-5 h-5 text-blue-600"></i>
-            </div>
-            <div class="flex flex-col">
-                <span class="text-xs font-medium text-slate-500 uppercase tracking-wide">
-                    En cours
-                </span>
-                <span class="text-2xl font-semibold text-slate-900 leading-none mt-1">
-                    2
-                </span>
-                <span class="text-[11px] text-blue-700 mt-1">
-                    Principalement IT & RH
-                </span>
-            </div>
-        </article>
-
-        <!-- À faire -->
-        <article class="stat-card bg-white rounded-xl shadow-sm border border-slate-200 p-4 flex items-center gap-3">
-            <div class="p-2.5 rounded-lg bg-amber-50">
-                <i data-feather="alert-circle" class="w-5 h-5 text-amber-600"></i>
-            </div>
-            <div class="flex flex-col">
-                <span class="text-xs font-medium text-slate-500 uppercase tracking-wide">
-                    Actions à faire
-                </span>
-                <span class="text-2xl font-semibold text-slate-900 leading-none mt-1">
-                    1
-                </span>
-                <span class="text-[11px] text-amber-700 mt-1">
-                    Prioriser les plus proches échéances
-                </span>
-            </div>
-        </article>
-
-        <!-- En retard -->
-        <article class="stat-card bg-white rounded-xl shadow-sm border border-rose-200 p-4 flex items-center gap-3">
-            <div class="p-2.5 rounded-lg bg-rose-50">
-                <i data-feather="alert-triangle" class="w-5 h-5 text-rose-600"></i>
-            </div>
-            <div class="flex flex-col">
-                <span class="text-xs font-medium text-slate-500 uppercase tracking-wide">
-                    En retard
-                </span>
-                <span class="text-2xl font-semibold text-slate-900 leading-none mt-1">
-                    1
-                </span>
-                <span class="text-[11px] text-rose-700 mt-1">
-                    1 action dépasse le délai légal
-                </span>
-            </div>
-        </article>
-    </section>
-
-    <!-- 2. Liste + filtres -->
-    <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-
-        <!-- En-tête sticky + filtres -->
-        <div class="sticky-header border-b border-slate-200 px-4 py-3">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-                <div>
-                    <h3 class="text-base font-semibold text-slate-800">
-                        Plan d’action de conformité
-                    </h3>
-                    <p class="text-xs text-slate-500">
-                        5 actions suivies – filtrage par statut, responsable et échéance.
-                    </p>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 w-full md:w-auto">
-
-                    <!-- Filtre statut -->
-                    <div class="relative">
-                        <select
-                            id="status-filter"
-                            class="w-full appearance-none bg-slate-50 border border-slate-200 rounded-md pl-3 pr-8 py-2 text-xs md:text-sm text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500">
-                            <option value="all">Tous statuts</option>
-                            <option value="A faire">À faire</option>
-                            <option value="En cours">En cours</option>
-                            <option value="Terminé">Terminé</option>
-                        </select>
-                        <i data-feather="chevron-down"
-                           class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
-                    </div>
-
-                    <!-- Filtre responsable -->
-                    <div class="relative">
-                        <select
-                            id="responsible-filter"
-                            class="w-full appearance-none bg-slate-50 border border-slate-200 rounded-md pl-3 pr-8 py-2 text-xs md:text-sm text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500">
-                            <option value="all">Tous responsables</option>
-                            <option value="Responsable RH">Responsable RH</option>
-                            <option value="DPO">DPO</option>
-                            <option value="IT Manager">IT Manager</option>
-                            <option value="Responsable Marketing">Responsable Marketing</option>
-                        </select>
-                        <i data-feather="chevron-down"
-                           class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
-                    </div>
-
-                    <!-- Filtre échéance -->
-                    <div class="relative">
-                        <select
-                            id="date-filter"
-                            class="w-full appearance-none bg-slate-50 border border-slate-200 rounded-md pl-3 pr-8 py-2 text-xs md:text-sm text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500">
-                            <option value="all">Toutes échéances</option>
-                            <option value="this_week">Cette semaine</option>
-                            <option value="this_month">Ce mois</option>
-                            <option value="overdue">En retard</option>
-                        </select>
-                        <i data-feather="chevron-down"
-                           class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- TABLE DESKTOP -->
-        <div class="hidden md:block">
-            <table class="min-w-full text-sm">
-                <thead class="bg-slate-50 border-b border-slate-200">
-                    <tr>
-                        <th class="px-4 py-2 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wide">
-                            Action
-                        </th>
-                        <th class="px-4 py-2 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wide">
-                            Principe RGPD
-                        </th>
-                        <th class="px-4 py-2 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wide">
-                            Responsable
-                        </th>
-                        <th class="px-4 py-2 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wide">
-                            Statut
-                        </th>
-                        <th class="px-4 py-2 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wide">
-                            Échéance
-                        </th>
-                        <th class="px-4 py-2 text-right text-[11px] font-semibold text-slate-500 uppercase tracking-wide">
-                            Actions
-                        </th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100">
-
-                    <!-- ACTION 1 – OVERDUE -->
-                    <tr
-                        class="request-row request-row--urgent"
-                        data-action-item
-                        data-action-id="ACT-2025-001"
-                        data-status="A faire"
-                        data-responsible="Responsable RH"
-                        data-date-bucket="overdue">
-                        <td class="px-4 py-3 align-top">
-                            <div class="flex items-start gap-2">
-                                <span class="priority-dot priority-dot--high mt-1"></span>
-                                <div>
-                                    <div class="font-medium text-slate-900 text-xs">
-                                        Mettre à jour le registre des traitements RH
-                                    </div>
-                                    <p class="text-[11px] text-slate-500 mt-1">
-                                        Ajouter les nouveaux traitements liés à la paie et aux évaluations annuelles.
-                                    </p>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-4 py-3 align-top text-xs text-slate-700">
-                            Responsabilité (Accountability)
-                        </td>
-                        <td class="px-4 py-3 align-top text-xs text-slate-700">
-                            Responsable RH
-                        </td>
-                        <td class="px-4 py-3 align-top">
-                            <span class="status-pill status-pill--a-faire">
-                                À faire
-                            </span>
-                        </td>
-                        <td class="px-4 py-3 align-top text-xs">
-                            <div class="text-slate-700">
-                                10/02/2025
-                            </div>
-                            <div class="text-[11px] text-rose-600">
-                                En retard de 5 jours
-                            </div>
-                        </td>
-                        <td class="px-4 py-3 align-top text-right">
-                            <div class="inline-flex items-center gap-1">
-                                <button
-                                    type="button"
-                                    class="btn-details text-xs px-2 py-1 rounded border border-emerald-500 text-emerald-700 hover:bg-emerald-50"
-                                    data-action-id="ACT-2025-001">
-                                    Détails
-                                </button>
-                                <button
-                                    type="button"
-                                    class="btn-edit icon-btn"
-                                    data-action-id="ACT-2025-001"
-                                    title="Modifier l'action">
-                                    <i data-feather="edit" class="w-4 h-4 text-slate-500"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <!-- ACTION 2 – THIS WEEK -->
-                    <tr
-                        class="request-row"
-                        data-action-item
-                        data-action-id="ACT-2025-002"
-                        data-status="En cours"
-                        data-responsible="DPO"
-                        data-date-bucket="this_week">
-                        <td class="px-4 py-3 align-top">
-                            <div class="flex items-start gap-2">
-                                <span class="priority-dot priority-dot--medium mt-1"></span>
-                                <div>
-                                    <div class="font-medium text-slate-900 text-xs">
-                                        Finaliser la charte de confidentialité interne
-                                    </div>
-                                    <p class="text-[11px] text-slate-500 mt-1">
-                                        Valider la charte avec les managers puis la diffuser à l’ensemble des équipes.
-                                    </p>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-4 py-3 align-top text-xs text-slate-700">
-                            Transparence
-                        </td>
-                        <td class="px-4 py-3 align-top text-xs text-slate-700">
-                            DPO
-                        </td>
-                        <td class="px-4 py-3 align-top">
-                            <span class="status-pill status-pill--en-cours">
-                                En cours
-                            </span>
-                        </td>
-                        <td class="px-4 py-3 align-top text-xs">
-                            <div class="timeline-bar mb-1">
-                                <div class="timeline-progress timeline-progress--warning" style="width: 70%;"></div>
-                            </div>
-                            <div class="text-[11px] text-amber-600">
-                                Échéance : 28/02/2025 – 3 jours restants
-                            </div>
-                        </td>
-                        <td class="px-4 py-3 align-top text-right">
-                            <div class="inline-flex items-center gap-1">
-                                <button
-                                    type="button"
-                                    class="btn-details text-xs px-2 py-1 rounded border border-emerald-500 text-emerald-700 hover:bg-emerald-50"
-                                    data-action-id="ACT-2025-002">
-                                    Détails
-                                </button>
-                                <button
-                                    type="button"
-                                    class="btn-edit icon-btn"
-                                    data-action-id="ACT-2025-002"
-                                    title="Modifier l'action">
-                                    <i data-feather="edit" class="w-4 h-4 text-slate-500"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <!-- ACTION 3 – THIS MONTH -->
-                    <tr
-                        class="request-row"
-                        data-action-item
-                        data-action-id="ACT-2025-003"
-                        data-status="En cours"
-                        data-responsible="IT Manager"
-                        data-date-bucket="this_month">
-                        <td class="px-4 py-3 align-top">
-                            <div class="flex items-start gap-2">
-                                <span class="priority-dot priority-dot--medium mt-1"></span>
-                                <div>
-                                    <div class="font-medium text-slate-900 text-xs">
-                                        Activer le chiffrement des postes nomades
-                                    </div>
-                                    <p class="text-[11px] text-slate-500 mt-1">
-                                        Déployer le chiffrement disque complet sur les laptops des collaborateurs.
-                                    </p>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-4 py-3 align-top text-xs text-slate-700">
-                            Intégrité & confidentialité
-                        </td>
-                        <td class="px-4 py-3 align-top text-xs text-slate-700">
-                            IT Manager
-                        </td>
-                        <td class="px-4 py-3 align-top">
-                            <span class="status-pill status-pill--en-cours">
-                                En cours
-                            </span>
-                        </td>
-                        <td class="px-4 py-3 align-top text-xs">
-                            <div class="timeline-bar mb-1">
-                                <div class="timeline-progress timeline-progress--warning" style="width: 40%;"></div>
-                            </div>
-                            <div class="text-[11px] text-slate-600">
-                                Échéance : 20/03/2025
-                            </div>
-                        </td>
-                        <td class="px-4 py-3 align-top text-right">
-                            <div class="inline-flex items-center gap-1">
-                                <button
-                                    type="button"
-                                    class="btn-details text-xs px-2 py-1 rounded border border-emerald-500 text-emerald-700 hover:bg-emerald-50"
-                                    data-action-id="ACT-2025-003">
-                                    Détails
-                                </button>
-                                <button
-                                    type="button"
-                                    class="btn-edit icon-btn"
-                                    data-action-id="ACT-2025-003"
-                                    title="Modifier l'action">
-                                    <i data-feather="edit" class="w-4 h-4 text-slate-500"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <!-- ACTION 4 – LATER -->
-                    <tr
-                        class="request-row"
-                        data-action-item
-                        data-action-id="ACT-2025-004"
-                        data-status="A faire"
-                        data-responsible="Responsable Marketing"
-                        data-date-bucket="later">
-                        <td class="px-4 py-3 align-top">
-                            <div class="flex items-start gap-2">
-                                <span class="priority-dot priority-dot--low mt-1"></span>
-                                <div>
-                                    <div class="font-medium text-slate-900 text-xs">
-                                        Documenter les bases légales des campagnes emailing
-                                    </div>
-                                    <p class="text-[11px] text-slate-500 mt-1">
-                                        Associer chaque scénario marketing à une base légale claire et documentée.
-                                    </p>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-4 py-3 align-top text-xs text-slate-700">
-                            Licéité du traitement
-                        </td>
-                        <td class="px-4 py-3 align-top text-xs text-slate-700">
-                            Responsable Marketing
-                        </td>
-                        <td class="px-4 py-3 align-top">
-                            <span class="status-pill status-pill--a-faire">
-                                À faire
-                            </span>
-                        </td>
-                        <td class="px-4 py-3 align-top text-xs">
-                            <div class="text-slate-700">
-                                30/04/2025
-                            </div>
-                            <div class="text-[11px] text-slate-500">
-                                Prévu après les priorités IT
-                            </div>
-                        </td>
-                        <td class="px-4 py-3 align-top text-right">
-                            <div class="inline-flex items-center gap-1">
-                                <button
-                                    type="button"
-                                    class="btn-details text-xs px-2 py-1 rounded border border-emerald-500 text-emerald-700 hover:bg-emerald-50"
-                                    data-action-id="ACT-2025-004">
-                                    Détails
-                                </button>
-                                <button
-                                    type="button"
-                                    class="btn-edit icon-btn"
-                                    data-action-id="ACT-2025-004"
-                                    title="Modifier l'action">
-                                    <i data-feather="edit" class="w-4 h-4 text-slate-500"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <!-- ACTION 5 – TERMINÉE -->
-                    <tr
-                        class="request-row"
-                        data-action-item
-                        data-action-id="ACT-2024-010"
-                        data-status="Terminé"
-                        data-responsible="DPO"
-                        data-date-bucket="this_month">
-                        <td class="px-4 py-3 align-top">
-                            <div class="flex items-start gap-2">
-                                <span class="priority-dot priority-dot--low mt-1"></span>
-                                <div>
-                                    <div class="font-medium text-slate-900 text-xs">
-                                        Mettre à jour les mentions d’information sur le site web
-                                    </div>
-                                    <p class="text-[11px] text-slate-500 mt-1">
-                                        Ajouter les nouvelles finalités liées au compte client et à la newsletter.
-                                    </p>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-4 py-3 align-top text-xs text-slate-700">
-                            Transparence
-                        </td>
-                        <td class="px-4 py-3 align-top text-xs text-slate-700">
-                            DPO
-                        </td>
-                        <td class="px-4 py-3 align-top">
-                            <span class="status-pill status-pill--terminee">
-                                Terminé
-                            </span>
-                        </td>
-                        <td class="px-4 py-3 align-top text-xs">
-                            <div class="timeline-bar mb-1">
-                                <div class="timeline-progress timeline-progress--success" style="width: 100%;"></div>
-                            </div>
-                            <div class="text-[11px] text-emerald-600">
-                                Clôturée le 15/01/2025
-                            </div>
-                        </td>
-                        <td class="px-4 py-3 align-top text-right">
-                            <div class="inline-flex items-center gap-1">
-                                <button
-                                    type="button"
-                                    class="btn-details text-xs px-2 py-1 rounded border border-slate-300 text-slate-700 hover:bg-slate-50"
-                                    data-action-id="ACT-2024-010">
-                                    Détails
-                                </button>
-                                <button
-                                    type="button"
-                                    class="btn-edit icon-btn"
-                                    data-action-id="ACT-2024-010"
-                                    title="Modifier l'action">
-                                    <i data-feather="edit" class="w-4 h-4 text-slate-500"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-
-                </tbody>
-            </table>
-        </div>
-
-        <!-- CARTES MOBILE -->
-        <div class="md:hidden divide-y divide-slate-100">
-
-            <!-- Les 5 mêmes actions, en version carte -->
-
-            <!-- Carte ACT-2025-001 -->
-            <article
-                class="request-card-mobile request-card-mobile--urgent"
-                data-action-item
-                data-action-id="ACT-2025-001"
-                data-status="A faire"
-                data-responsible="Responsable RH"
-                data-date-bucket="overdue">
-                <div class="flex justify-between items-start gap-3">
-                    <div>
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="priority-dot priority-dot--high"></span>
-                            <span class="text-xs font-semibold text-slate-900">
-                                Mettre à jour le registre des traitements RH
-                            </span>
-                        </div>
-                        <p class="text-[11px] text-slate-500">
-                            Responsabilité (Accountability) • Responsable RH
-                        </p>
-                        <p class="text-[11px] text-rose-700 mt-1">
-                            Échéance : 10/02/2025 – En retard de 5 jours
-                        </p>
-                    </div>
-                    <span class="status-pill status-pill--a-faire">
-                        À faire
-                    </span>
-                </div>
-                <div class="mt-3 flex justify-end gap-2">
-                    <button
-                        type="button"
-                        class="btn-details text-xs px-2 py-1 rounded border border-emerald-500 text-emerald-700 hover:bg-emerald-50"
-                        data-action-id="ACT-2025-001">
-                        Détails
-                    </button>
-                    <button
-                        type="button"
-                        class="btn-edit icon-btn"
-                        data-action-id="ACT-2025-001">
-                        <i data-feather="edit" class="w-4 h-4 text-slate-500"></i>
-                    </button>
-                </div>
-            </article>
-
-            <!-- Carte ACT-2025-002 -->
-            <article
-                class="request-card-mobile"
-                data-action-item
-                data-action-id="ACT-2025-002"
-                data-status="En cours"
-                data-responsible="DPO"
-                data-date-bucket="this_week">
-                <div class="flex justify-between items-start gap-3">
-                    <div>
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="priority-dot priority-dot--medium"></span>
-                            <span class="text-xs font-semibold text-slate-900">
-                                Finaliser la charte de confidentialité interne
-                            </span>
-                        </div>
-                        <p class="text-[11px] text-slate-500">
-                            Transparence • DPO
-                        </p>
-                        <p class="text-[11px] text-amber-700 mt-1">
-                            Échéance : 28/02/2025 – 3 jours restants
-                        </p>
-                    </div>
-                    <span class="status-pill status-pill--en-cours">
-                        En cours
-                    </span>
-                </div>
-                <div class="mt-3 flex justify-end gap-2">
-                    <button
-                        type="button"
-                        class="btn-details text-xs px-2 py-1 rounded border border-emerald-500 text-emerald-700 hover:bg-emerald-50"
-                        data-action-id="ACT-2025-002">
-                        Détails
-                    </button>
-                    <button
-                        type="button"
-                        class="btn-edit icon-btn"
-                        data-action-id="ACT-2025-002">
-                        <i data-feather="edit" class="w-4 h-4 text-slate-500"></i>
-                    </button>
-                </div>
-            </article>
-
-            <!-- Carte ACT-2025-003 -->
-            <article
-                class="request-card-mobile"
-                data-action-item
-                data-action-id="ACT-2025-003"
-                data-status="En cours"
-                data-responsible="IT Manager"
-                data-date-bucket="this_month">
-                <div class="flex justify-between items-start gap-3">
-                    <div>
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="priority-dot priority-dot--medium"></span>
-                            <span class="text-xs font-semibold text-slate-900">
-                                Activer le chiffrement des postes nomades
-                            </span>
-                        </div>
-                        <p class="text-[11px] text-slate-500">
-                            Intégrité & confidentialité • IT Manager
-                        </p>
-                        <p class="text-[11px] text-slate-600 mt-1">
-                            Échéance : 20/03/2025
-                        </p>
-                    </div>
-                    <span class="status-pill status-pill--en-cours">
-                        En cours
-                    </span>
-                </div>
-                <div class="mt-3 flex justify-end gap-2">
-                    <button
-                        type="button"
-                        class="btn-details text-xs px-2 py-1 rounded border border-emerald-500 text-emerald-700 hover:bg-emerald-50"
-                        data-action-id="ACT-2025-003">
-                        Détails
-                    </button>
-                    <button
-                        type="button"
-                        class="btn-edit icon-btn"
-                        data-action-id="ACT-2025-003">
-                        <i data-feather="edit" class="w-4 h-4 text-slate-500"></i>
-                    </button>
-                </div>
-            </article>
-
-            <!-- Carte ACT-2025-004 -->
-            <article
-                class="request-card-mobile"
-                data-action-item
-                data-action-id="ACT-2025-004"
-                data-status="A faire"
-                data-responsible="Responsable Marketing"
-                data-date-bucket="later">
-                <div class="flex justify-between items-start gap-3">
-                    <div>
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="priority-dot priority-dot--low"></span>
-                            <span class="text-xs font-semibold text-slate-900">
-                                Documenter les bases légales des campagnes emailing
-                            </span>
-                        </div>
-                        <p class="text-[11px] text-slate-500">
-                            Licéité du traitement • Responsable Marketing
-                        </p>
-                        <p class="text-[11px] text-slate-600 mt-1">
-                            Échéance : 30/04/2025
-                        </p>
-                    </div>
-                    <span class="status-pill status-pill--a-faire">
-                        À faire
-                    </span>
-                </div>
-                <div class="mt-3 flex justify-end gap-2">
-                    <button
-                        type="button"
-                        class="btn-details text-xs px-2 py-1 rounded border border-emerald-500 text-emerald-700 hover:bg-emerald-50"
-                        data-action-id="ACT-2025-004">
-                        Détails
-                    </button>
-                    <button
-                        type="button"
-                        class="btn-edit icon-btn"
-                        data-action-id="ACT-2025-004">
-                        <i data-feather="edit" class="w-4 h-4 text-slate-500"></i>
-                    </button>
-                </div>
-            </article>
-
-            <!-- Carte ACT-2024-010 -->
-            <article
-                class="request-card-mobile"
-                data-action-item
-                data-action-id="ACT-2024-010"
-                data-status="Terminé"
-                data-responsible="DPO"
-                data-date-bucket="this_month">
-                <div class="flex justify-between items-start gap-3">
-                    <div>
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="priority-dot priority-dot--low"></span>
-                            <span class="text-xs font-semibold text-slate-900">
-                                Mettre à jour les mentions d’information sur le site web
-                            </span>
-                        </div>
-                        <p class="text-[11px] text-slate-500">
-                            Transparence • DPO
-                        </p>
-                        <p class="text-[11px] text-emerald-700 mt-1">
-                            Clôturée le 15/01/2025
-                        </p>
-                    </div>
-                    <span class="status-pill status-pill--terminee">
-                        Terminé
-                    </span>
-                </div>
-                <div class="mt-3 flex justify-end gap-2">
-                    <button
-                        type="button"
-                        class="btn-details text-xs px-2 py-1 rounded border border-slate-300 text-slate-700 hover:bg-slate-50"
-                        data-action-id="ACT-2024-010">
-                        Détails
-                    </button>
-                    <button
-                        type="button"
-                        class="btn-edit icon-btn"
-                        data-action-id="ACT-2024-010">
-                        <i data-feather="edit" class="w-4 h-4 text-slate-500"></i>
-                    </button>
-                </div>
-            </article>
-
-        </div>
-
-        <!-- FOOTER / PAGINATION SIMPLE (DÉMO) -->
-        <div class="px-4 py-3 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-500">
-            <p id="pagination-text">
-                Affichage de 1 à 5 sur 5 actions (données de démonstration)
-            </p>
-            <div class="inline-flex items-center gap-1">
-                <button
-                    id="prev-page-btn"
-                    type="button"
-                    class="px-2 py-1 rounded border border-slate-300 text-slate-600 hover:bg-slate-50">
-                    Précédent
-                </button>
-                <button
-                    id="next-page-btn"
-                    type="button"
-                    class="px-2 py-1 rounded border border-slate-300 text-slate-600 hover:bg-slate-50">
-                    Suivant
-                </button>
-            </div>
-        </div>
-
-    </section>
-
-</main>
-
-<!-- MODALE DÉTAIL ACTION -->
-<div
-    id="action-modal"
-    class="fixed inset-0 z-40 hidden items-center justify-center bg-black/40">
-    <div class="bg-white rounded-xl shadow-xl w-full max-w-md mx-4 p-5 relative">
-        <button
-            id="action-modal-close"
-            type="button"
-            class="absolute top-3 right-3 inline-flex items-center justify-center rounded-full p-1.5 hover:bg-slate-100">
-            <i data-feather="x" class="w-4 h-4 text-slate-500"></i>
-        </button>
-
-        <h3 id="modal-title" class="text-base font-semibold text-slate-900">
-            Détails de l’action
-        </h3>
-
-        <div class="mt-4 space-y-3 text-sm">
-            <div class="flex items-center justify-between">
-                <span class="text-slate-500 text-xs">ID</span>
-                <span id="modal-id" class="font-mono text-slate-900 text-xs"></span>
-            </div>
-            <div>
-                <span class="text-slate-500 text-xs">Action</span>
-                <p id="modal-description" class="text-slate-900 text-sm mt-0.5"></p>
-            </div>
-            <div>
-                <span class="text-slate-500 text-xs">Principe RGPD</span>
-                <p id="modal-principle" class="text-slate-900 text-xs mt-0.5"></p>
-            </div>
-            <div class="flex items-center justify-between">
-                <span class="text-slate-500 text-xs">Responsable</span>
-                <span id="modal-responsible" class="text-slate-900 text-xs"></span>
-            </div>
-            <div class="flex items-center justify-between">
-                <span class="text-slate-500 text-xs">Statut</span>
-                <span id="modal-status" class="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700"></span>
-            </div>
-            <div>
-                <span class="text-slate-500 text-xs">Échéance</span>
-                <p id="modal-deadline" class="text-slate-900 text-xs mt-0.5"></p>
-            </div>
-            <div>
-                <span class="text-slate-500 text-xs">Prochaines étapes</span>
-                <ul id="modal-steps" class="list-disc pl-5 text-xs text-slate-800 mt-1 space-y-1"></ul>
-            </div>
-            <div>
-                <span class="text-slate-500 text-xs">Notes internes</span>
-                <p id="modal-notes" class="text-slate-900 text-xs mt-0.5"></p>
-            </div>
-        </div>
-
-        <div class="mt-5 flex justify-end gap-2">
-            <button
-                type="button"
-                class="px-3 py-1.5 text-xs rounded-md border border-slate-300 text-slate-700 hover:bg-slate-50">
-                Exporter en PDF
-            </button>
-            <button
-                type="button"
-                class="px-3 py-1.5 text-xs rounded-md bg-emerald-600 text-white hover:bg-emerald-700">
-                Marquer comme terminée
-            </button>
-        </div>
-    </div>
+{# ── KPIs ── #}
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+  {% for label, val, cls in [
+    ("Total", ap_summary.total, "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"),
+    ("À faire", ap_summary.a_faire, "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"),
+    ("En cours", ap_summary.en_cours, "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"),
+    ("Terminés", ap_summary.terminer, "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"),
+  ] %}
+  <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4">
+    <p class="text-2xl font-bold text-slate-800 dark:text-slate-100">{{ val }}</p>
+    <p class="text-xs text-slate-500 mt-1">{{ label }}</p>
+  </div>
+  {% endfor %}
 </div>
+
+{% if ap_summary.overdue %}
+<div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl px-4 py-3 flex items-center gap-3 text-sm text-red-700 dark:text-red-400">
+  <i data-feather="alert-triangle" class="w-4 h-4 flex-shrink-0"></i>
+  <span>{{ ap_summary.overdue }} plan{{ 's' if ap_summary.overdue != 1 }} en retard</span>
+</div>
+{% endif %}
+
+{# ── Filter bar ── #}
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-wrap gap-3 items-center">
+  <input id="search-input" type="text" placeholder="Rechercher…"
+         class="flex-1 min-w-48 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700
+                rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-slate-100">
+  <select id="statut-filter"
+          class="text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700
+                 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-slate-100">
+    <option value="">Tous les statuts</option>
+    <option>A faire</option><option>En cours</option><option>Terminer</option>
+  </select>
+  <button id="reset-btn" class="text-xs text-slate-500 hover:text-red-500 px-3 py-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20">
+    Réinitialiser
+  </button>
+</div>
+
+{# ── Action plans table ── #}
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
+{% if action_plans %}
+  <div class="overflow-x-auto">
+    <table class="w-full text-xs">
+      <thead class="bg-slate-50 dark:bg-slate-800/50 text-slate-500">
+        <tr>
+          <th class="px-4 py-3 text-left font-medium">Titre</th>
+          <th class="px-4 py-3 text-left font-medium hidden md:table-cell">Responsable</th>
+          <th class="px-4 py-3 text-left font-medium">Statut</th>
+          <th class="px-4 py-3 text-left font-medium">Avancement</th>
+          <th class="px-4 py-3 text-left font-medium hidden lg:table-cell">Échéance</th>
+        </tr>
+      </thead>
+      <tbody id="ap-tbody" class="divide-y divide-slate-100 dark:divide-slate-800">
+        {% for a in action_plans %}
+        {% set s = a.statut or "A faire" %}
+        {% set pct = (a.avancement or 0)|int %}
+        <tr class="ap-row hover:bg-slate-50 dark:hover:bg-slate-800/30"
+            data-statut="{{ s }}" data-search="{{ (a.titre or '')|lower }} {{ (a.description or '')|lower }}">
+          <td class="px-4 py-3">
+            <p class="font-semibold text-slate-800 dark:text-slate-200 truncate max-w-xs">{{ a.titre or a.description or a.name }}</p>
+            {% if a.violation %}<p class="text-[10px] text-slate-400 mt-0.5 flex items-center gap-1"><i data-feather="link" class="w-3 h-3"></i>{{ a.violation }}</p>{% endif %}
+          </td>
+          <td class="px-4 py-3 text-slate-500 hidden md:table-cell">{{ a.responsable or "—" }}</td>
+          <td class="px-4 py-3">
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium
+              {% if s == 'Terminer' %}bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400
+              {% elif s == 'En cours' %}bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400
+              {% else %}bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400{% endif %}">
+              {{ s }}
+            </span>
+          </td>
+          <td class="px-4 py-3">
+            <div class="flex items-center gap-2">
+              <div class="w-20 bg-slate-100 dark:bg-slate-800 rounded-full h-1.5">
+                <div class="h-1.5 rounded-full {% if pct == 100 %}bg-emerald-500{% elif pct >= 50 %}bg-blue-500{% else %}bg-amber-500{% endif %}"
+                     style="width:{{ pct }}%"></div>
+              </div>
+              <span class="text-slate-500 tabular-nums">{{ pct }}%</span>
+            </div>
+          </td>
+          <td class="px-4 py-3 text-slate-400 hidden lg:table-cell">{{ a.get("délais_dexécution") or "—" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <div class="py-16 text-center">
+    <i data-feather="target" class="w-10 h-10 mx-auto mb-3 text-slate-300"></i>
+    <p class="text-sm text-slate-500">Aucun plan d'action enregistré</p>
+  </div>
+{% endif %}
+</div>
+<p id="no-results" class="hidden text-center text-sm text-slate-400 py-8">Aucun résultat.</p>
 
 {% endblock %}
 
 {% block script %}
+{{ super() }}
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    // Icônes Feather
-    if (window.feather) {
-        window.feather.replace();
-    }
-
-    // --- Données d'exemple pour la modale ---
-    const actionsData = {
-        "ACT-2025-001": {
-            id: "ACT-2025-001",
-            description: "Mettre à jour le registre des traitements RH",
-            principle: "Responsabilité (Accountability)",
-            responsible: "Responsable RH",
-            status: "À faire",
-            deadline: "10/02/2025 – En retard de 5 jours",
-            steps: [
-                "Recenser les nouveaux traitements RH (paie, évaluation annuelle).",
-                "Valider les fiches avec le DPO.",
-                "Mettre à jour le registre consolidé."
-            ],
-            notes: "Action à traiter en priorité. Plusieurs traitements récents ne sont pas encore documentés."
-        },
-        "ACT-2025-002": {
-            id: "ACT-2025-002",
-            description: "Finaliser la charte de confidentialité interne",
-            principle: "Transparence",
-            responsible: "DPO",
-            status: "En cours",
-            deadline: "28/02/2025 – 3 jours restants",
-            steps: [
-                "Intégrer les retours des managers.",
-                "Valider la version finale avec la Direction.",
-                "Diffuser la charte à tous les collaborateurs."
-            ],
-            notes: "Prévoir un rappel automatique par email après diffusion pour s’assurer de la lecture."
-        },
-        "ACT-2025-003": {
-            id: "ACT-2025-003",
-            description: "Activer le chiffrement des postes nomades",
-            principle: "Intégrité & confidentialité",
-            responsible: "IT Manager",
-            status: "En cours",
-            deadline: "20/03/2025",
-            steps: [
-                "Identifier les postes nomades éligibles.",
-                "Planifier les mises à jour en dehors des heures de production.",
-                "Tester la procédure de restauration en cas de perte de mot de passe."
-            ],
-            notes: "Coordonner avec le support IT pour accompagner les utilisateurs."
-        },
-        "ACT-2025-004": {
-            id: "ACT-2025-004",
-            description: "Documenter les bases légales des campagnes emailing",
-            principle: "Licéité du traitement",
-            responsible: "Responsable Marketing",
-            status: "À faire",
-            deadline: "30/04/2025",
-            steps: [
-                "Lister les différents scénarios de campagnes (prospects, clients, inactifs).",
-                "Associer chaque scénario à une base légale.",
-                "Mettre à jour les fiches de traitement concernées."
-            ],
-            notes: "À prioriser après clôture des actions RH et IT les plus critiques."
-        },
-        "ACT-2024-010": {
-            id: "ACT-2024-010",
-            description: "Mettre à jour les mentions d’information sur le site web",
-            principle: "Transparence",
-            responsible: "DPO",
-            status: "Terminé",
-            deadline: "Clôturée le 15/01/2025",
-            steps: [
-                "Ajouter les nouvelles finalités liées au compte client.",
-                "Clarifier les durées de conservation.",
-                "Mettre à jour la page Politique de confidentialité."
-            ],
-            notes: "Revue annuelle recommandée pour rester aligné avec les évolutions métiers."
-        }
-    };
-
-    // --- Filtres ---
-    const statusFilter = document.getElementById('status-filter');
-    const responsibleFilter = document.getElementById('responsible-filter');
-    const dateFilter = document.getElementById('date-filter');
-    const items = Array.from(document.querySelectorAll('[data-action-item]'));
-
-    function applyFilters() {
-        const statusVal = statusFilter ? statusFilter.value : 'all';
-        const responsibleVal = responsibleFilter ? responsibleFilter.value : 'all';
-        const dateVal = dateFilter ? dateFilter.value : 'all';
-
-        items.forEach(el => {
-            const itemStatus = el.dataset.status || '';
-            const itemResp = el.dataset.responsible || '';
-            const itemBucket = el.dataset.dateBucket || 'all';
-
-            let visible = true;
-
-            if (statusVal !== 'all' && itemStatus !== statusVal) {
-                visible = false;
-            }
-
-            if (responsibleVal !== 'all' && itemResp !== responsibleVal) {
-                visible = false;
-            }
-
-            if (dateVal !== 'all' && itemBucket !== dateVal) {
-                visible = false;
-            }
-
-            el.style.display = visible ? '' : 'none';
+frappe.ready(function () {
+    if (window.feather) feather.replace({ 'stroke-width': 1.75 });
+    function filter() {
+        var q = (document.getElementById('search-input').value || '').toLowerCase();
+        var s = document.getElementById('statut-filter').value;
+        var rows = document.querySelectorAll('.ap-row');
+        var n = 0;
+        rows.forEach(function (r) {
+            var ok = (!s || r.dataset.statut === s) && (!q || r.dataset.search.includes(q));
+            r.style.display = ok ? '' : 'none';
+            if (ok) n++;
         });
+        document.getElementById('no-results').classList.toggle('hidden', n > 0 || rows.length === 0);
     }
-
-    if (statusFilter) statusFilter.addEventListener('change', applyFilters);
-    if (responsibleFilter) responsibleFilter.addEventListener('change', applyFilters);
-    if (dateFilter) dateFilter.addEventListener('change', applyFilters);
-
-    // --- Modale détails ---
-    const modal = document.getElementById('action-modal');
-    const modalClose = document.getElementById('action-modal-close');
-    const modalId = document.getElementById('modal-id');
-    const modalDescription = document.getElementById('modal-description');
-    const modalPrinciple = document.getElementById('modal-principle');
-    const modalResponsible = document.getElementById('modal-responsible');
-    const modalStatus = document.getElementById('modal-status');
-    const modalDeadline = document.getElementById('modal-deadline');
-    const modalSteps = document.getElementById('modal-steps');
-    const modalNotes = document.getElementById('modal-notes');
-
-    function openModal(actionId) {
-        const data = actionsData[actionId];
-        if (!data || !modal) return;
-
-        modalId.textContent = data.id;
-        modalDescription.textContent = data.description;
-        modalPrinciple.textContent = data.principle;
-        modalResponsible.textContent = data.responsible;
-        modalStatus.textContent = data.status;
-        modalDeadline.textContent = data.deadline;
-        modalNotes.textContent = data.notes;
-
-        // Reset & remplir les étapes
-        modalSteps.innerHTML = '';
-        if (Array.isArray(data.steps)) {
-            data.steps.forEach(step => {
-                const li = document.createElement('li');
-                li.textContent = step;
-                modalSteps.appendChild(li);
-            });
-        }
-
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-    }
-
-    function closeModal() {
-        if (!modal) return;
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-    }
-
-    const detailButtons = document.querySelectorAll('.btn-details');
-    detailButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const id = btn.dataset.actionId;
-            openModal(id);
-        });
+    document.getElementById('search-input').addEventListener('input', filter);
+    document.getElementById('statut-filter').addEventListener('change', filter);
+    document.getElementById('reset-btn').addEventListener('click', function () {
+        document.getElementById('search-input').value = '';
+        document.getElementById('statut-filter').value = '';
+        filter();
     });
-
-    if (modalClose) {
-        modalClose.addEventListener('click', closeModal);
-    }
-
-    if (modal) {
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                closeModal();
-            }
-        });
-    }
-
-    // --- Boutons "Modifier" (démo) ---
-    const editButtons = document.querySelectorAll('.btn-edit');
-    editButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const id = btn.dataset.actionId;
-            const action = actionsData[id];
-            const label = action ? action.description : id;
-            alert("Mode démo : ici, vous ouvririez l’écran d’édition pour :\n\n" + label);
-        });
-    });
-
-    // --- Pagination (démo purement visuelle) ---
-    const paginationText = document.getElementById('pagination-text');
-    const prevPageBtn = document.getElementById('prev-page-btn');
-    const nextPageBtn = document.getElementById('next-page-btn');
-
-    let currentPage = 1;
-    const totalItems = 5;
-    const pageSize = 5; // tout sur une page, mais on simule la pagination
-
-    function updatePagination() {
-        const totalPages = Math.ceil(totalItems / pageSize);
-        if (currentPage < 1) currentPage = 1;
-        if (currentPage > totalPages) currentPage = totalPages;
-
-        const start = (currentPage - 1) * pageSize + 1;
-        let end = currentPage * pageSize;
-        if (end > totalItems) end = totalItems;
-
-        if (paginationText) {
-            paginationText.textContent =
-                `Affichage de ${start} à ${end} sur ${totalItems} actions (données de démonstration)`;
-        }
-    }
-
-    if (prevPageBtn) {
-        prevPageBtn.addEventListener('click', () => {
-            if (currentPage > 1) {
-                currentPage--;
-                updatePagination();
-            }
-        });
-    }
-
-    if (nextPageBtn) {
-        nextPageBtn.addEventListener('click', () => {
-            const totalPages = Math.ceil(totalItems / pageSize);
-            if (currentPage < totalPages) {
-                currentPage++;
-                updatePagination();
-            }
-        });
-    }
-
-    // Initialisation
-    applyFilters();
-    updatePagination();
 });
 </script>
 {% endblock %}

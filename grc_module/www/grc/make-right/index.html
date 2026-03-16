@@ -1,759 +1,253 @@
 {% extends base_template %}
 
-{% block title %}Demande de droit{% endblock %}
+{% block page_tab_title %}Demandes de droit{% endblock %}
+{% block page_title %}Demandes de droit{% endblock %}
+{% block page_subtitle %}Exercice des droits RGPD (accès, suppression, rectification…){% endblock %}
 
-{% block link %}
-<link rel="stylesheet" href="/assets/grc_module/css/make_right.css">
-{% endblock %}
+{% block page_body %}
 
-{% block content %}
+{# ── KPIs ── #}
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+  {% for label, val, cls in [
+    ("Total", mr_summary.total, "bg-slate-100 text-slate-700"),
+    ("Reçues", mr_summary.recue, "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"),
+    ("En cours", mr_summary.en_cours, "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"),
+    ("Terminées", mr_summary.terminee, "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"),
+  ] %}
+  <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4">
+    <p class="text-2xl font-bold text-slate-800 dark:text-slate-100">{{ val }}</p>
+    <p class="text-xs text-slate-500 mt-1">{{ label }}</p>
+  </div>
+  {% endfor %}
+</div>
 
-<main class="space-y-6">
+{# ── New request button + filter ── #}
+<div class="flex flex-wrap gap-3 items-center justify-between">
+  <div class="flex flex-wrap gap-3 flex-1">
+    <input id="search-input" type="text" placeholder="Rechercher par nom, email…"
+           class="flex-1 min-w-48 text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700
+                  rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-slate-100">
+    <select id="type-filter"
+            class="text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700
+                   rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-slate-100">
+      <option value="">Tous les types</option>
+      <option>Accès aux données</option><option>Suppression</option>
+      <option>Portabilité</option><option>Rectification</option><option>Opposition</option>
+    </select>
+    <select id="statut-filter"
+            class="text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700
+                   rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-slate-100">
+      <option value="">Tous les statuts</option>
+      <option>Reçue</option><option>Vérifiée</option><option>En cours</option><option>Terminée</option><option>rejetée</option>
+    </select>
+  </div>
+  <button onclick="openNewRequestModal()"
+          class="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium">
+    <i data-feather="plus" class="w-4 h-4"></i>Nouvelle demande
+  </button>
+</div>
 
-    <!-- 1. Statistiques globales -->
-    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <!-- Total demandes -->
-        <article class="stat-card bg-white rounded-xl shadow-sm border border-slate-200 p-4 flex items-center gap-3">
-            <div class="p-2.5 rounded-lg bg-blue-50">
-                <i data-feather="inbox" class="w-5 h-5 text-blue-600"></i>
-            </div>
-            <div class="flex flex-col">
-                <span class="text-xs font-medium text-slate-500 uppercase tracking-wide">Total demandes</span>
-                <span class="text-2xl font-semibold text-slate-900 leading-none mt-1">24</span>
-                <span class="text-[11px] text-slate-500 mt-1">Sur les 12 derniers mois</span>
-            </div>
-        </article>
+{# ── Table ── #}
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
+{% if make_rights %}
+  <div class="overflow-x-auto">
+    <table class="w-full text-xs">
+      <thead class="bg-slate-50 dark:bg-slate-800/50 text-slate-500">
+        <tr>
+          <th class="px-4 py-3 text-left font-medium">Demandeur</th>
+          <th class="px-4 py-3 text-left font-medium">Type</th>
+          <th class="px-4 py-3 text-left font-medium">Statut</th>
+          <th class="px-4 py-3 text-left font-medium hidden md:table-cell">Date</th>
+          <th class="px-4 py-3 text-left font-medium">Action</th>
+        </tr>
+      </thead>
+      <tbody id="mr-tbody" class="divide-y divide-slate-100 dark:divide-slate-800">
+        {% for m in make_rights %}
+        {% set s = m.statut or "" %}
+        <tr class="mr-row hover:bg-slate-50 dark:hover:bg-slate-800/30"
+            data-statut="{{ s }}" data-type="{{ m.make_type or '' }}"
+            data-search="{{ (m.name_maker or '')|lower }} {{ (m.email_maker or '')|lower }}">
+          <td class="px-4 py-3">
+            <p class="font-semibold text-slate-800 dark:text-slate-200">{{ m.name_maker or "—" }}</p>
+            <p class="text-slate-400">{{ m.email_maker or "" }}</p>
+          </td>
+          <td class="px-4 py-3 text-slate-600 dark:text-slate-400">{{ m.make_type or "—" }}</td>
+          <td class="px-4 py-3">
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium
+              {% if s == 'Terminée' %}bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400
+              {% elif s in ['En cours', 'Vérifiée'] %}bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400
+              {% elif s == 'Reçue' %}bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400
+              {% elif s == 'rejetée' %}bg-red-100 text-red-700
+              {% else %}bg-slate-100 text-slate-500{% endif %}">
+              {{ s or "—" }}
+            </span>
+          </td>
+          <td class="px-4 py-3 text-slate-400 hidden md:table-cell">{{ m.updated_at or "—" }}</td>
+          <td class="px-4 py-3">
+            <button onclick="openDetail({{ loop.index0 }})"
+                    class="text-emerald-600 dark:text-emerald-400 hover:underline text-xs">Détails</button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <div class="py-16 text-center">
+    <i data-feather="user-check" class="w-10 h-10 mx-auto mb-3 text-slate-300"></i>
+    <p class="text-sm text-slate-500">Aucune demande de droit enregistrée</p>
+  </div>
+{% endif %}
+</div>
+<p id="no-results" class="hidden text-center text-sm text-slate-400 py-8">Aucun résultat.</p>
 
-        <!-- Traitées -->
-        <article class="stat-card bg-white rounded-xl shadow-sm border border-slate-200 p-4 flex items-center gap-3">
-            <div class="p-2.5 rounded-lg bg-emerald-50">
-                <i data-feather="check-circle" class="w-5 h-5 text-emerald-600"></i>
-            </div>
-            <div class="flex flex-col">
-                <span class="text-xs font-medium text-slate-500 uppercase tracking-wide">Traitées</span>
-                <span class="text-2xl font-semibold text-slate-900 leading-none mt-1">14</span>
-                <span class="text-[11px] text-emerald-700 mt-1">Taux de traitement 58%</span>
-            </div>
-        </article>
-
-        <!-- En cours -->
-        <article class="stat-card bg-white rounded-xl shadow-sm border border-slate-200 p-4 flex items-center gap-3">
-            <div class="p-2.5 rounded-lg bg-amber-50">
-                <i data-feather="clock" class="w-5 h-5 text-amber-600"></i>
-            </div>
-            <div class="flex flex-col">
-                <span class="text-xs font-medium text-slate-500 uppercase tracking-wide">En cours</span>
-                <span class="text-2xl font-semibold text-slate-900 leading-none mt-1">7</span>
-                <span class="text-[11px] text-amber-700 mt-1">3 approchent de l’échéance</span>
-            </div>
-        </article>
-
-        <!-- En retard -->
-        <article class="stat-card bg-white rounded-xl shadow-sm border border-slate-200 p-4 flex items-center gap-3">
-            <div class="p-2.5 rounded-lg bg-rose-50">
-                <i data-feather="alert-triangle" class="w-5 h-5 text-rose-600"></i>
-            </div>
-            <div class="flex flex-col">
-                <span class="text-xs font-medium text-slate-500 uppercase tracking-wide">En retard</span>
-                <span class="text-2xl font-semibold text-slate-900 leading-none mt-1">3</span>
-                <span class="text-[11px] text-rose-700 mt-1">> 30 jours depuis réception</span>
-            </div>
-        </article>
-    </section>
-
-    <!-- 2. Barre de recherche + filtres -->
-    <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 space-y-4">
-        <!-- Ligne principale -->
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-            <!-- Recherche -->
-            <div class="relative md:flex-1">
-                <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i data-feather="search" class="w-4 h-4 text-slate-400"></i>
-                </span>
-                <input
-                    id="search-input"
-                    type="text"
-                    placeholder="Rechercher par nom, type, ID..."
-                    class="w-full pl-9 pr-3 py-2 text-sm border border-slate-300 rounded-md
-                           focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500
-                           placeholder:text-slate-400"
-                >
-            </div>
-
-            <!-- Bouton filtres avancés -->
-            <button
-                id="advanced-filters-btn"
-                type="button"
-                class="inline-flex items-center justify-center text-sm px-3 py-2 rounded-md border border-slate-300
-                       bg-slate-50 text-slate-700 hover:bg-white gap-2">
-                <i data-feather="filter" class="w-4 h-4"></i>
-                <span>Filtres avancés</span>
-            </button>
-        </div>
-
-        <!-- Filtres -->
-        <div id="filters-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-            <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Type de demande</label>
-                <select
-                    id="filter-type"
-                    class="w-full border border-slate-300 rounded-md px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm">
-                    <option value="all">Tous types</option>
-                    <option value="Accès aux données">Accès aux données</option>
-                    <option value="Portabilité">Portabilité</option>
-                    <option value="Rectification">Rectification</option>
-                    <option value="Suppression">Suppression</option>
-                    <option value="Opposition">Opposition</option>
-                </select>
-            </div>
-
-            <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Statut</label>
-                <select
-                    id="filter-status"
-                    class="w-full border border-slate-300 rounded-md px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 text-sm">
-                    <option value="all">Tous statuts</option>
-                    <option value="Reçue">Reçue</option>
-                    <option value="Vérifiée">Vérifiée</option>
-                    <option value="En cours">En cours</option>
-                    <option value="Terminée">Terminée</option>
-                    <option value="En retard">En retard</option>
-                    <option value="Rejetée">Rejetée</option>
-                </select>
-            </div>
-
-            <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Période</label>
-                <div class="flex items-center gap-2">
-                    <input
-                        id="filter-start-date"
-                        type="date"
-                        class="flex-1 border border-slate-300 rounded-md px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500">
-                    <span class="text-[11px] text-slate-500">à</span>
-                    <input
-                        id="filter-end-date"
-                        type="date"
-                        class="flex-1 border border-slate-300 rounded-md px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500">
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 3. Liste des demandes (table + cartes mobile) -->
-    <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        <!-- Table desktop -->
-        <div class="hidden md:block">
-            <table class="min-w-full text-sm">
-                <thead class="bg-slate-50 border-b border-slate-200">
-                    <tr>
-                        <th class="px-4 py-2 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wide">Type</th>
-                        <th class="px-4 py-2 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wide">ID</th>
-                        <th class="px-4 py-2 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wide">Date</th>
-                        <th class="px-4 py-2 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wide">Demandeur</th>
-                        <th class="px-4 py-2 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wide">Statut</th>
-                        <th class="px-4 py-2 text-left text-[11px] font-semibold text-slate-500 uppercase tracking-wide">Délai estimé</th>
-                        <th class="px-4 py-2 text-right text-[11px] font-semibold text-slate-500 uppercase tracking-wide">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100">
-
-                    <!-- Ligne 1 - Urgente -->
-                    <tr
-                        class="request-row request-row--urgent"
-                        data-request-item
-                        data-id="DR-2025-0012"
-                        data-type="Accès aux données"
-                        data-status="En retard"
-                        data-date="2025-01-05"
-                        data-search="dr-2025-0012 acces aux donnees kouassi jean jean.kouassi@example.com en retard">
-                        <td class="px-4 py-3 align-top">
-                            <div class="flex items-center gap-2">
-                                <span class="priority-dot priority-dot--high"></span>
-                                <span class="font-medium text-slate-800 text-xs">Accès aux données</span>
-                            </div>
-                        </td>
-                        <td class="px-4 py-3 align-top text-xs text-slate-600">
-                            DR-2025-0012
-                        </td>
-                        <td class="px-4 py-3 align-top text-xs text-slate-600">
-                            05/01/2025
-                        </td>
-                        <td class="px-4 py-3 align-top">
-                            <div class="flex flex-col">
-                                <span class="text-xs font-medium text-slate-800">Kouassi Jean</span>
-                                <span class="text-[11px] text-slate-500">jean.kouassi@example.com</span>
-                            </div>
-                        </td>
-                        <td class="px-4 py-3 align-top">
-                            <span class="status-pill status-pill--en-retard">
-                                En retard
-                            </span>
-                        </td>
-                        <td class="px-4 py-3 align-top">
-                            <div class="flex flex-col gap-1">
-                                <div class="timeline-bar">
-                                    <div class="timeline-progress timeline-progress--danger" style="width: 95%;"></div>
-                                </div>
-                                <span class="text-[11px] text-rose-600 font-medium">+5 jours après délai légal</span>
-                            </div>
-                        </td>
-                        <td class="px-4 py-3 align-top text-right">
-                            <div class="inline-flex items-center gap-1">
-                                <button
-                                    class="btn-open-request text-xs px-2 py-1 rounded border border-emerald-500 text-emerald-700 hover:bg-emerald-50"
-                                    data-request-id="DR-2025-0012">
-                                    Ouvrir
-                                </button>
-                                <button class="icon-btn" title="Plus d’actions">
-                                    <i data-feather="more-vertical" class="w-4 h-4 text-slate-500"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <!-- Ligne 2 - En cours -->
-                    <tr
-                        class="request-row"
-                        data-request-item
-                        data-id="DR-2025-0018"
-                        data-type="Rectification"
-                        data-status="En cours"
-                        data-date="2025-01-17"
-                        data-search="dr-2025-0018 rectification n guessan aicha aicha.ng@example.com en cours">
-                        <td class="px-4 py-3 align-top">
-                            <div class="flex items-center gap-2">
-                                <span class="priority-dot priority-dot--medium"></span>
-                                <span class="font-medium text-slate-800 text-xs">Rectification</span>
-                            </div>
-                        </td>
-                        <td class="px-4 py-3 align-top text-xs text-slate-600">
-                            DR-2025-0018
-                        </td>
-                        <td class="px-4 py-3 align-top text-xs text-slate-600">
-                            17/01/2025
-                        </td>
-                        <td class="px-4 py-3 align-top">
-                            <div class="flex flex-col">
-                                <span class="text-xs font-medium text-slate-800">N’Guessan Aïcha</span>
-                                <span class="text-[11px] text-slate-500">aicha.ng@example.com</span>
-                            </div>
-                        </td>
-                        <td class="px-4 py-3 align-top">
-                            <span class="status-pill status-pill--en-cours">
-                                En cours
-                            </span>
-                        </td>
-                        <td class="px-4 py-3 align-top">
-                            <div class="flex flex-col gap-1">
-                                <div class="timeline-bar">
-                                    <div class="timeline-progress timeline-progress--warning" style="width: 60%;"></div>
-                                </div>
-                                <span class="text-[11px] text-amber-600">12 jours restants</span>
-                            </div>
-                        </td>
-                        <td class="px-4 py-3 align-top text-right">
-                            <div class="inline-flex items-center gap-1">
-                                <button
-                                    class="btn-open-request text-xs px-2 py-1 rounded border border-emerald-500 text-emerald-700 hover:bg-emerald-50"
-                                    data-request-id="DR-2025-0018">
-                                    Ouvrir
-                                </button>
-                                <button class="icon-btn" title="Plus d’actions">
-                                    <i data-feather="more-vertical" class="w-4 h-4 text-slate-500"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <!-- Ligne 3 - Terminée -->
-                    <tr
-                        class="request-row"
-                        data-request-item
-                        data-id="DR-2024-0097"
-                        data-type="Suppression"
-                        data-status="Terminée"
-                        data-date="2024-12-12"
-                        data-search="dr-2024-0097 suppression konan patrick patrick.konan@example.com terminee">
-                        <td class="px-4 py-3 align-top">
-                            <div class="flex items-center gap-2">
-                                <span class="priority-dot priority-dot--low"></span>
-                                <span class="font-medium text-slate-800 text-xs">Suppression</span>
-                            </div>
-                        </td>
-                        <td class="px-4 py-3 align-top text-xs text-slate-600">
-                            DR-2024-0097
-                        </td>
-                        <td class="px-4 py-3 align-top text-xs text-slate-600">
-                            12/12/2024
-                        </td>
-                        <td class="px-4 py-3 align-top">
-                            <div class="flex flex-col">
-                                <span class="text-xs font-medium text-slate-800">Konan Patrick</span>
-                                <span class="text-[11px] text-slate-500">patrick.konan@example.com</span>
-                            </div>
-                        </td>
-                        <td class="px-4 py-3 align-top">
-                            <span class="status-pill status-pill--terminee">
-                                Terminée
-                            </span>
-                        </td>
-                        <td class="px-4 py-3 align-top">
-                            <div class="flex flex-col gap-1">
-                                <div class="timeline-bar">
-                                    <div class="timeline-progress timeline-progress--success" style="width: 100%;"></div>
-                                </div>
-                                <span class="text-[11px] text-emerald-600">Traitée en 18 jours</span>
-                            </div>
-                        </td>
-                        <td class="px-4 py-3 align-top text-right">
-                            <div class="inline-flex items-center gap-1">
-                                <button
-                                    class="btn-open-request text-xs px-2 py-1 rounded border border-slate-300 text-slate-700 hover:bg-slate-50"
-                                    data-request-id="DR-2024-0097">
-                                    Détails
-                                </button>
-                                <button class="icon-btn" title="Télécharger la réponse">
-                                    <i data-feather="download" class="w-4 h-4 text-slate-500"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Cartes mobile -->
-        <div class="md:hidden divide-y divide-slate-100">
-            <!-- Carte 1 -->
-            <article
-                class="request-card-mobile request-card-mobile--urgent"
-                data-request-item
-                data-id="DR-2025-0012"
-                data-type="Accès aux données"
-                data-status="En retard"
-                data-date="2025-01-05"
-                data-search="dr-2025-0012 acces aux donnees kouassi jean jean.kouassi@example.com en retard">
-                <div class="flex justify-between items-start gap-3">
-                    <div>
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="priority-dot priority-dot--high"></span>
-                            <span class="text-xs font-semibold text-slate-900">Accès aux données</span>
-                        </div>
-                        <p class="text-[11px] text-slate-500 mb-1">
-                            DR-2025-0012 • 05/01/2025
-                        </p>
-                        <p class="text-xs text-slate-800">
-                            Kouassi Jean <span class="text-slate-400">• jean.kouassi@example.com</span>
-                        </p>
-                    </div>
-                    <span class="status-pill status-pill--en-retard">
-                        En retard
-                    </span>
-                </div>
-                <div class="mt-3 space-y-1">
-                    <div class="timeline-bar">
-                        <div class="timeline-progress timeline-progress--danger" style="width: 95%;"></div>
-                    </div>
-                    <p class="text-[11px] text-rose-700">
-                        +5 jours après délai légal
-                    </p>
-                </div>
-                <div class="mt-3 flex justify-end gap-2">
-                    <button
-                        class="btn-open-request text-xs px-2 py-1 rounded border border-emerald-500 text-emerald-700 hover:bg-emerald-50"
-                        data-request-id="DR-2025-0012">
-                        Ouvrir
-                    </button>
-                    <button class="icon-btn">
-                        <i data-feather="more-horizontal" class="w-4 h-4 text-slate-500"></i>
-                    </button>
-                </div>
-            </article>
-
-            <!-- Carte 2 -->
-            <article
-                class="request-card-mobile"
-                data-request-item
-                data-id="DR-2025-0018"
-                data-type="Rectification"
-                data-status="En cours"
-                data-date="2025-01-17"
-                data-search="dr-2025-0018 rectification n guessan aicha aicha.ng@example.com en cours">
-                <div class="flex justify-between items-start gap-3">
-                    <div>
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="priority-dot priority-dot--medium"></span>
-                            <span class="text-xs font-semibold text-slate-900">Rectification</span>
-                        </div>
-                        <p class="text-[11px] text-slate-500 mb-1">
-                            DR-2025-0018 • 17/01/2025
-                        </p>
-                        <p class="text-xs text-slate-800">
-                            N’Guessan Aïcha <span class="text-slate-400">• aicha.ng@example.com</span>
-                        </p>
-                    </div>
-                    <span class="status-pill status-pill--en-cours">
-                        En cours
-                    </span>
-                </div>
-                <div class="mt-3 space-y-1">
-                    <div class="timeline-bar">
-                        <div class="timeline-progress timeline-progress--warning" style="width: 60%;"></div>
-                    </div>
-                    <p class="text-[11px] text-amber-700">
-                        12 jours restants
-                    </p>
-                </div>
-                <div class="mt-3 flex justify-end gap-2">
-                    <button
-                        class="btn-open-request text-xs px-2 py-1 rounded border border-emerald-500 text-emerald-700 hover:bg-emerald-50"
-                        data-request-id="DR-2025-0018">
-                        Ouvrir
-                    </button>
-                    <button class="icon-btn">
-                        <i data-feather="more-horizontal" class="w-4 h-4 text-slate-500"></i>
-                    </button>
-                </div>
-            </article>
-
-        </div>
-    </section>
-
-    <!-- 4. Pagination simple -->
-    <section class="flex items-center justify-between text-xs text-slate-500">
-        <p id="pagination-text">
-            <!-- rempli en JS -->
-        </p>
-        <div class="inline-flex items-center gap-1">
-            <button
-                id="prev-page-btn"
-                class="px-2 py-1 rounded border border-slate-300 text-slate-600 hover:bg-slate-50">
-                Précédent
-            </button>
-            <button
-                id="next-page-btn"
-                class="px-2 py-1 rounded border border-slate-300 text-slate-600 hover:bg-slate-50">
-                Suivant
-            </button>
-        </div>
-    </section>
-
-</main>
-
-<!-- MODALE DÉTAIL DEMANDE -->
-<div
-    id="request-modal"
-    class="fixed inset-0 z-40 hidden items-center justify-center bg-black/40">
-    <div class="bg-white rounded-xl shadow-xl w-full max-w-md mx-4 p-5 relative">
-        <button
-            id="request-modal-close"
-            type="button"
-            class="absolute top-3 right-3 inline-flex items-center justify-center rounded-full p-1.5 hover:bg-slate-100">
-            <i data-feather="x" class="w-4 h-4 text-slate-500"></i>
-        </button>
-
-        <h3 id="modal-title" class="text-base font-semibold text-slate-900">
-            Détails de la demande
-        </h3>
-
-        <div class="mt-4 space-y-3 text-sm">
-            <div class="flex items-center justify-between">
-                <span class="text-slate-500">ID</span>
-                <span id="modal-id" class="font-mono text-slate-900 text-xs"></span>
-            </div>
-            <div class="flex items-center justify-between">
-                <span class="text-slate-500">Type</span>
-                <span id="modal-type" class="text-slate-900 text-xs"></span>
-            </div>
-            <div class="flex items-center justify-between">
-                <span class="text-slate-500">Statut</span>
-                <span id="modal-status" class="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700"></span>
-            </div>
-            <div class="flex items-center justify-between">
-                <span class="text-slate-500">Date de réception</span>
-                <span id="modal-date" class="text-slate-900 text-xs"></span>
-            </div>
-            <div>
-                <span class="text-slate-500 text-xs">Demandeur</span>
-                <p id="modal-requester" class="text-slate-900 text-sm font-medium"></p>
-                <p id="modal-email" class="text-slate-500 text-xs"></p>
-            </div>
-            <div>
-                <span class="text-slate-500 text-xs">Canal</span>
-                <p id="modal-channel" class="text-slate-900 text-xs"></p>
-            </div>
-            <div>
-                <span class="text-slate-500 text-xs">Description</span>
-                <p id="modal-description" class="text-slate-900 text-xs mt-1"></p>
-            </div>
-            <div>
-                <span class="text-slate-500 text-xs">Échéance</span>
-                <p id="modal-deadline" class="text-slate-900 text-xs mt-1"></p>
-            </div>
-            <div>
-                <span class="text-slate-500 text-xs">Notes internes</span>
-                <p id="modal-notes" class="text-slate-900 text-xs mt-1"></p>
-            </div>
-        </div>
-
-        <div class="mt-5 flex justify-end gap-2">
-            <button
-                type="button"
-                class="px-3 py-1.5 text-xs rounded-md border border-slate-300 text-slate-700 hover:bg-slate-50">
-                Télécharger la réponse
-            </button>
-            <button
-                type="button"
-                class="px-3 py-1.5 text-xs rounded-md bg-emerald-600 text-white hover:bg-emerald-700">
-                Marquer comme terminée
-            </button>
-        </div>
+{# ── New request modal ── #}
+<div id="new-request-modal" class="fixed inset-0 z-50 hidden bg-black/50 flex items-center justify-center p-4">
+  <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-lg">
+    <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+      <h3 class="text-sm font-semibold text-slate-800 dark:text-slate-100">Nouvelle demande de droit</h3>
+      <button onclick="closeModal('new-request-modal')" class="text-slate-400 hover:text-slate-600">
+        <i data-feather="x" class="w-4 h-4"></i>
+      </button>
     </div>
+    <div class="px-6 py-5 space-y-4">
+      <div>
+        <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Type de demande *</label>
+        <select id="nr-type" class="w-full text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 outline-none dark:text-slate-100">
+          <option value="">Choisir…</option>
+          <option>Accès aux données</option><option>Suppression</option>
+          <option>Portabilité</option><option>Rectification</option><option>Opposition</option>
+        </select>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Nom complet *</label>
+          <input id="nr-name" type="text" class="w-full text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 outline-none dark:text-slate-100">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Email *</label>
+          <input id="nr-email" type="email" class="w-full text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 outline-none dark:text-slate-100">
+        </div>
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Téléphone</label>
+        <input id="nr-phone" type="tel" class="w-full text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 outline-none dark:text-slate-100">
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Description</label>
+        <textarea id="nr-desc" rows="3" class="w-full text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 outline-none dark:text-slate-100 resize-none"></textarea>
+      </div>
+    </div>
+    <div class="px-6 py-4 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
+      <button onclick="closeModal('new-request-modal')" class="px-4 py-2 text-sm text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">Annuler</button>
+      <button id="submit-request-btn" onclick="submitRequest()"
+              class="px-4 py-2 text-sm bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg flex items-center gap-2">
+        <i data-feather="send" class="w-3.5 h-3.5"></i>Soumettre
+      </button>
+    </div>
+  </div>
+</div>
+
+{# ── Detail modal ── #}
+<div id="detail-modal" class="fixed inset-0 z-50 hidden bg-black/50 flex items-center justify-center p-4">
+  <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-md">
+    <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+      <h3 class="text-sm font-semibold text-slate-800 dark:text-slate-100">Détail de la demande</h3>
+      <button onclick="closeModal('detail-modal')" class="text-slate-400 hover:text-slate-600"><i data-feather="x" class="w-4 h-4"></i></button>
+    </div>
+    <div id="detail-body" class="px-6 py-5 text-sm space-y-3 text-slate-700 dark:text-slate-300"></div>
+  </div>
 </div>
 
 {% endblock %}
 
 {% block script %}
+{{ super() }}
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    // Feather icons
-    if (window.feather) {
-        window.feather.replace();
-    }
+var makeRights = {{ make_rights | tojson }};
+var currentCompany = "{{ company or '' }}";
+var csrfToken = "{{ csrf_token or '' }}";
 
-    // --- Données d'exemple pour la modale ---
-    const requestsData = {
-        "DR-2025-0012": {
-            id: "DR-2025-0012",
-            type: "Accès aux données",
-            date: "05/01/2025",
-            status: "En retard",
-            requester: "Kouassi Jean",
-            email: "jean.kouassi@example.com",
-            channel: "Formulaire web",
-            description: "Demande d’accès à l’ensemble des données RH le concernant.",
-            deadline: "Délai légal dépassé de 5 jours.",
-            notes: "Relance effectuée le 02/02/2025. Prioriser la réponse."
-        },
-        "DR-2025-0018": {
-            id: "DR-2025-0018",
-            type: "Rectification",
-            date: "17/01/2025",
-            status: "En cours",
-            requester: "N’Guessan Aïcha",
-            email: "aicha.ng@example.com",
-            channel: "Email",
-            description: "Correction de l’adresse postale et du numéro de téléphone.",
-            deadline: "Réponse attendue avant le 16/02/2025.",
-            notes: "Coordonnées transmises au service RH pour validation."
-        },
-        "DR-2024-0097": {
-            id: "DR-2024-0097",
-            type: "Suppression",
-            date: "12/12/2024",
-            status: "Terminée",
-            requester: "Konan Patrick",
-            email: "patrick.konan@example.com",
-            channel: "Courrier recommandé",
-            description: "Demande de suppression du compte client inactif.",
-            deadline: "Traitée dans les 18 jours suivant la réception.",
-            notes: "Confirmation de suppression envoyée le 30/12/2024."
-        }
-    };
+frappe.ready(function () {
+    if (window.feather) feather.replace({ 'stroke-width': 1.75 });
 
-    // --- Sélecteurs / éléments ---
-    const searchInput = document.getElementById('search-input');
-    const filterType = document.getElementById('filter-type');
-    const filterStatus = document.getElementById('filter-status');
-    const filterStartDate = document.getElementById('filter-start-date');
-    const filterEndDate = document.getElementById('filter-end-date');
-    const filtersGrid = document.getElementById('filters-grid');
-    const filtersBtn = document.getElementById('advanced-filters-btn');
-
-    const items = Array.from(document.querySelectorAll('[data-request-item]'));
-
-    const modal = document.getElementById('request-modal');
-    const modalClose = document.getElementById('request-modal-close');
-    const modalTitle = document.getElementById('modal-title');
-    const modalId = document.getElementById('modal-id');
-    const modalType = document.getElementById('modal-type');
-    const modalStatus = document.getElementById('modal-status');
-    const modalDate = document.getElementById('modal-date');
-    const modalRequester = document.getElementById('modal-requester');
-    const modalEmail = document.getElementById('modal-email');
-    const modalChannel = document.getElementById('modal-channel');
-    const modalDescription = document.getElementById('modal-description');
-    const modalDeadline = document.getElementById('modal-deadline');
-    const modalNotes = document.getElementById('modal-notes');
-
-    const openButtons = document.querySelectorAll('.btn-open-request');
-    const iconButtons = document.querySelectorAll('.icon-btn');
-
-    const paginationText = document.getElementById('pagination-text');
-    const prevPageBtn = document.getElementById('prev-page-btn');
-    const nextPageBtn = document.getElementById('next-page-btn');
-
-    // --- Filtres & recherche ---
     function applyFilters() {
-        const term = (searchInput.value || '').toLowerCase().trim();
-        const typeValue = filterType.value;
-        const statusValue = filterStatus.value;
-        const startValue = filterStartDate.value;
-        const endValue = filterEndDate.value;
-
-        const startDate = startValue ? new Date(startValue) : null;
-        const endDate = endValue ? new Date(endValue) : null;
-        if (endDate) {
-            endDate.setHours(23, 59, 59, 999);
-        }
-
-        items.forEach(el => {
-            const searchable = (el.dataset.search || '').toLowerCase();
-            const itemType = el.dataset.type || '';
-            const itemStatus = el.dataset.status || '';
-            const itemDateStr = el.dataset.date;
-            let visible = true;
-
-            if (term && !searchable.includes(term)) {
-                visible = false;
-            }
-
-            if (typeValue !== 'all' && itemType !== typeValue) {
-                visible = false;
-            }
-
-            if (statusValue !== 'all' && itemStatus !== statusValue) {
-                visible = false;
-            }
-
-            if ((startDate || endDate) && itemDateStr) {
-                const itemDate = new Date(itemDateStr);
-                if (startDate && itemDate < startDate) {
-                    visible = false;
-                }
-                if (endDate && itemDate > endDate) {
-                    visible = false;
-                }
-            }
-
-            el.style.display = visible ? '' : 'none';
+        var q = (document.getElementById('search-input').value || '').toLowerCase();
+        var t = document.getElementById('type-filter').value;
+        var s = document.getElementById('statut-filter').value;
+        var rows = document.querySelectorAll('.mr-row');
+        var n = 0;
+        rows.forEach(function (r) {
+            var ok = (!s || r.dataset.statut === s)
+                  && (!t || r.dataset.type === t)
+                  && (!q || r.dataset.search.includes(q));
+            r.style.display = ok ? '' : 'none';
+            if (ok) n++;
         });
+        document.getElementById('no-results').classList.toggle('hidden', n > 0 || rows.length === 0);
     }
 
-    if (searchInput) {
-        searchInput.addEventListener('input', applyFilters);
-    }
-    [filterType, filterStatus, filterStartDate, filterEndDate].forEach(el => {
-        if (el) {
-            el.addEventListener('change', applyFilters);
-        }
+    ['search-input', 'type-filter', 'statut-filter'].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) el.addEventListener('input', applyFilters), el.addEventListener('change', applyFilters);
     });
-
-    // Bouton "Filtres avancés" -> met en avant la zone de filtres
-    if (filtersBtn && filtersGrid) {
-        filtersBtn.addEventListener('click', () => {
-            filtersGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            filtersGrid.classList.add('ring-2', 'ring-emerald-400', 'ring-offset-1');
-            setTimeout(() => {
-                filtersGrid.classList.remove('ring-2', 'ring-emerald-400', 'ring-offset-1');
-            }, 800);
-        });
-    }
-
-    // --- Modale ---
-    function openModal(requestId) {
-        const data = requestsData[requestId];
-        if (!data) return;
-
-        modalTitle.textContent = `Demande ${data.id}`;
-        modalId.textContent = data.id;
-        modalType.textContent = data.type;
-        modalStatus.textContent = data.status;
-        modalDate.textContent = data.date;
-        modalRequester.textContent = data.requester;
-        modalEmail.textContent = data.email;
-        modalChannel.textContent = data.channel;
-        modalDescription.textContent = data.description;
-        modalDeadline.textContent = data.deadline;
-        modalNotes.textContent = data.notes;
-
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-    }
-
-    function closeModal() {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-    }
-
-    openButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const id = btn.dataset.requestId;
-            openModal(id);
-        });
-    });
-
-    if (modalClose) {
-        modalClose.addEventListener('click', closeModal);
-    }
-    // clic sur le fond pour fermer
-    if (modal) {
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                closeModal();
-            }
-        });
-    }
-
-    // --- Boutons icône (more ...) : démo simple ---
-    iconButtons.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            alert("Mode démo : ici, tu peux ouvrir un menu d'actions (reclasser, télécharger, assigner…).");
-        });
-    });
-
-    // --- Pagination (démonstration) ---
-    let currentPage = 1;
-    const totalItems = 24;
-    const pageSize = 10;
-
-    function updatePaginationText() {
-        const totalPages = Math.ceil(totalItems / pageSize);
-        if (currentPage < 1) currentPage = 1;
-        if (currentPage > totalPages) currentPage = totalPages;
-
-        const start = (currentPage - 1) * pageSize + 1;
-        let end = currentPage * pageSize;
-        if (end > totalItems) end = totalItems;
-
-        if (paginationText) {
-            paginationText.textContent = `Affichage de ${start} à ${end} sur ${totalItems} demandes (démo, données factices)`;
-        }
-    }
-
-    if (prevPageBtn) {
-        prevPageBtn.addEventListener('click', () => {
-            if (currentPage > 1) {
-                currentPage--;
-                updatePaginationText();
-            }
-        });
-    }
-
-    if (nextPageBtn) {
-        nextPageBtn.addEventListener('click', () => {
-            const totalPages = Math.ceil(totalItems / pageSize);
-            if (currentPage < totalPages) {
-                currentPage++;
-                updatePaginationText();
-            }
-        });
-    }
-
-    updatePaginationText();
-    applyFilters(); // état initial
 });
+
+function openNewRequestModal() {
+    document.getElementById('new-request-modal').classList.remove('hidden');
+    if (window.feather) feather.replace({ 'stroke-width': 1.75 });
+}
+
+function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+function submitRequest() {
+    var type  = document.getElementById('nr-type').value;
+    var name  = document.getElementById('nr-name').value;
+    var email = document.getElementById('nr-email').value;
+    var phone = document.getElementById('nr-phone').value;
+    var desc  = document.getElementById('nr-desc').value;
+
+    if (!type || !name || !email) { showToast('Veuillez remplir les champs obligatoires', 'warning'); return; }
+
+    var btn = document.getElementById('submit-request-btn');
+    btn.disabled = true;
+
+    frappe.call({
+        method: 'grc_module.api.create_make_right',
+        args: {
+            entreprise: currentCompany,
+            make_type: type,
+            name_maker: name,
+            email_maker: email,
+            phone_maker: phone,
+            description: desc,
+        },
+        callback: function (r) {
+            btn.disabled = false;
+            if (r.message && r.message.status === 'created') {
+                closeModal('new-request-modal');
+                showToast('Demande soumise avec succès', 'success');
+                setTimeout(function () { location.reload(); }, 1200);
+            }
+        },
+        error: function () { btn.disabled = false; showToast('Erreur lors de la soumission', 'error'); }
+    });
+}
+
+function openDetail(i) {
+    var m = makeRights[i];
+    if (!m) return;
+    var body = document.getElementById('detail-body');
+    body.innerHTML = [
+        '<div class="flex justify-between"><span class="text-slate-500">Demandeur</span><span class="font-medium">' + (m.name_maker || '—') + '</span></div>',
+        '<div class="flex justify-between"><span class="text-slate-500">Email</span><span>' + (m.email_maker || '—') + '</span></div>',
+        '<div class="flex justify-between"><span class="text-slate-500">Téléphone</span><span>' + (m.phone_maker || '—') + '</span></div>',
+        '<div class="flex justify-between"><span class="text-slate-500">Type</span><span class="font-medium">' + (m.make_type || '—') + '</span></div>',
+        '<div class="flex justify-between"><span class="text-slate-500">Statut</span><span>' + (m.statut || '—') + '</span></div>',
+        m.description ? '<div><p class="text-slate-500 mb-1">Description</p><p class="text-xs bg-slate-50 dark:bg-slate-800 rounded-lg p-2">' + m.description + '</p></div>' : '',
+    ].join('');
+    document.getElementById('detail-modal').classList.remove('hidden');
+    if (window.feather) feather.replace({ 'stroke-width': 1.75 });
+}
 </script>
 {% endblock %}

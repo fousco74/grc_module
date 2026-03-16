@@ -1,0 +1,235 @@
+{% extends base_template %}
+
+{% block page_tab_title %}Violations{% endblock %}
+{% block page_title %}Violations{% endblock %}
+{% block page_subtitle %}Suivi des violations de conformité{% endblock %}
+
+{% block page_body %}
+
+{# ── Severity KPIs ── #}
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+  {% for label, val, cls, icon in [
+    ('Critique', viol_summary.critique, 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400', 'alert-octagon'),
+    ('Haute', viol_summary.haute, 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400', 'alert-triangle'),
+    ('Moyenne', viol_summary.moyenne, 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400', 'alert-circle'),
+    ('Faible', viol_summary.faible, 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400', 'info'),
+  ] %}
+  <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex items-center gap-3">
+    <div class="w-9 h-9 rounded-lg {{ cls }} flex items-center justify-center flex-shrink-0">
+      <i data-feather="{{ icon }}" class="w-4 h-4"></i>
+    </div>
+    <div>
+      <p class="text-xl font-bold text-slate-800 dark:text-slate-100">{{ val }}</p>
+      <p class="text-xs text-slate-500">{{ label }}</p>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{# ── Status summary ── #}
+<div class="grid grid-cols-3 gap-4">
+  <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4">
+    <p class="text-2xl font-bold text-slate-800 dark:text-slate-100">{{ viol_summary.total }}</p>
+    <p class="text-xs text-slate-500 mt-1">Total violations</p>
+  </div>
+  <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4">
+    <p class="text-2xl font-bold text-amber-600 dark:text-amber-400">{{ viol_summary.open }}</p>
+    <p class="text-xs text-slate-500 mt-1">En cours / À traiter</p>
+  </div>
+  <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4">
+    <p class="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{{ viol_summary.closed }}</p>
+    <p class="text-xs text-slate-500 mt-1">Résolues</p>
+  </div>
+</div>
+
+{# ── Filter bar ── #}
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-wrap gap-3 items-center">
+  <input id="search-input" type="text" placeholder="Rechercher…"
+         class="flex-1 min-w-48 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700
+                rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-slate-100">
+  <select id="gravite-filter"
+          class="text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700
+                 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-slate-100">
+    <option value="">Toutes gravités</option>
+    <option>Critique</option><option>Haute</option><option>Moyenne</option><option>Faible</option>
+  </select>
+  <select id="statut-filter"
+          class="text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700
+                 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-slate-100">
+    <option value="">Tous les statuts</option>
+    <option value="A faire">À faire</option><option value="En Cours">En cours</option><option value="Terminer">Terminé</option>
+  </select>
+  <select id="type-filter"
+          class="text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700
+                 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-slate-100">
+    <option value="">Tous les types</option>
+    <option>RGPD</option><option>Sécurité</option><option>Organisationnelle</option><option>Technique</option><option>Légale</option>
+  </select>
+  <button id="reset-btn" class="text-xs text-slate-500 hover:text-red-500 px-3 py-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20">
+    Réinitialiser
+  </button>
+</div>
+
+{# ── Violations table ── #}
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
+{% if violations %}
+  <div class="overflow-x-auto">
+    <table class="w-full text-xs">
+      <thead class="bg-slate-50 dark:bg-slate-800/50 text-slate-500">
+        <tr>
+          <th class="px-4 py-3 text-left font-medium">Titre</th>
+          <th class="px-4 py-3 text-left font-medium">Gravité</th>
+          <th class="px-4 py-3 text-left font-medium hidden sm:table-cell">Type</th>
+          <th class="px-4 py-3 text-left font-medium">Statut</th>
+          <th class="px-4 py-3 text-left font-medium hidden lg:table-cell">Date</th>
+          <th class="px-4 py-3 text-left font-medium">Action</th>
+        </tr>
+      </thead>
+      <tbody id="viol-tbody" class="divide-y divide-slate-100 dark:divide-slate-800">
+        {% for v in violations %}
+        {% set g = v.gravite or "" %}
+        {% set s = v.statut or "" %}
+        <tr class="v-row hover:bg-slate-50 dark:hover:bg-slate-800/30 cursor-pointer"
+            data-gravite="{{ g }}" data-statut="{{ s }}" data-type="{{ v.type_violation or '' }}"
+            data-search="{{ (v.titre or '')|lower }} {{ (v.description or '')|lower }}"
+            data-idx="{{ loop.index0 }}"
+            onclick="openViolDetail({{ loop.index0 }})">
+          <td class="px-4 py-3">
+            <p class="font-semibold text-slate-800 dark:text-slate-200 truncate max-w-xs">{{ v.titre or v.name }}</p>
+            {% if v.description %}
+            <p class="text-slate-400 truncate max-w-xs">{{ v.description[:80] }}{% if v.description|length > 80 %}…{% endif %}</p>
+            {% endif %}
+          </td>
+          <td class="px-4 py-3">
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium
+              {% if g == 'Critique' %}bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400
+              {% elif g == 'Haute' %}bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400
+              {% elif g == 'Moyenne' %}bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400
+              {% elif g == 'Faible' %}bg-yellow-100 text-yellow-700
+              {% else %}bg-slate-100 text-slate-600{% endif %}">
+              {{ g or "—" }}
+            </span>
+          </td>
+          <td class="px-4 py-3 text-slate-500 hidden sm:table-cell">{{ v.type_violation or "—" }}</td>
+          <td class="px-4 py-3">
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium
+              {% if s in ['Terminer', 'Terminé'] %}bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400
+              {% elif s == 'En Cours' %}bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400
+              {% else %}bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400{% endif %}">
+              {% if s in ['Terminer', 'Terminé'] %}Terminé{% elif s == 'En Cours' %}En cours{% else %}{{ s or "—" }}{% endif %}
+            </span>
+          </td>
+          <td class="px-4 py-3 text-slate-400 hidden lg:table-cell">{{ v.get("date_de_création") or "—" }}</td>
+          <td class="px-4 py-3">
+            <button class="text-emerald-600 dark:text-emerald-400 hover:underline text-xs">Voir</button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <div class="py-16 text-center">
+    <i data-feather="check-circle" class="w-10 h-10 mx-auto mb-3 text-emerald-300"></i>
+    <p class="text-sm text-slate-500">Aucune violation enregistrée</p>
+  </div>
+{% endif %}
+</div>
+<p id="no-results" class="hidden text-center text-sm text-slate-400 py-8">Aucun résultat.</p>
+
+{# ── Detail modal ── #}
+<div id="viol-modal" class="fixed inset-0 z-50 hidden bg-black/50 flex items-center justify-center p-4">
+  <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] overflow-y-auto">
+    <div class="sticky top-0 bg-white dark:bg-slate-900 px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+      <h3 class="text-sm font-semibold text-slate-800 dark:text-slate-100">Détail de la violation</h3>
+      <button onclick="document.getElementById('viol-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-600">
+        <i data-feather="x" class="w-4 h-4"></i>
+      </button>
+    </div>
+    <div id="viol-modal-body" class="px-6 py-5 text-sm space-y-4 text-slate-700 dark:text-slate-300"></div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+{{ super() }}
+<script>
+var violData = {{ violations | tojson }};
+
+frappe.ready(function () {
+    if (window.feather) feather.replace({ 'stroke-width': 1.75 });
+
+    function applyFilters() {
+        var q = (document.getElementById('search-input').value || '').toLowerCase();
+        var g = document.getElementById('gravite-filter').value;
+        var s = document.getElementById('statut-filter').value;
+        var t = document.getElementById('type-filter').value;
+        var rows = document.querySelectorAll('.v-row');
+        var n = 0;
+        rows.forEach(function (r) {
+            var ok = (!g || r.dataset.gravite === g)
+                  && (!s || r.dataset.statut === s)
+                  && (!t || r.dataset.type === t)
+                  && (!q || r.dataset.search.includes(q));
+            r.style.display = ok ? '' : 'none';
+            if (ok) n++;
+        });
+        document.getElementById('no-results').classList.toggle('hidden', n > 0 || rows.length === 0);
+    }
+
+    ['search-input', 'gravite-filter', 'statut-filter', 'type-filter'].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) el.addEventListener('input', applyFilters), el.addEventListener('change', applyFilters);
+    });
+
+    var resetBtn = document.getElementById('reset-btn');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', function () {
+            ['search-input', 'gravite-filter', 'statut-filter', 'type-filter'].forEach(function (id) {
+                var el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+            applyFilters();
+        });
+    }
+});
+
+function openViolDetail(i) {
+    var v = violData[i];
+    if (!v) return;
+
+    var graviteColor = {
+        'Critique': 'bg-red-100 text-red-700',
+        'Haute': 'bg-orange-100 text-orange-700',
+        'Moyenne': 'bg-amber-100 text-amber-700',
+        'Faible': 'bg-yellow-100 text-yellow-700',
+    };
+    var gc = graviteColor[v.gravite] || 'bg-slate-100 text-slate-600';
+
+    var statut = v.statut || '—';
+    if (statut === 'Terminer' || statut === 'Terminé') statut = 'Terminé';
+    else if (statut === 'En Cours') statut = 'En cours';
+
+    var body = document.getElementById('viol-modal-body');
+    body.innerHTML =
+        '<div class="flex flex-wrap gap-2 mb-2">'
+        + '<span class="px-2 py-0.5 rounded-full text-[11px] font-medium ' + gc + '">' + (v.gravite || '—') + '</span>'
+        + (v.type_violation ? '<span class="px-2 py-0.5 rounded-full text-[11px] bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400">' + v.type_violation + '</span>' : '')
+        + '</div>'
+        + '<h4 class="text-base font-semibold text-slate-900 dark:text-slate-100 mb-1">' + (v.titre || v.name || '—') + '</h4>'
+        + (v.description ? '<p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">' + v.description + '</p>' : '')
+        + '<div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-100 dark:border-slate-800">'
+        + '<div><p class="text-xs text-slate-400 mb-0.5">Statut</p><p class="font-medium text-sm">' + statut + '</p></div>'
+        + '<div><p class="text-xs text-slate-400 mb-0.5">Responsable</p><p class="font-medium text-sm">' + (v.responsable || '—') + '</p></div>'
+        + '<div><p class="text-xs text-slate-400 mb-0.5">Date détection</p><p class="font-medium text-sm">' + (v['date_de_création'] || '—') + '</p></div>'
+        + '<div><p class="text-xs text-slate-400 mb-0.5">Date fin prévue</p><p class="font-medium text-sm">' + (v.date_de_fin || '—') + '</p></div>'
+        + '</div>'
+        + (v.observation ? '<div class="pt-2"><p class="text-xs text-slate-400 mb-1">Observation</p><p class="text-xs bg-slate-50 dark:bg-slate-800 rounded-lg p-3 leading-relaxed">' + v.observation + '</p></div>' : '')
+        + (v.notes_resolution ? '<div><p class="text-xs text-slate-400 mb-1">Notes de résolution</p><p class="text-xs bg-emerald-50 dark:bg-emerald-900/20 text-emerald-800 dark:text-emerald-300 rounded-lg p-3 leading-relaxed">' + v.notes_resolution + '</p></div>' : '');
+
+    document.getElementById('viol-modal').classList.remove('hidden');
+    if (window.feather) feather.replace({ 'stroke-width': 1.75 });
+}
+</script>
+{% endblock %}

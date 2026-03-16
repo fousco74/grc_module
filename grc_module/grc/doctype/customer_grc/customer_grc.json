@@ -12,6 +12,12 @@
   "number_company",
   "column_break_aiwa",
   "email_company",
+  "statut",
+  "compliance_score",
+  "portal_info_section",
+  "portal_user",
+  "grc_manager",
+  "onboarding_date",
   "informations_du_representant_legal_section",
   "first_name_legal",
   "email_legal",
@@ -55,6 +61,46 @@
    "reqd": 1
   },
   {
+   "default": "En cours d'int\u00e9gration",
+   "fieldname": "statut",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Statut",
+   "options": "En cours d'int\u00e9gration\nActif\nInactif"
+  },
+  {
+   "fieldname": "compliance_score",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Score de conformit\u00e9",
+   "precision": "1",
+   "read_only": 1
+  },
+  {
+   "fieldname": "portal_info_section",
+   "fieldtype": "Section Break",
+   "label": "PORTAIL & GESTION"
+  },
+  {
+   "fieldname": "portal_user",
+   "fieldtype": "Link",
+   "label": "Utilisateur portail",
+   "options": "User",
+   "description": "Compte Frappe de l'utilisateur client qui acc\u00e8de au portail"
+  },
+  {
+   "fieldname": "grc_manager",
+   "fieldtype": "Link",
+   "label": "Responsable GRC",
+   "options": "User"
+  },
+  {
+   "fieldname": "onboarding_date",
+   "fieldtype": "Date",
+   "label": "Date d'int\u00e9gration"
+  },
+  {
    "fieldname": "informations_du_representant_legal_section",
    "fieldtype": "Section Break",
    "label": "INFORMATIONS DU REPRESENTANT LEGAL"
@@ -66,7 +112,6 @@
    "reqd": 1
   },
   {
-   "fetch_from": "name_company.email_rep",
    "fieldname": "email_legal",
    "fieldtype": "Data",
    "label": "Email",
@@ -77,24 +122,21 @@
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "name_company.last_name_rep",
    "fieldname": "last_name_legal",
    "fieldtype": "Data",
    "label": "Pr\u00e9nom",
    "reqd": 1
   },
   {
-   "fetch_from": "name_company.phone_rep",
    "fieldname": "phone",
-   "fieldtype": "Phone",
-   "label": "Phone",
-   "reqd": 1
+   "fieldtype": "Data",
+   "label": "T\u00e9l\u00e9phone"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-03-10 09:26:54.062676",
+ "modified": "2026-03-16 08:00:00.000000",
  "modified_by": "Administrator",
  "module": "GRC",
  "name": "customer_grc",
@@ -112,6 +154,33 @@
    "role": "System Manager",
    "share": 1,
    "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "GRC Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "GRC Analyst",
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "GRC Client",
+   "select": 1
   },
   {
    "email": 1,
