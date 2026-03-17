@@ -44,11 +44,11 @@ def get_data(filters):
 		values["responsable"] = f"%{filters['responsable']}%"
 
 	if filters.get("from_date"):
-		conditions.append("`délais_dexécution` >= %(from_date)s")
+		conditions.append("`delais_dexecution` >= %(from_date)s")
 		values["from_date"] = filters["from_date"]
 
 	if filters.get("to_date"):
-		conditions.append("`délais_dexécution` <= %(to_date)s")
+		conditions.append("`delais_dexecution` <= %(to_date)s")
 		values["to_date"] = filters["to_date"]
 
 	where = " AND ".join(conditions)
@@ -61,14 +61,14 @@ def get_data(filters):
 			avancement,
 			responsable,
 			date_debut,
-			`délais_dexécution` AS echeance,
+			`delais_dexecution` AS echeance,
 			violation,
 			description
 		FROM `tabaction_plan_grc`
 		WHERE {where}
 		ORDER BY
 			FIELD(statut, 'En cours', 'A faire', 'Terminer'),
-			`délais_dexécution` ASC
+			`delais_dexecution` ASC
 	""", values, as_dict=True)
 
 	today = date.today()

@@ -169,7 +169,7 @@
  "modified": "2026-03-16 13:00:00.000000",
  "modified_by": "Administrator",
  "module": "GRC",
- "name": "question_score",
+ "name": "question_score_grc",
  "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [

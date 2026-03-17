@@ -27,6 +27,7 @@ def get_context(context):
 		"grc_document", filters=doc_filters,
 		fields=["name", "titre", "type_document", "fichier", "televerse_par", "visibilite", "creation_date", "description", "entreprise"],
 		order_by="creation_date desc",
+		ignore_permissions=True,
 	)
 
 	# Document type options for upload form
@@ -37,6 +38,6 @@ def get_context(context):
 		co = frappe.db.get_value("customer_grc", context.company, ["name", "entreprise"], as_dict=True)
 		context.companies = [co] if co else []
 	else:
-		context.companies = frappe.db.get_list("customer_grc", fields=["name", "entreprise"], limit=100)
+		context.companies = frappe.db.get_list("customer_grc", fields=["name", "entreprise"], limit=100, ignore_permissions=True)
 
 	context.notif_count = frappe.db.count("Notification Log", {"for_user": frappe.session.user, "read": 0})

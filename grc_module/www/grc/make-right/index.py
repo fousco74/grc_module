@@ -21,6 +21,7 @@ def get_context(context):
 		"make_right_grc", filters=cf,
 		fields=["name", "make_type", "name_maker", "email_maker", "phone_maker", "statut", "description", "updated_at"],
 		order_by="modified desc",
+		ignore_permissions=True,
 	)
 
 	statuts = [m.statut for m in context.make_rights]
@@ -37,6 +38,6 @@ def get_context(context):
 		co = frappe.db.get_value("customer_grc", context.company, ["name", "entreprise"], as_dict=True)
 		context.companies = [co] if co else []
 	else:
-		context.companies = frappe.db.get_list("customer_grc", fields=["name", "entreprise"], limit=100)
+		context.companies = frappe.db.get_list("customer_grc", fields=["name", "entreprise"], limit=100, ignore_permissions=True)
 
 	context.notif_count = frappe.db.count("Notification Log", {"for_user": frappe.session.user, "read": 0})

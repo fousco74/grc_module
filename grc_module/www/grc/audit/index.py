@@ -20,6 +20,7 @@ def get_context(context):
 		"Point_de_controle", filters=cf,
 		fields=["name", "titre", "description", "statut", "priorite", "service"],
 		order_by="priorite asc, titre asc",
+		ignore_permissions=True,
 	)
 
 	# Summary counts

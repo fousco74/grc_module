@@ -15,7 +15,7 @@
   "avancement",
   "responsable",
   "date_debut",
-  "d\u00e9lais_dex\u00e9cution",
+  "delais_dexecution",
   "date_de_fin"
  ],
  "fields": [
@@ -86,7 +86,7 @@
    "label": "Date de d\u00e9but"
   },
   {
-   "fieldname": "d\u00e9lais_dex\u00e9cution",
+   "fieldname": "delais_dexecution",
    "fieldtype": "Date",
    "label": "D\u00e9lais d'ex\u00e9cution",
    "reqd": 1

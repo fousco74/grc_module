@@ -63,7 +63,7 @@ def calculate_compliance_score(company):
 	if not company:
 		return 0
 
-	qs = frappe.db.get_value("question_score", {"entreprise": company}, _QS_FIELDS, as_dict=True)
+	qs = frappe.db.get_value("question_score_grc", {"entreprise": company}, _QS_FIELDS, as_dict=True)
 	if qs:
 		values = [v for v in qs.values() if v and v != "Non/applicable"]
 		if values:

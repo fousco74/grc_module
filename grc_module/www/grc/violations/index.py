@@ -24,6 +24,7 @@ def get_context(context):
 			"date_de_fin", "observation", "notes_resolution",
 		],
 		order_by="gravite asc, date_de_creation desc",
+		ignore_permissions=True,
 	)
 
 	# Summary

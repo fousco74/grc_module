@@ -150,8 +150,8 @@
 
 {# ── Detail modal ── #}
 <div id="detail-modal" class="fixed inset-0 z-50 hidden bg-black/50 flex items-center justify-center p-4">
-  <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-md">
-    <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+  <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] overflow-y-auto">
+    <div class="sticky top-0 bg-white dark:bg-slate-900 px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
       <h3 class="text-sm font-semibold text-slate-800 dark:text-slate-100">Détail de la demande</h3>
       <button onclick="closeModal('detail-modal')" class="text-slate-400 hover:text-slate-600"><i data-feather="x" class="w-4 h-4"></i></button>
     </div>
@@ -248,6 +248,7 @@ function openDetail(i) {
     ].join('');
     document.getElementById('detail-modal').classList.remove('hidden');
     if (window.feather) feather.replace({ 'stroke-width': 1.75 });
+    GRCDiscussion.attach('detail-body', 'make_right_grc', m.name);
 }
 </script>
 {% endblock %}

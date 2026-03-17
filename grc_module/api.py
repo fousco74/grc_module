@@ -206,9 +206,9 @@ def get_action_plans(statut=None, limit=50):
 		filters=filters,
 		fields=[
 			"name", "titre", "description", "statut", "avancement",
-			"responsable", "date_debut", "délais_dexécution", "violation",
+			"responsable", "date_debut", "delais_dexecution", "violation",
 		],
-		order_by="délais_dexécution asc",
+		order_by="delais_dexecution asc",
 		limit=int(limit),
 	)
 
@@ -307,3 +307,64 @@ def get_company_info():
 			company["grc_manager_name"] = frappe.db.get_value("User", company["grc_manager"], "full_name")
 		return company
 	return None
+
+
+# ── Company Stats (for GRC Manager form dashboard) ───────────────────────────
+
+def _count_by(items, field):
+	result = {}
+	for item in items:
+		k = item.get(field) or "Inconnu"
+		result[k] = result.get(k, 0) + 1
+	return result
+
+
+@frappe.whitelist()
+def get_company_stats(company):
+	"""Return detailed stats for a specific company — GRC Manager only."""
+	_require_grc_access()
+	if not is_grc_internal_user():
+		frappe.throw(_("Accès réservé aux gestionnaires GRC"), frappe.PermissionError)
+
+	f = {"entreprise": company}
+	today = frappe.utils.today()
+
+	violations = frappe.db.get_list("violation_grc", filters=f, fields=["statut", "gravite"], ignore_permissions=True)
+	action_plans = frappe.db.get_list("action_plan_grc", filters=f, fields=["statut", "delais_dexecution"], ignore_permissions=True)
+	make_rights = frappe.db.get_list("make_right_grc", filters=f, fields=["statut"], ignore_permissions=True)
+	documents = frappe.db.get_list("grc_document", filters=f, fields=["name"], ignore_permissions=True)
+	controls = frappe.db.get_list("Point_de_controle", filters=f, fields=["statut"], ignore_permissions=True)
+	traitements = frappe.db.get_list("traitement_grc", filters=f, fields=["name"], ignore_permissions=True)
+
+	return {
+		"compliance_score": frappe.db.get_value("customer_grc", company, "compliance_score") or 0,
+		"violations": {
+			"total": len(violations),
+			"open": sum(1 for v in violations if v.get("statut") != "Terminer"),
+			"critical": sum(1 for v in violations if v.get("gravite") == "Critique"),
+			"by_gravity": _count_by(violations, "gravite"),
+		},
+		"action_plans": {
+			"total": len(action_plans),
+			"open": sum(1 for a in action_plans if a.get("statut") not in ["Terminer", "Terminé"]),
+			"completed": sum(1 for a in action_plans if a.get("statut") in ["Terminer", "Terminé"]),
+			"overdue": sum(
+				1 for a in action_plans
+				if a.get("delais_dexecution") and str(a.get("delais_dexecution")) < today
+				and a.get("statut") not in ["Terminer", "Terminé"]
+			),
+			"by_status": _count_by(action_plans, "statut"),
+		},
+		"make_rights": {
+			"total": len(make_rights),
+			"pending": sum(1 for m in make_rights if m.get("statut") in ["Reçue", "Vérifiée", "En cours"]),
+		},
+		"documents": {"total": len(documents)},
+		"controls": {
+			"total": len(controls),
+			"conforme": sum(1 for c in controls if c.get("statut") == "Conforme"),
+			"non_conforme": sum(1 for c in controls if c.get("statut") == "Non conforme"),
+			"by_status": _count_by(controls, "statut"),
+		},
+		"traitements": {"total": len(traitements)},
+	}

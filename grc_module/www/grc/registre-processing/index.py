@@ -20,6 +20,7 @@ def get_context(context):
 		"traitement_grc", filters=cf,
 		fields=["name", "traitement", "service", "entreprise"],
 		order_by="traitement asc",
+		ignore_permissions=True,
 	)
 
 	# Enrich with service name
@@ -33,9 +34,10 @@ def get_context(context):
 	context.services = frappe.db.get_list(
 		"service_grc",
 		filters={"departement": ["in", [
-			d.name for d in frappe.db.get_list("department_grc", filters=cf, fields=["name"])
+			d.name for d in frappe.db.get_list("department_grc", filters=cf, fields=["name"], ignore_permissions=True)
 		]]} if context.company else {},
 		fields=["name", "name_service"],
+		ignore_permissions=True,
 	)
 
 	context.notif_count = frappe.db.count("Notification Log", {"for_user": frappe.session.user, "read": 0})

@@ -34,14 +34,14 @@ def get_context(context):
 	if context.company:
 		context.compliance_score = calculate_compliance_score(context.company)
 	else:
-		scores = [s.compliance_score for s in frappe.db.get_list("customer_grc", fields=["compliance_score"]) if s.compliance_score]
+		scores = [s.compliance_score for s in frappe.db.get_list("customer_grc", fields=["compliance_score"], ignore_permissions=True) if s.compliance_score]
 		context.compliance_score = round(sum(scores) / len(scores), 1) if scores else 0
 
 	# Raw data for KPIs
-	violations = frappe.db.get_list("violation_grc", filters=cf, fields=["statut", "gravite"])
-	action_plans = frappe.db.get_list("action_plan_grc", filters=cf, fields=["statut"])
-	make_rights = frappe.db.get_list("make_right_grc", filters=cf, fields=["statut"])
-	traitements = frappe.db.get_list("traitement_grc", filters=cf, fields=["name"])
+	violations = frappe.db.get_list("violation_grc", filters=cf, fields=["statut", "gravite"], ignore_permissions=True)
+	action_plans = frappe.db.get_list("action_plan_grc", filters=cf, fields=["statut"], ignore_permissions=True)
+	make_rights = frappe.db.get_list("make_right_grc", filters=cf, fields=["statut"], ignore_permissions=True)
+	traitements = frappe.db.get_list("traitement_grc", filters=cf, fields=["name"], ignore_permissions=True)
 
 	context.kpi = {
 		"total_violations": len(violations),
@@ -60,11 +60,13 @@ def get_context(context):
 		"violation_grc", filters=cf,
 		fields=["name", "titre", "description", "statut", "gravite", "date_de_creation"],
 		order_by="date_de_creation desc", limit=5,
+		ignore_permissions=True,
 	)
 	context.recent_action_plans = frappe.db.get_list(
 		"action_plan_grc", filters=cf,
-		fields=["name", "titre", "description", "statut", "avancement", "délais_dexécution", "responsable"],
+		fields=["name", "titre", "description", "statut", "avancement", "delais_dexecution", "responsable"],
 		order_by="modified desc", limit=5,
+		ignore_permissions=True,
 	)
 
 	# Chart data

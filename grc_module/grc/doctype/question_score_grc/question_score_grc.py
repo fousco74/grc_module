@@ -5,5 +5,5 @@
 from frappe.model.document import Document
 
 
-class question_score(Document):
+class question_score_grc(Document):
 	pass

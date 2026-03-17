@@ -20,10 +20,11 @@ def get_context(context):
 		"action_plan_grc", filters=cf,
 		fields=[
 			"name", "titre", "description", "statut", "avancement",
-			"responsable", "date_debut", "délais_dexécution", "date_de_fin",
+			"responsable", "date_debut", "delais_dexecution", "date_de_fin",
 			"principe_directeur", "violation",
 		],
-		order_by="délais_dexécution asc",
+		order_by="delais_dexecution asc",
+		ignore_permissions=True,
 	)
 
 	today = frappe.utils.today()
@@ -35,7 +36,7 @@ def get_context(context):
 		"terminer": statuts.count("Terminer"),
 		"overdue": sum(
 			1 for a in context.action_plans
-			if a.get("délais_dexécution") and str(a.get("délais_dexécution")) < today
+			if a.get("delais_dexecution") and str(a.get("delais_dexecution")) < today
 			and a.get("statut") != "Terminer"
 		),
 	}

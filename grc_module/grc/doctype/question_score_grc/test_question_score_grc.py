@@ -5,5 +5,5 @@
 from frappe.tests.utils import FrappeTestCase
 
 
-class Testquestion_score(FrappeTestCase):
+class Testquestion_score_grc(FrappeTestCase):
 	pass

@@ -147,7 +147,14 @@
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
- "links": [],
+ "links": [
+  {"group": "Violations & Plans", "link_doctype": "violation_grc", "link_fieldname": "entreprise", "type": "doctype"},
+  {"group": "Violations & Plans", "link_doctype": "action_plan_grc", "link_fieldname": "entreprise", "type": "doctype"},
+  {"group": "Droits & Documents", "link_doctype": "make_right_grc", "link_fieldname": "entreprise", "type": "doctype"},
+  {"group": "Droits & Documents", "link_doctype": "grc_document", "link_fieldname": "entreprise", "type": "doctype"},
+  {"group": "Conformit\u00e9", "link_doctype": "traitement_grc", "link_fieldname": "entreprise", "type": "doctype"},
+  {"group": "Conformit\u00e9", "link_doctype": "Point_de_controle", "link_fieldname": "entreprise", "type": "doctype"}
+ ],
  "modified": "2026-03-16 16:00:00.000000",
  "modified_by": "Administrator",
  "module": "GRC",

@@ -102,7 +102,7 @@
     "is_query_report": 0,
     "label": "Questionnaire de conformit\u00e9",
     "link_count": 0,
-    "link_to": "question_score",
+    "link_to": "question_score_grc",
     "link_type": "DocType",
     "onboard": 0,
     "parent": "GRC",
