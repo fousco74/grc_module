@@ -9,7 +9,7 @@
   "entreprise",
   "titre",
   "description",
-  "date_de_cr\u00e9ation",
+  "date_de_creation",
   "column_break_xteq",
   "statut",
   "gravite",
@@ -51,7 +51,7 @@
   },
   {
    "default": "Today",
-   "fieldname": "date_de_cr\u00e9ation",
+   "fieldname": "date_de_creation",
    "fieldtype": "Date",
    "label": "Date de cr\u00e9ation",
    "reqd": 1

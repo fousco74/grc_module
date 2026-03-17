@@ -119,7 +119,7 @@
               {% if s in ['Terminer', 'Terminé'] %}Terminé{% elif s == 'En Cours' %}En cours{% else %}{{ s or "—" }}{% endif %}
             </span>
           </td>
-          <td class="px-4 py-3 text-slate-400 hidden lg:table-cell">{{ v.get("date_de_création") or "—" }}</td>
+          <td class="px-4 py-3 text-slate-400 hidden lg:table-cell">{{ v.get("date_de_creation") or "—" }}</td>
           <td class="px-4 py-3">
             <button class="text-emerald-600 dark:text-emerald-400 hover:underline text-xs">Voir</button>
           </td>
@@ -222,7 +222,7 @@ function openViolDetail(i) {
         + '<div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-100 dark:border-slate-800">'
         + '<div><p class="text-xs text-slate-400 mb-0.5">Statut</p><p class="font-medium text-sm">' + statut + '</p></div>'
         + '<div><p class="text-xs text-slate-400 mb-0.5">Responsable</p><p class="font-medium text-sm">' + (v.responsable || '—') + '</p></div>'
-        + '<div><p class="text-xs text-slate-400 mb-0.5">Date détection</p><p class="font-medium text-sm">' + (v['date_de_création'] || '—') + '</p></div>'
+        + '<div><p class="text-xs text-slate-400 mb-0.5">Date détection</p><p class="font-medium text-sm">' + (v['date_de_creation'] || '—') + '</p></div>'
         + '<div><p class="text-xs text-slate-400 mb-0.5">Date fin prévue</p><p class="font-medium text-sm">' + (v.date_de_fin || '—') + '</p></div>'
         + '</div>'
         + (v.observation ? '<div class="pt-2"><p class="text-xs text-slate-400 mb-1">Observation</p><p class="text-xs bg-slate-50 dark:bg-slate-800 rounded-lg p-3 leading-relaxed">' + v.observation + '</p></div>' : '')

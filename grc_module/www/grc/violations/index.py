@@ -20,10 +20,10 @@ def get_context(context):
 		"violation_grc", filters=cf,
 		fields=[
 			"name", "titre", "description", "statut", "gravite",
-			"type_violation", "responsable", "date_de_création",
+			"type_violation", "responsable", "date_de_creation",
 			"date_de_fin", "observation", "notes_resolution",
 		],
-		order_by="gravite asc, date_de_création desc",
+		order_by="gravite asc, date_de_creation desc",
 	)
 
 	# Summary

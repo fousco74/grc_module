@@ -184,9 +184,9 @@ def get_violations(statut=None, gravite=None, limit=50):
 		filters=filters,
 		fields=[
 			"name", "titre", "description", "statut", "gravite",
-			"type_violation", "responsable", "date_de_création", "date_de_fin",
+			"type_violation", "responsable", "date_de_creation", "date_de_fin",
 		],
-		order_by="gravite asc, date_de_création desc",
+		order_by="gravite asc, date_de_creation desc",
 		limit=int(limit),
 	)
 

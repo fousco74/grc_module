@@ -58,8 +58,8 @@ def get_context(context):
 	# Recent lists
 	context.recent_violations = frappe.db.get_list(
 		"violation_grc", filters=cf,
-		fields=["name", "titre", "description", "statut", "gravite", "date_de_création"],
-		order_by="date_de_création desc", limit=5,
+		fields=["name", "titre", "description", "statut", "gravite", "date_de_creation"],
+		order_by="date_de_creation desc", limit=5,
 	)
 	context.recent_action_plans = frappe.db.get_list(
 		"action_plan_grc", filters=cf,
