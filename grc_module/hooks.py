@@ -8,7 +8,6 @@ app_license = "mit"
 fixtures = [
 	{"dt": "Custom Field", "filters": [["module", "=", "GRC"]]},
 	{"dt": "Property Setter", "filters": [["module", "=", "GRC"]]},
-	{"dt": "Web Page", "filters": [["module", "=", "GRC"]]},
 	{"dt": "Web Form", "filters": [["module", "=", "GRC"]]},
 	{"dt": "DocType", "filters": [["module", "=", "GRC"]]},
 	{"dt": "Module Def", "filters": [["module_name", "=", "GRC"]]},
