@@ -1,8 +1,18 @@
 {
  "app": "grc_module",
- "charts": [],
- "content": "[{\"id\":\"hdr1\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Gouvernance, Risques et Conformit\u00e9 (GRC)</span>\",\"col\":12}},{\"id\":\"par1\",\"type\":\"paragraph\",\"data\":{\"text\":\"Pilotez la conformit\u00e9 RGPD, les violations, les droits des personnes et les plans d\u2019action de vos clients.\",\"col\":12}},{\"id\":\"sp1\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"nc1\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"GRC - Entreprises actives\",\"col\":3}},{\"id\":\"nc2\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"GRC - Violations ouvertes\",\"col\":3}},{\"id\":\"nc3\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"GRC - Plans en cours\",\"col\":3}},{\"id\":\"nc4\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"GRC - Droits en attente\",\"col\":3}},{\"id\":\"sp2\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"card_clients\",\"type\":\"card\",\"data\":{\"card_name\":\"Clients & Organisation\",\"col\":4}},{\"id\":\"card_conformite\",\"type\":\"card\",\"data\":{\"card_name\":\"Conformit\u00e9 & Audit\",\"col\":4}},{\"id\":\"card_violations\",\"type\":\"card\",\"data\":{\"card_name\":\"Violations & Plans\",\"col\":4}},{\"id\":\"card_droits\",\"type\":\"card\",\"data\":{\"card_name\":\"Droits & Documents\",\"col\":4}},{\"id\":\"sp3\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"rp_hdr\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Rapports & Analytiques</span>\",\"col\":12}},{\"id\":\"card_reports\",\"type\":\"card\",\"data\":{\"card_name\":\"Rapports GRC\",\"col\":12}}]",
- "creation": "2026-03-16 11:15:44.590503",
+ "charts": [
+  {
+   "chart_name": "GRC - Violations par Gravité"
+  },
+  {
+   "chart_name": "GRC - Plans par Statut"
+  },
+  {
+   "chart_name": "GRC - Droits par Statut"
+  }
+ ],
+ "content": "[{\"id\": \"hdr1\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">Gouvernance, Risques et Conformit\\u00e9 (GRC)</span>\", \"col\": 12}}, {\"id\": \"par1\", \"type\": \"paragraph\", \"data\": {\"text\": \"Pilotez la conformit\\u00e9 RGPD, les violations, les droits des personnes et les plans d\\u2019action de vos clients.\", \"col\": 12}}, {\"id\": \"sp1\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"nc1\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"GRC - Entreprises actives\", \"col\": 3}}, {\"id\": \"nc2\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"GRC - Violations ouvertes\", \"col\": 3}}, {\"id\": \"nc3\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"GRC - Plans en cours\", \"col\": 3}}, {\"id\": \"nc4\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"GRC - Droits en attente\", \"col\": 3}}, {\"id\": \"sp2\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"hdr2\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">Analytiques \\u2014 Global</span>\", \"col\": 12}}, {\"id\": \"ch1\", \"type\": \"chart\", \"data\": {\"chart_name\": \"GRC - Violations par Gravit\\u00e9\", \"col\": 4}}, {\"id\": \"ch2\", \"type\": \"chart\", \"data\": {\"chart_name\": \"GRC - Plans par Statut\", \"col\": 4}}, {\"id\": \"ch3\", \"type\": \"chart\", \"data\": {\"chart_name\": \"GRC - Droits par Statut\", \"col\": 4}}, {\"id\": \"sp3\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"hdr3\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">Analytiques \\u2014 Par client</span>\", \"col\": 12}}]",
+ "creation": "2026-03-17 10:03:44.160879",
  "custom_blocks": [],
  "docstatus": 0,
  "doctype": "Workspace",
@@ -10,274 +20,35 @@
  "hide_custom": 0,
  "icon": "lock",
  "idx": 0,
- "indicator_color": "",
+ "indicator_color": "Green",
  "is_hidden": 0,
  "label": "GRC",
- "links": [
-  {
-   "group": "Clients & Organisation",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Clients GRC",
-   "link_count": 0,
-   "link_to": "customer_grc",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "group": "Clients & Organisation",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "D\u00e9partements",
-   "link_count": 0,
-   "link_to": "department_grc",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "group": "Clients & Organisation",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Services",
-   "link_count": 0,
-   "link_to": "service_grc",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "group": "Conformit\u00e9 & Audit",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Traitements",
-   "link_count": 0,
-   "link_to": "traitement_grc",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "group": "Conformit\u00e9 & Audit",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Fiches de traitement",
-   "link_count": 0,
-   "link_to": "file_processing",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "group": "Conformit\u00e9 & Audit",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Points de contr\u00f4le",
-   "link_count": 0,
-   "link_to": "Point_de_controle",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "group": "Conformit\u00e9 & Audit",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Questionnaire de conformit\u00e9",
-   "link_count": 0,
-   "link_to": "question_score_grc",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "group": "Violations & Plans",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Violations",
-   "link_count": 0,
-   "link_to": "violation_grc",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "group": "Violations & Plans",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Plans d\u2019action",
-   "link_count": 0,
-   "link_to": "action_plan_grc",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "group": "Droits & Documents",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Demandes de droits",
-   "link_count": 0,
-   "link_to": "make_right_grc",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "group": "Droits & Documents",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Documents GRC",
-   "link_count": 0,
-   "link_to": "grc_document",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "group": "Rapports GRC",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Score de Conformit\u00e9",
-   "link_count": 0,
-   "link_to": "Score de Conformit\u00e9 GRC",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "group": "Rapports GRC",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Violations GRC",
-   "link_count": 0,
-   "link_to": "Violations GRC",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "group": "Rapports GRC",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Plans d\u2019Action GRC",
-   "link_count": 0,
-   "link_to": "Plans d'Action GRC",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "group": "Rapports GRC",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Droits des Personnes GRC",
-   "link_count": 0,
-   "link_to": "Droits des Personnes GRC",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "group": "Rapports GRC",
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Registre des Traitements GRC",
-   "link_count": 0,
-   "link_to": "Registre des Traitements GRC",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  }
- ],
- "modified": "2026-03-16 16:00:00.000000",
+ "links": [],
+ "modified": "2026-03-17 13:00:00.000000",
  "modified_by": "Administrator",
  "module": "GRC",
  "name": "GRC",
  "number_cards": [
-  {"number_card_name": "GRC - Entreprises actives"},
-  {"number_card_name": "GRC - Violations ouvertes"},
-  {"number_card_name": "GRC - Plans en cours"},
-  {"number_card_name": "GRC - Droits en attente"}
+  {
+   "number_card_name": "GRC - Entreprises actives"
+  },
+  {
+   "number_card_name": "GRC - Violations ouvertes"
+  },
+  {
+   "number_card_name": "GRC - Plans en cours"
+  },
+  {
+   "number_card_name": "GRC - Droits en attente"
+  }
  ],
  "owner": "Administrator",
- "parent_page": "Projects",
+ "parent_page": "",
  "public": 1,
  "quick_lists": [],
  "roles": [],
- "sequence_id": 21.0,
- "shortcuts": [
-  {
-   "color": "Blue",
-   "doc_view": "",
-   "icon": "fa fa-star",
-   "label": "Score de Conformit\u00e9 GRC",
-   "link_to": "Score de Conformit\u00e9 GRC",
-   "report_ref_doctype": "customer_grc",
-   "type": "Report"
-  },
-  {
-   "color": "Red",
-   "doc_view": "",
-   "icon": "fa fa-exclamation-triangle",
-   "label": "Violations GRC",
-   "link_to": "Violations GRC",
-   "report_ref_doctype": "violation_grc",
-   "type": "Report"
-  },
-  {
-   "color": "Orange",
-   "doc_view": "",
-   "icon": "fa fa-tasks",
-   "label": "Plans d'Action GRC",
-   "link_to": "Plans d'Action GRC",
-   "report_ref_doctype": "action_plan_grc",
-   "type": "Report"
-  },
-  {
-   "color": "Purple",
-   "doc_view": "",
-   "icon": "fa fa-user-shield",
-   "label": "Droits des Personnes GRC",
-   "link_to": "Droits des Personnes GRC",
-   "report_ref_doctype": "make_right_grc",
-   "type": "Report"
-  },
-  {
-   "color": "Green",
-   "doc_view": "",
-   "icon": "fa fa-database",
-   "label": "Registre des Traitements GRC",
-   "link_to": "Registre des Traitements GRC",
-   "report_ref_doctype": "traitement_grc",
-   "type": "Report"
-  },
-  {
-   "color": "Grey",
-   "doc_view": "List",
-   "icon": "fa fa-building",
-   "label": "Clients GRC",
-   "link_to": "customer_grc",
-   "type": "DocType"
-  },
-  {
-   "color": "Red",
-   "doc_view": "List",
-   "icon": "fa fa-exclamation-circle",
-   "label": "Violations",
-   "link_to": "violation_grc",
-   "type": "DocType"
-  },
-  {
-   "color": "Green",
-   "doc_view": "List",
-   "icon": "fa fa-tasks",
-   "label": "Plans d'action",
-   "link_to": "action_plan_grc",
-   "type": "DocType"
-  }
- ],
+ "sequence_id": 1.0,
+ "shortcuts": [],
  "title": "GRC",
  "type": "Workspace"
 }

@@ -17,7 +17,7 @@
    "fieldname": "statut",
    "fieldtype": "Select",
    "label": "Statut",
-   "options": "\nEn cours d'int\u00e9gration\nActif\nInactif"
+   "options": "\nEn cours d'intégration\nActif\nInactif"
   },
   {
    "default": "",
@@ -36,15 +36,21 @@
  "modified": "2026-03-16 08:00:00.000000",
  "modified_by": "Administrator",
  "module": "GRC",
- "name": "Score de Conformit\u00e9 GRC",
+ "name": "Score Conformite GRC",
  "owner": "Administrator",
  "prepared_report": 0,
  "ref_doctype": "customer_grc",
- "report_name": "Score de Conformit\u00e9 GRC",
+ "report_name": "Score de Conformité GRC",
  "report_type": "Script Report",
  "roles": [
-  {"role": "System Manager"},
-  {"role": "GRC Manager"},
-  {"role": "GRC Analyst"}
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "GRC Manager"
+  },
+  {
+   "role": "GRC Analyst"
+  }
  ]
 }

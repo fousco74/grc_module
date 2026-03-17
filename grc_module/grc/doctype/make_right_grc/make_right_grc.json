@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2025-05-16 18:04:13.868819",
+ "creation": "2026-03-17 06:49:43.654070",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -25,23 +25,17 @@
   {
    "fieldname": "entreprise",
    "fieldtype": "Link",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
    "label": "Entreprise",
-   "options": "customer_grc",
-   "reqd": 1,
-   "search_index": 1
+   "options": "customer_grc"
   },
   {
    "fieldname": "name_maker",
    "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Nom complet du demandeur",
-   "reqd": 1
+   "label": "Nom complet du demandeur "
   },
   {
    "fieldname": "phone_maker",
-   "fieldtype": "Phone",
+   "fieldtype": "Data",
    "label": "Num\u00e9ro"
   },
   {
@@ -50,14 +44,10 @@
    "label": "Date de fin"
   },
   {
-   "default": "Re\u00e7ue",
    "fieldname": "statut",
    "fieldtype": "Select",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
    "label": "Statut",
-   "options": "Re\u00e7ue\nV\u00e9rifi\u00e9e\nEn cours\nTermin\u00e9e\nrejet\u00e9e",
-   "search_index": 1
+   "options": "Re\u00e7ue\nV\u00e9rifi\u00e9e\nEn cours\nTermin\u00e9e\nrejet\u00e9e"
   },
   {
    "fieldname": "column_break_yxrk",
@@ -66,33 +56,28 @@
   {
    "fieldname": "make_type",
    "fieldtype": "Select",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
    "label": "Type de demande",
-   "options": "\nAcc\u00e8s aux donn\u00e9es\nSuppression\nPortabilit\u00e9\nRectification\nOpposition",
-   "reqd": 1
+   "options": "\nAcc\u00e8s aux donn\u00e9es\nSuppression\nPortabilit\u00e9\nRectification\nOpposition"
   },
   {
    "fieldname": "email_maker",
    "fieldtype": "Data",
-   "label": "Email",
-   "options": "Email",
-   "reqd": 1
+   "label": "Email"
   },
   {
    "fieldname": "description",
    "fieldtype": "Small Text",
-   "label": "Description"
+   "label": "Description "
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-03-16 16:00:00.000000",
+ "modified": "2026-03-17 09:31:54.571672",
  "modified_by": "Administrator",
  "module": "GRC",
  "name": "make_right_grc",
- "owner": "fkone@amoaman.com",
+ "owner": "Administrator",
  "permissions": [
   {
    "create": 1,
@@ -104,35 +89,6 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "GRC Manager",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "GRC Analyst",
-   "write": 1
-  },
-  {
-   "create": 1,
-   "read": 1,
-   "role": "GRC Client",
-   "select": 1,
    "write": 1
   },
   {

@@ -48,7 +48,7 @@
   {
    "fieldname": "number_company",
    "fieldtype": "Data",
-   "label": "Num\u00e9ro",
+   "label": "Numéro",
    "reqd": 1
   },
   {
@@ -63,20 +63,20 @@
    "search_index": 1
   },
   {
-   "default": "En cours d'int\u00e9gration",
+   "default": "En cours d'intégration",
    "fieldname": "statut",
    "fieldtype": "Select",
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Statut",
-   "options": "En cours d'int\u00e9gration\nActif\nInactif",
+   "options": "En cours d'intégration\nActif\nInactif",
    "search_index": 1
   },
   {
    "fieldname": "compliance_score",
    "fieldtype": "Float",
    "in_list_view": 1,
-   "label": "Score de conformit\u00e9",
+   "label": "Score de conformité",
    "precision": "1",
    "read_only": 1
   },
@@ -90,7 +90,7 @@
    "fieldtype": "Link",
    "label": "Utilisateur portail",
    "options": "User",
-   "description": "Compte Frappe de l'utilisateur client qui acc\u00e8de au portail",
+   "description": "Compte Frappe de l'utilisateur client qui accède au portail",
    "search_index": 1
   },
   {
@@ -102,15 +102,15 @@
   {
    "fieldname": "onboarding_date",
    "fieldtype": "Date",
-   "label": "Date d'int\u00e9gration"
+   "label": "Date d'intégration"
   },
   {
    "fieldname": "etape_avancement",
    "fieldtype": "Select",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "\u00c9tape d'avancement",
-   "options": "\nFormation\nAudit\nRapport provisoire\nCorrection\nRapport d\u00e9finitif\nD\u00e9p\u00f4t & ARTCI\nTermin\u00e9"
+   "label": "Étape d'avancement",
+   "options": "\nFormation\nAudit\nRapport provisoire\nCorrection\nRapport définitif\nDépôt & ARTCI\nTerminé"
   },
   {
    "fieldname": "informations_du_representant_legal_section",
@@ -136,24 +136,54 @@
   {
    "fieldname": "last_name_legal",
    "fieldtype": "Data",
-   "label": "Pr\u00e9nom",
+   "label": "Prénom",
    "reqd": 1
   },
   {
    "fieldname": "phone",
    "fieldtype": "Data",
-   "label": "T\u00e9l\u00e9phone"
+   "label": "Téléphone"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [
-  {"group": "Violations & Plans", "link_doctype": "violation_grc", "link_fieldname": "entreprise", "type": "doctype"},
-  {"group": "Violations & Plans", "link_doctype": "action_plan_grc", "link_fieldname": "entreprise", "type": "doctype"},
-  {"group": "Droits & Documents", "link_doctype": "make_right_grc", "link_fieldname": "entreprise", "type": "doctype"},
-  {"group": "Droits & Documents", "link_doctype": "grc_document", "link_fieldname": "entreprise", "type": "doctype"},
-  {"group": "Conformit\u00e9", "link_doctype": "traitement_grc", "link_fieldname": "entreprise", "type": "doctype"},
-  {"group": "Conformit\u00e9", "link_doctype": "Point_de_controle", "link_fieldname": "entreprise", "type": "doctype"}
+  {
+   "group": "Violations & Plans",
+   "link_doctype": "violation_grc",
+   "link_fieldname": "entreprise",
+   "type": "doctype"
+  },
+  {
+   "group": "Violations & Plans",
+   "link_doctype": "action_plan_grc",
+   "link_fieldname": "entreprise",
+   "type": "doctype"
+  },
+  {
+   "group": "Droits & Documents",
+   "link_doctype": "make_right_grc",
+   "link_fieldname": "entreprise",
+   "type": "doctype"
+  },
+  {
+   "group": "Droits & Documents",
+   "link_doctype": "grc_document",
+   "link_fieldname": "entreprise",
+   "type": "doctype"
+  },
+  {
+   "group": "Conformité",
+   "link_doctype": "traitement_grc",
+   "link_fieldname": "entreprise",
+   "type": "doctype"
+  },
+  {
+   "group": "Conformité",
+   "link_doctype": "Point_de_controle",
+   "link_fieldname": "entreprise",
+   "type": "doctype"
+  }
  ],
  "modified": "2026-03-16 16:00:00.000000",
  "modified_by": "Administrator",

@@ -1,0 +1,21 @@
+{
+ "cards": [],
+ "charts": [
+  {"chart": "GRC Client - Violations par Gravit\u00e9", "width": "Half"},
+  {"chart": "GRC Client - Plans par Statut", "width": "Half"},
+  {"chart": "GRC Client - Demandes de Droits", "width": "Half"},
+  {"chart": "GRC Client - Points de Contr\u00f4le", "width": "Half"}
+ ],
+ "creation": "2026-03-17 12:00:00.000000",
+ "dashboard_name": "Vue Client GRC",
+ "docstatus": 0,
+ "doctype": "Dashboard",
+ "idx": 0,
+ "is_default": 0,
+ "is_standard": 1,
+ "modified": "2026-03-17 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "GRC",
+ "name": "Vue Client GRC",
+ "owner": "Administrator"
+}

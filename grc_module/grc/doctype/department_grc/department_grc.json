@@ -1,21 +1,21 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:{nom_du_d\u00e9partement}-{####}",
+ "autoname": "format:{nom_du_département}-{####}",
  "creation": "2025-05-16 17:53:01.347223",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "cr\u00e9ation_departement_section",
+  "creation_departement_section",
   "entreprise",
   "column_break_qsum",
-  "nom_du_d\u00e9partement"
+  "nom_du_departement"
  ],
  "fields": [
   {
-   "fieldname": "cr\u00e9ation_departement_section",
+   "fieldname": "creation_departement_section",
    "fieldtype": "Section Break",
-   "label": "Cr\u00e9ation departement"
+   "label": "Création departement"
   },
   {
    "fetch_from": "customer.customer_name",
@@ -31,10 +31,10 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "nom_du_d\u00e9partement",
+   "fieldname": "nom_du_departement",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Nom du d\u00e9partement",
+   "label": "Nom du département",
    "link_filters": "[[\"department_grc\",\"entreprise\",\"=\",\"eval:doc.entreprise\"]]",
    "reqd": 1
   }
