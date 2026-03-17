@@ -21,16 +21,14 @@ def is_grc_internal_user(user=None):
 	user = user or frappe.session.user
 	if user == "Administrator":
 		return True
-	return (
-		frappe.has_role("GRC Manager", user)
-		or frappe.has_role("GRC Analyst", user)
-		or frappe.has_role("System Manager", user)
-	)
+	roles = set(frappe.get_roles(user))
+	return bool(roles & {"GRC Manager", "GRC Analyst", "System Manager"})
 
 
 def is_grc_client(user=None):
 	user = user or frappe.session.user
-	return frappe.has_role("GRC Client", user) or frappe.has_role("customer grc", user)
+	roles = set(frappe.get_roles(user))
+	return bool(roles & {"GRC Client", "customer grc"})
 
 
 # ── Company resolution ───────────────────────────────────────────────────────
