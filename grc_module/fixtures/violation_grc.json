@@ -1,1 +1,58 @@
-[]
+[
+ {
+  "doctype": "violation_grc",
+  "name": "VIO-2026-00001",
+  "entreprise": "Client-2026-00182-00106",
+  "titre": "Absence de politique de confidentialité",
+  "description": "Aucune politique de confidentialité n'est publiée sur le site web de l'entreprise, en violation de l'article 13 du RGPD.",
+  "date_de_creation": "2026-02-10",
+  "statut": "En Cours",
+  "gravite": "Haute",
+  "type_violation": "RGPD"
+ },
+ {
+  "doctype": "violation_grc",
+  "name": "VIO-2026-00002",
+  "entreprise": "Client-2026-00182-00106",
+  "titre": "Collecte de données sans consentement explicite",
+  "description": "Des données personnelles sont collectées via des formulaires sans case de consentement explicite ni mention d'information claire.",
+  "date_de_creation": "2026-02-15",
+  "statut": "A faire",
+  "gravite": "Critique",
+  "type_violation": "RGPD"
+ },
+ {
+  "doctype": "violation_grc",
+  "name": "VIO-2026-00003",
+  "entreprise": "Client-2026-00182-00106",
+  "titre": "Accès non sécurisé aux données RH",
+  "description": "Les fichiers contenant des données sensibles des employés ne sont pas protégés par un contrôle d'accès basé sur les rôles.",
+  "date_de_creation": "2026-01-28",
+  "statut": "Terminer",
+  "gravite": "Haute",
+  "type_violation": "Sécurité",
+  "notes_resolution": "Mise en place d'un système de contrôle d'accès basé sur les rôles (RBAC) complétée le 2026-02-20."
+ },
+ {
+  "doctype": "violation_grc",
+  "name": "VIO-2026-00004",
+  "entreprise": "Client-2026-00182-00106",
+  "titre": "Absence de registre des activités de traitement",
+  "description": "L'entreprise ne dispose pas d'un registre des activités de traitement tel qu'exigé par l'article 30 du RGPD. Aucune documentation formelle des finalités, catégories de données et durées de conservation n'est disponible.",
+  "date_de_creation": "2026-02-20",
+  "statut": "En Cours",
+  "gravite": "Haute",
+  "type_violation": "RGPD"
+ },
+ {
+  "doctype": "violation_grc",
+  "name": "VIO-2026-00005",
+  "entreprise": "Client-2026-00182-00106",
+  "titre": "Transfert de données hors UE sans garanties adéquates",
+  "description": "Des données personnelles de clients européens sont transférées vers des prestataires situés hors de l'Union Européenne sans mécanisme de transfert conforme (clauses contractuelles types, décision d'adéquation).",
+  "date_de_creation": "2026-03-05",
+  "statut": "A faire",
+  "gravite": "Critique",
+  "type_violation": "RGPD"
+ }
+]

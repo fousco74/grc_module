@@ -17,6 +17,15 @@ fixtures = [
 	{"dt": "Role", "filters": [["name", "in", ["GRC Manager", "GRC Analyst", "GRC Client"]]]},
 	{"dt": "Number Card", "filters": [["module", "=", "GRC"]]},
 	{"dt": "Dashboard Chart", "filters": [["module", "=", "GRC"]]},
+	# Demo data — client Client-2026-00182-00106
+	"customer_grc",
+	"service_grc",
+	"traitement_grc",
+	"violation_grc",
+	"action_plan_grc",
+	"make_right_grc",
+	"grc_document",
+	"file_processing",
 ]
 
 # Role home pages

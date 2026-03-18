@@ -8,15 +8,20 @@
 
 {# ── KPIs ── #}
 <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-  {% for label, val, cls in [
-    ("Total", ap_summary.total, "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"),
-    ("À faire", ap_summary.a_faire, "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"),
-    ("En cours", ap_summary.en_cours, "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"),
-    ("Terminés", ap_summary.terminer, "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"),
+  {% for label, val, cls, icon in [
+    ('Total', ap_summary.total, 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300', 'target'),
+    ('À faire', ap_summary.a_faire, 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400', 'circle'),
+    ('En cours', ap_summary.en_cours, 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400', 'activity'),
+    ('Terminés', ap_summary.terminer, 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400', 'check-circle'),
   ] %}
-  <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4">
-    <p class="text-2xl font-bold text-slate-800 dark:text-slate-100">{{ val }}</p>
-    <p class="text-xs text-slate-500 mt-1">{{ label }}</p>
+  <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex items-center gap-3">
+    <div class="w-9 h-9 rounded-lg {{ cls }} flex items-center justify-center flex-shrink-0">
+      <i data-feather="{{ icon }}" class="w-4 h-4"></i>
+    </div>
+    <div>
+      <p class="text-xl font-bold text-slate-800 dark:text-slate-100">{{ val }}</p>
+      <p class="text-xs text-slate-500">{{ label }}</p>
+    </div>
   </div>
   {% endfor %}
 </div>
@@ -37,7 +42,19 @@
           class="text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700
                  rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-slate-100">
     <option value="">Tous les statuts</option>
-    <option>A faire</option><option>En cours</option><option>Terminer</option>
+    <option value="A faire">À faire</option>
+    <option value="En cours">En cours</option>
+    <option value="Terminer">Terminé</option>
+  </select>
+  <select id="principe-filter"
+          class="text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700
+                 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-emerald-500 dark:text-slate-100">
+    <option value="">Tous les principes</option>
+    <option>Transparence</option>
+    <option>Consentement</option>
+    <option>Sécurité</option>
+    <option>Responsabilité</option>
+    <option>Transferts internationaux</option>
   </select>
   <button id="reset-btn" class="text-xs text-slate-500 hover:text-red-500 px-3 py-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20">
     Réinitialiser
@@ -56,18 +73,25 @@
           <th class="px-4 py-3 text-left font-medium">Statut</th>
           <th class="px-4 py-3 text-left font-medium">Avancement</th>
           <th class="px-4 py-3 text-left font-medium hidden lg:table-cell">Échéance</th>
+          <th class="px-4 py-3 text-left font-medium">Action</th>
         </tr>
       </thead>
       <tbody id="ap-tbody" class="divide-y divide-slate-100 dark:divide-slate-800">
         {% for a in action_plans %}
         {% set s = a.statut or "A faire" %}
         {% set pct = (a.avancement or 0)|int %}
+        {% set deadline = a.get("delais_dexecution") or "" %}
+        {% set is_overdue = deadline and deadline < today and s != "Terminer" %}
         <tr class="ap-row hover:bg-slate-50 dark:hover:bg-slate-800/30 cursor-pointer"
-            data-statut="{{ s }}" data-search="{{ (a.titre or '')|lower }} {{ (a.description or '')|lower }}"
-            onclick="openAPDetail({{ loop.index0 }})"
+            data-statut="{{ s }}"
+            data-principe="{{ a.principe_directeur or '' }}"
+            data-search="{{ (a.titre or '')|lower }} {{ (a.responsable or '')|lower }} {{ (a.description or '')|lower }}"
+            onclick="openAPDetail({{ loop.index0 }})">
           <td class="px-4 py-3">
-            <p class="font-semibold text-slate-800 dark:text-slate-200 truncate max-w-xs">{{ a.titre or a.description or a.name }}</p>
-            {% if a.violation %}<p class="text-[10px] text-slate-400 mt-0.5 flex items-center gap-1"><i data-feather="link" class="w-3 h-3"></i>{{ a.violation }}</p>{% endif %}
+            <p class="font-semibold text-slate-800 dark:text-slate-200 truncate max-w-xs">{{ a.titre or a.name }}</p>
+            {% if a.principe_directeur %}
+            <p class="text-[10px] text-purple-500 mt-0.5">{{ a.principe_directeur }}</p>
+            {% endif %}
           </td>
           <td class="px-4 py-3 text-slate-500 hidden md:table-cell">{{ a.responsable or "—" }}</td>
           <td class="px-4 py-3">
@@ -75,19 +99,32 @@
               {% if s == 'Terminer' %}bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400
               {% elif s == 'En cours' %}bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400
               {% else %}bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400{% endif %}">
-              {{ s }}
+              {% if s == 'Terminer' %}Terminé{% else %}{{ s }}{% endif %}
             </span>
           </td>
           <td class="px-4 py-3">
             <div class="flex items-center gap-2">
               <div class="w-20 bg-slate-100 dark:bg-slate-800 rounded-full h-1.5">
-                <div class="h-1.5 rounded-full {% if pct == 100 %}bg-emerald-500{% elif pct >= 50 %}bg-blue-500{% else %}bg-amber-500{% endif %}"
+                <div class="h-1.5 rounded-full
+                  {% if pct == 100 %}bg-emerald-500
+                  {% elif pct >= 50 %}bg-blue-500
+                  {% else %}bg-amber-500{% endif %}"
                      style="width:{{ pct }}%"></div>
               </div>
               <span class="text-slate-500 tabular-nums">{{ pct }}%</span>
             </div>
           </td>
-          <td class="px-4 py-3 text-slate-400 hidden lg:table-cell">{{ a.get("delais_dexecution") or "—" }}</td>
+          <td class="px-4 py-3 hidden lg:table-cell">
+            {% if is_overdue %}
+            <span class="text-red-500 font-medium">{{ deadline }}</span>
+            <span class="ml-1 text-[10px] bg-red-100 text-red-600 px-1 rounded">Retard</span>
+            {% else %}
+            <span class="text-slate-400">{{ deadline or "—" }}</span>
+            {% endif %}
+          </td>
+          <td class="px-4 py-3">
+            <button class="text-emerald-600 dark:text-emerald-400 hover:underline text-xs">Voir</button>
+          </td>
         </tr>
         {% endfor %}
       </tbody>
@@ -124,23 +161,33 @@ var apData = {{ action_plans | tojson }};
 
 frappe.ready(function () {
     if (window.feather) feather.replace({ 'stroke-width': 1.75 });
+
     function filter() {
         var q = (document.getElementById('search-input').value || '').toLowerCase();
         var s = document.getElementById('statut-filter').value;
+        var p = document.getElementById('principe-filter').value;
         var rows = document.querySelectorAll('.ap-row');
         var n = 0;
         rows.forEach(function (r) {
-            var ok = (!s || r.dataset.statut === s) && (!q || r.dataset.search.includes(q));
+            var ok = (!s || r.dataset.statut === s)
+                  && (!p || r.dataset.principe === p)
+                  && (!q || r.dataset.search.includes(q));
             r.style.display = ok ? '' : 'none';
             if (ok) n++;
         });
         document.getElementById('no-results').classList.toggle('hidden', n > 0 || rows.length === 0);
     }
-    document.getElementById('search-input').addEventListener('input', filter);
-    document.getElementById('statut-filter').addEventListener('change', filter);
+
+    ['search-input', 'statut-filter', 'principe-filter'].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) el.addEventListener('input', filter), el.addEventListener('change', filter);
+    });
+
     document.getElementById('reset-btn').addEventListener('click', function () {
-        document.getElementById('search-input').value = '';
-        document.getElementById('statut-filter').value = '';
+        ['search-input', 'statut-filter', 'principe-filter'].forEach(function (id) {
+            var el = document.getElementById(id);
+            if (el) el.value = '';
+        });
         filter();
     });
 });
@@ -148,30 +195,36 @@ frappe.ready(function () {
 function openAPDetail(i) {
     var a = apData[i];
     if (!a) return;
-    var statutCls = a.statut === 'Terminer' ? 'bg-emerald-100 text-emerald-700'
-                  : a.statut === 'En cours' ? 'bg-blue-100 text-blue-700'
+
+    var s = a.statut || '—';
+    var statutCls = s === 'Terminer' ? 'bg-emerald-100 text-emerald-700'
+                  : s === 'En cours' ? 'bg-blue-100 text-blue-700'
                   : 'bg-slate-100 text-slate-600';
+    var statutLabel = s === 'Terminer' ? 'Terminé' : s;
     var pct = parseInt(a.avancement || 0);
+    var barCls = pct === 100 ? 'bg-emerald-500' : pct >= 50 ? 'bg-blue-500' : 'bg-amber-500';
+
     var body = document.getElementById('ap-modal-body');
     body.innerHTML =
-        '<h4 class="text-base font-semibold text-slate-900 dark:text-slate-100 mb-1">' + (a.titre || a.name) + '</h4>'
-        + (a.description ? '<p class="text-slate-500 dark:text-slate-400 text-xs leading-relaxed">' + a.description + '</p>' : '')
-        + '<div class="flex flex-wrap gap-2 items-center">'
-        + '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium ' + statutCls + '">' + (a.statut || '—') + '</span>'
+        '<div class="flex flex-wrap gap-2 mb-2">'
+        + '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium ' + statutCls + '">' + statutLabel + '</span>'
         + (a.principe_directeur ? '<span class="px-2 py-0.5 rounded-full text-[11px] bg-purple-100 text-purple-700">' + a.principe_directeur + '</span>' : '')
         + '</div>'
+        + '<h4 class="text-base font-semibold text-slate-900 dark:text-slate-100 mb-1">' + (a.titre || a.name) + '</h4>'
+        + (a.description ? '<p class="text-slate-500 dark:text-slate-400 text-xs leading-relaxed">' + a.description + '</p>' : '')
         + '<div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-100 dark:border-slate-800">'
         + '<div><p class="text-xs text-slate-400 mb-0.5">Responsable</p><p class="font-medium text-sm">' + (a.responsable || '—') + '</p></div>'
         + '<div><p class="text-xs text-slate-400 mb-0.5">Date de début</p><p class="font-medium text-sm">' + (a.date_debut || '—') + '</p></div>'
         + '<div><p class="text-xs text-slate-400 mb-0.5">Échéance</p><p class="font-medium text-sm">' + (a.delais_dexecution || '—') + '</p></div>'
-        + '<div><p class="text-xs text-slate-400 mb-0.5">Violation liée</p><p class="font-medium text-sm">' + (a.violation || '—') + '</p></div>'
+        + '<div><p class="text-xs text-slate-400 mb-0.5">Date de fin</p><p class="font-medium text-sm">' + (a.date_de_fin || '—') + '</p></div>'
         + '</div>'
         + '<div>'
         + '<p class="text-xs text-slate-400 mb-1.5">Avancement — <span class="font-semibold text-slate-700 dark:text-slate-200">' + pct + '%</span></p>'
-        + '<div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2"><div class="h-2 rounded-full '
-        + (pct === 100 ? 'bg-emerald-500' : pct >= 50 ? 'bg-blue-500' : 'bg-amber-500')
-        + '" style="width:' + pct + '%"></div></div>'
+        + '<div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2">'
+        + '<div class="h-2 rounded-full ' + barCls + '" style="width:' + pct + '%"></div>'
+        + '</div>'
         + '</div>';
+
     document.getElementById('ap-modal').classList.remove('hidden');
     if (window.feather) feather.replace({ 'stroke-width': 1.75 });
     GRCDiscussion.attach('ap-modal-body', 'action_plan_grc', a.name);

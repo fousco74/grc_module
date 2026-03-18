@@ -1,0 +1,17 @@
+[
+ {
+  "doctype": "customer_grc",
+  "name": "Client-2026-00182-00106",
+  "entreprise": "Client-2026-00182",
+  "number_company": "CI-2026-00182",
+  "email_company": "contact@techsolutions182.ci",
+  "statut": "Actif",
+  "compliance_score": 62.5,
+  "etape_avancement": "Rapport provisoire",
+  "onboarding_date": "2026-01-15",
+  "first_name_legal": "Koné",
+  "last_name_legal": "Amadou",
+  "email_legal": "akone@techsolutions182.ci",
+  "phone": "+225 07 12 34 56 78"
+ }
+]

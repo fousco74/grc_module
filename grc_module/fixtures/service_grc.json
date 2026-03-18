@@ -1,1 +1,26 @@
-[]
+[
+ {
+  "doctype": "service_grc",
+  "name": "Ressources Humaines-0001",
+  "name_service": "Ressources Humaines",
+  "entreprise": "Client-2026-00182-00106"
+ },
+ {
+  "doctype": "service_grc",
+  "name": "Direction Commerciale-0001",
+  "name_service": "Direction Commerciale",
+  "entreprise": "Client-2026-00182-00106"
+ },
+ {
+  "doctype": "service_grc",
+  "name": "Direction Informatique-0001",
+  "name_service": "Direction Informatique",
+  "entreprise": "Client-2026-00182-00106"
+ },
+ {
+  "doctype": "service_grc",
+  "name": "Direction Générale-0001",
+  "name_service": "Direction Générale",
+  "entreprise": "Client-2026-00182-00106"
+ }
+]

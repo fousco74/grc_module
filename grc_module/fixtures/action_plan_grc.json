@@ -1,1 +1,68 @@
-[]
+[
+ {
+  "doctype": "action_plan_grc",
+  "name": "AP-2026-00001",
+  "entreprise": "Client-2026-00182-00106",
+  "titre": "Rédaction et publication de la politique de confidentialité",
+  "description": "Rédiger, faire valider et publier une politique de confidentialité conforme RGPD sur tous les points de contact numériques.",
+  "statut": "En cours",
+  "avancement": 60,
+  "responsable": "Adjoua Bamba",
+  "date_debut": "2026-02-20",
+  "delais_dexecution": "2026-03-31",
+  "principe_directeur": "Transparence"
+ },
+ {
+  "doctype": "action_plan_grc",
+  "name": "AP-2026-00002",
+  "entreprise": "Client-2026-00182-00106",
+  "titre": "Mise en place des formulaires de consentement",
+  "description": "Refonte de tous les formulaires de collecte de données pour intégrer le recueil du consentement explicite et les mentions d'information RGPD.",
+  "statut": "A faire",
+  "avancement": 0,
+  "responsable": "Koné Mamadou",
+  "date_debut": "2026-04-01",
+  "delais_dexecution": "2026-05-15",
+  "principe_directeur": "Consentement"
+ },
+ {
+  "doctype": "action_plan_grc",
+  "name": "AP-2026-00003",
+  "entreprise": "Client-2026-00182-00106",
+  "titre": "Déploiement du contrôle d'accès aux données RH",
+  "description": "Implémentation d'un système RBAC pour sécuriser l'accès aux dossiers RH et données personnelles sensibles des employés.",
+  "statut": "Terminer",
+  "avancement": 100,
+  "responsable": "Traoré Seydou",
+  "date_debut": "2026-01-20",
+  "delais_dexecution": "2026-02-20",
+  "date_de_fin": "2026-02-18",
+  "principe_directeur": "Sécurité"
+ },
+ {
+  "doctype": "action_plan_grc",
+  "name": "AP-2026-00004",
+  "entreprise": "Client-2026-00182-00106",
+  "titre": "Création du registre des activités de traitement",
+  "description": "Recensement exhaustif de toutes les activités de traitement de données personnelles, documentation des finalités, bases légales, catégories de données, destinataires et durées de conservation.",
+  "statut": "En cours",
+  "avancement": 35,
+  "responsable": "Adjoua Bamba",
+  "date_debut": "2026-03-01",
+  "delais_dexecution": "2026-04-30",
+  "principe_directeur": "Responsabilité"
+ },
+ {
+  "doctype": "action_plan_grc",
+  "name": "AP-2026-00005",
+  "entreprise": "Client-2026-00182-00106",
+  "titre": "Encadrement des transferts internationaux de données",
+  "description": "Identification de tous les prestataires hors UE traitant des données personnelles, négociation et signature de clauses contractuelles types (CCT) conformes, ou identification d'une décision d'adéquation applicable.",
+  "statut": "A faire",
+  "avancement": 0,
+  "responsable": "Koné Mamadou",
+  "date_debut": "2026-05-01",
+  "delais_dexecution": "2026-06-30",
+  "principe_directeur": "Transferts internationaux"
+ }
+]

@@ -1,0 +1,30 @@
+[
+ {
+  "doctype": "traitement_grc",
+  "name": "Gestion-de-la-paie-0001",
+  "entreprise": "Client-2026-00182-00106",
+  "traitement": "Gestion de la paie",
+  "service": "Ressources Humaines-0001"
+ },
+ {
+  "doctype": "traitement_grc",
+  "name": "Gestion-des-prospects-0001",
+  "entreprise": "Client-2026-00182-00106",
+  "traitement": "Gestion des prospects",
+  "service": "Direction Commerciale-0001"
+ },
+ {
+  "doctype": "traitement_grc",
+  "name": "Gestion-des-incidents-informatiques-0001",
+  "entreprise": "Client-2026-00182-00106",
+  "traitement": "Gestion des incidents informatiques",
+  "service": "Direction Informatique-0001"
+ },
+ {
+  "doctype": "traitement_grc",
+  "name": "Gestion-des-contrats-fournisseurs-0001",
+  "entreprise": "Client-2026-00182-00106",
+  "traitement": "Gestion des contrats fournisseurs",
+  "service": "Direction Générale-0001"
+ }
+]

@@ -23,6 +23,9 @@ def get_context(context):
 		order_by="modified desc",
 		ignore_permissions=True,
 	)
+	for m in context.make_rights:
+		if m.get("updated_at") is not None:
+			m["updated_at"] = str(m["updated_at"])
 
 	statuts = [m.statut for m in context.make_rights]
 	context.mr_summary = {

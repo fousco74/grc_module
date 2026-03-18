@@ -26,8 +26,13 @@ def get_context(context):
 		order_by="delais_dexecution asc",
 		ignore_permissions=True,
 	)
+	for a in context.action_plans:
+		for f in ("date_debut", "delais_dexecution", "date_de_fin"):
+			if a.get(f) is not None:
+				a[f] = str(a[f])
 
-	today = frappe.utils.today()
+	context.today = frappe.utils.today()
+	today = context.today
 	statuts = [a.statut for a in context.action_plans]
 	context.ap_summary = {
 		"total": len(statuts),

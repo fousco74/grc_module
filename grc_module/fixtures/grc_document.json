@@ -1,0 +1,42 @@
+[
+ {
+  "doctype": "grc_document",
+  "name": "GRC-DOC-0001",
+  "entreprise": "Client-2026-00182-00106",
+  "titre": "Rapport d'audit préliminaire",
+  "type_document": "Rapport d'audit",
+  "visibilite": "Client",
+  "creation_date": "2026-02-20",
+  "description": "Rapport d'audit initial couvrant les processus de collecte et de traitement des données personnelles."
+ },
+ {
+  "doctype": "grc_document",
+  "name": "GRC-DOC-0002",
+  "entreprise": "Client-2026-00182-00106",
+  "titre": "Guide de conformité RGPD",
+  "type_document": "Guide",
+  "visibilite": "Client",
+  "creation_date": "2026-01-20",
+  "description": "Guide pratique pour accompagner les équipes dans la mise en conformité RGPD."
+ },
+ {
+  "doctype": "grc_document",
+  "name": "GRC-DOC-0003",
+  "entreprise": "Client-2026-00182-00106",
+  "titre": "Registre des activités de traitement (brouillon)",
+  "type_document": "Registre",
+  "visibilite": "Interne",
+  "creation_date": "2026-03-05",
+  "description": "Première version du registre des traitements couvrant les activités RH et commerciales. Document en cours de validation avant publication officielle."
+ },
+ {
+  "doctype": "grc_document",
+  "name": "GRC-DOC-0004",
+  "entreprise": "Client-2026-00182-00106",
+  "titre": "Politique de sécurité des systèmes d'information",
+  "type_document": "Politique",
+  "visibilite": "Client",
+  "creation_date": "2026-02-28",
+  "description": "Politique encadrant les règles de sécurité applicables aux systèmes d'information, incluant la gestion des accès, la classification des données et les obligations des utilisateurs."
+ }
+]

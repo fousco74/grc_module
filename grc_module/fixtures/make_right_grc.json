@@ -1,1 +1,50 @@
-[]
+[
+ {
+  "doctype": "make_right_grc",
+  "name": "MR-2026-00001",
+  "entreprise": "Client-2026-00182-00106",
+  "name_maker": "Coulibaly Fatoumata",
+  "phone_maker": "+225 05 67 89 01 23",
+  "email_maker": "f.coulibaly@email.ci",
+  "make_type": "Accès aux données",
+  "statut": "Vérifiée",
+  "description": "Demande d'accès à l'ensemble des données personnelles détenues par l'entreprise conformément à l'article 15 du RGPD.",
+  "updated_at": "2026-03-10"
+ },
+ {
+  "doctype": "make_right_grc",
+  "name": "MR-2026-00002",
+  "entreprise": "Client-2026-00182-00106",
+  "name_maker": "Diallo Oumar",
+  "phone_maker": "+225 07 45 23 10 88",
+  "email_maker": "o.diallo@email.ci",
+  "make_type": "Suppression",
+  "statut": "En cours",
+  "description": "Demande de suppression des données personnelles suite à la fin du contrat de prestation.",
+  "updated_at": "2026-04-15"
+ },
+ {
+  "doctype": "make_right_grc",
+  "name": "MR-2026-00003",
+  "entreprise": "Client-2026-00182-00106",
+  "name_maker": "Traoré Mariam",
+  "phone_maker": "+225 05 98 76 54 32",
+  "email_maker": "m.traore@email.ci",
+  "make_type": "Rectification",
+  "statut": "Vérifiée",
+  "description": "Demande de rectification de l'adresse email et du numéro de téléphone enregistrés dans le système CRM de l'entreprise.",
+  "updated_at": "2026-03-12"
+ },
+ {
+  "doctype": "make_right_grc",
+  "name": "MR-2026-00004",
+  "entreprise": "Client-2026-00182-00106",
+  "name_maker": "Bah Ibrahima",
+  "phone_maker": "+225 01 23 45 67 89",
+  "email_maker": "i.bah@email.ci",
+  "make_type": "Opposition",
+  "statut": "A faire",
+  "description": "Opposition au traitement des données personnelles à des fins de prospection commerciale.",
+  "updated_at": "2026-03-18"
+ }
+]

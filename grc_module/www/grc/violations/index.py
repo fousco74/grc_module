@@ -26,6 +26,10 @@ def get_context(context):
 		order_by="gravite asc, date_de_creation desc",
 		ignore_permissions=True,
 	)
+	for v in context.violations:
+		for f in ("date_de_creation", "date_de_fin"):
+			if v.get(f) is not None:
+				v[f] = str(v[f])
 
 	# Summary
 	gravites = [v.get("gravite") or "Faible" for v in context.violations]
