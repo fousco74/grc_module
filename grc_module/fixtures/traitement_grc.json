@@ -1,30 +1,38 @@
 [
  {
+  "docstatus": 0,
   "doctype": "traitement_grc",
+  "entreprise": "Client-2026-00182-00106",
+  "modified": "2026-03-23 16:53:59.911457",
   "name": "Gestion-de-la-paie-0001",
-  "entreprise": "Client-2026-00182-00106",
-  "traitement": "Gestion de la paie",
-  "service": "Ressources Humaines-0001"
+  "service": "Ressources Humaines-0001",
+  "traitement": "Gestion de la paie"
  },
  {
+  "docstatus": 0,
   "doctype": "traitement_grc",
+  "entreprise": "Client-2026-00182-00106",
+  "modified": "2026-03-23 16:53:59.914812",
   "name": "Gestion-des-prospects-0001",
-  "entreprise": "Client-2026-00182-00106",
-  "traitement": "Gestion des prospects",
-  "service": "Direction Commerciale-0001"
+  "service": "Direction Commerciale-0001",
+  "traitement": "Gestion des prospects"
  },
  {
+  "docstatus": 0,
   "doctype": "traitement_grc",
+  "entreprise": "Client-2026-00182-00106",
+  "modified": "2026-03-23 16:53:59.916777",
   "name": "Gestion-des-incidents-informatiques-0001",
-  "entreprise": "Client-2026-00182-00106",
-  "traitement": "Gestion des incidents informatiques",
-  "service": "Direction Informatique-0001"
+  "service": "Direction Informatique-0001",
+  "traitement": "Gestion des incidents informatiques"
  },
  {
+  "docstatus": 0,
   "doctype": "traitement_grc",
-  "name": "Gestion-des-contrats-fournisseurs-0001",
   "entreprise": "Client-2026-00182-00106",
-  "traitement": "Gestion des contrats fournisseurs",
-  "service": "Direction Générale-0001"
+  "modified": "2026-03-23 16:53:59.918951",
+  "name": "Gestion-des-contrats-fournisseurs-0001",
+  "service": "Direction Générale-0001",
+  "traitement": "Gestion des contrats fournisseurs"
  }
 ]

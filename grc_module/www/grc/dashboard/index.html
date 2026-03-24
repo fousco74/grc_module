@@ -37,6 +37,101 @@
 </div>
 {% endif %}
 
+{# ── Démarches & Planning ── #}
+{% set _steps = [
+  {"label": "Formation",          "icon": "book-open",    "duration": "1-2 j"},
+  {"label": "Audit",              "icon": "search",       "duration": "2-3 j"},
+  {"label": "Rapport provisoire", "icon": "file-text",    "duration": "3 sem."},
+  {"label": "Correction",         "icon": "edit-3",       "duration": "4-6 sem."},
+  {"label": "Rapport définitif",  "icon": "check-square", "duration": "3 sem."},
+  {"label": "Dépôt & ARTCI",      "icon": "send",         "duration": "3-4 sem."}
+] %}
+{% set _etape = (company_info.etape_avancement if company_info else "") or "" %}
+{% set _step_map = {"": 0, "Formation": 1, "Audit": 2, "Rapport provisoire": 3, "Correction": 4, "Rapport définitif": 5, "Dépôt & ARTCI": 6, "Terminé": 7} %}
+{% set _cur = _step_map.get(_etape, 0) %}
+{% set _pct = (_cur / 6 * 100)|int %}
+
+
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6">
+  <div class="flex flex-wrap items-center justify-between gap-2 mb-6">
+    <div>
+      <p class="text-sm font-semibold text-slate-800 dark:text-slate-100">Démarches et Planning</p>
+      <p class="text-xs text-slate-400 mt-0.5">Progression de votre démarche de conformité RGPD</p>
+    </div>
+    {% if _etape %}
+    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium
+      {% if _etape == 'Terminé' %}bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400
+      {% else %}bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400{% endif %}">
+      <i data-feather="{% if _etape == 'Terminé' %}award{% else %}activity{% endif %}" class="w-3.5 h-3.5"></i>
+      {{ _etape }}
+    </span>
+    {% endif %}
+  </div>
+
+  <div class="relative">
+    {# Background track #}
+    <div class="absolute top-4 left-0 right-0 h-1 bg-slate-100 dark:bg-slate-700/50 rounded-full z-0"></div>
+    {# Animated progress fill #}
+    <div id="grc-step-bar"
+         data-target="{{ _pct }}"
+         class="absolute top-4 left-0 h-1 rounded-full z-0 transition-[width] duration-700 ease-out
+           {% if _cur >= 6 or _etape == 'Terminé' %}bg-emerald-500{% else %}bg-blue-500{% endif %}"
+         style="width:0%">
+    </div>
+
+    <div class="flex justify-between relative">
+      {% for s in _steps %}
+      {% set _sn = loop.index %}
+      {% if _cur == 7 or _sn < _cur %}{% set _state = "done" %}
+      {% elif _sn == _cur %}{% set _state = "active" %}
+      {% else %}{% set _state = "pending" %}{% endif %}
+
+      <div class="relative z-10 flex flex-col items-center text-center" style="width:{{ (100 / (_steps|length))|round(2) }}%">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center mb-2 ring-2 ring-white dark:ring-slate-900
+          {% if _state == 'done' %}bg-emerald-500 text-white
+          {% elif _state == 'active' %}bg-blue-500 text-white shadow-lg shadow-blue-200 dark:shadow-blue-900/40
+          {% else %}bg-slate-100 dark:bg-slate-800 text-slate-300 dark:text-slate-600{% endif %}">
+          {% if _state == 'done' %}
+            <i data-feather="check" class="w-3.5 h-3.5 stroke-[3]"></i>
+          {% else %}
+            <i data-feather="{{ s.icon }}" class="w-3.5 h-3.5"></i>
+          {% endif %}
+        </div>
+        <p class="text-[11px] font-semibold leading-tight mb-0.5
+          {% if _state == 'pending' %}text-slate-400 dark:text-slate-600{% else %}text-slate-700 dark:text-slate-200{% endif %}">
+          {{ s.label }}
+        </p>
+        <p class="text-[10px] text-slate-400 mb-1">{{ s.duration }}</p>
+        {% if _state == 'done' %}
+          <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400">Terminé</span>
+        {% elif _state == 'active' %}
+          <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 font-medium">En cours</span>
+        {% else %}
+          <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-slate-50 text-slate-400 dark:bg-slate-800 dark:text-slate-600">À venir</span>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
+    <span class="text-slate-500 flex items-center gap-1">
+      {% if _cur == 7 %}
+        <i data-feather="check-circle" class="w-3.5 h-3.5 text-emerald-500"></i>Démarche complétée
+      {% elif _cur > 0 %}
+        <i data-feather="clock" class="w-3.5 h-3.5 text-blue-500"></i>
+        {{ _cur - 1 }} étape{{ 's' if (_cur - 1) != 1 }} terminée{{ 's' if (_cur - 1) != 1 }} · étape {{ _cur }}/6 en cours
+      {% else %}
+        <i data-feather="info" class="w-3.5 h-3.5 text-slate-400"></i>Démarche non démarrée
+      {% endif %}
+    </span>
+    <span class="font-bold text-sm
+      {% if _cur == 7 %}text-emerald-600{% elif _cur > 0 %}text-blue-600{% else %}text-slate-400{% endif %}">
+      {{ _pct }}%
+    </span>
+  </div>
+</div>
+
 {# ── Score + KPIs ── #}
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
@@ -252,6 +347,13 @@
 <script>
 frappe.ready(function () {
     if (window.feather) feather.replace({ 'stroke-width': 1.75 });
+
+    // ── Step progress bar ────────────────────────────────────────
+    var stepBar = document.getElementById('grc-step-bar');
+    if (stepBar) {
+        var pct = parseInt(stepBar.getAttribute('data-target'), 10) || 0;
+        setTimeout(function () { stepBar.style.width = pct + '%'; }, 300);
+    }
 
     // ── Score gauge ──────────────────────────────────────────────
     var score   = {{ compliance_score or 0 }};

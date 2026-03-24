@@ -16,7 +16,6 @@ fixtures = [
 	{"dt": "Server Script", "filters": [["module", "=", "GRC"]]},
 	{"dt": "Role", "filters": [["name", "in", ["GRC Manager", "GRC Analyst", "GRC Client"]]]},
 	{"dt": "Number Card", "filters": [["module", "=", "GRC"]]},
-	{"dt": "Dashboard Chart", "filters": [["module", "=", "GRC"]]},
 	# Demo data — client Client-2026-00182-00106
 	"customer_grc",
 	"service_grc",
@@ -28,13 +27,6 @@ fixtures = [
 	"file_processing",
 ]
 
-# Role home pages
-role_home_page = {
-	"customer grc": "/grc/dashboard",
-	"GRC Client": "/grc/dashboard",
-	"GRC Manager": "/app/grc",
-	"GRC Analyst": "/app/grc",
-}
 
 # Portal navigation items (shown in Frappe's website sidebar)
 portal_menu_items = [

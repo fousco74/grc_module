@@ -1,1 +1,380 @@
-[]
+[
+ {
+  "add_total_row": 0,
+  "add_translate_data": 0,
+  "columns": [],
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Report",
+  "filters": [
+   {
+    "default": "",
+    "fieldname": "entreprise",
+    "fieldtype": "Link",
+    "label": "Entreprise",
+    "mandatory": 0,
+    "options": "customer_grc",
+    "wildcard_filter": 0
+   },
+   {
+    "default": "",
+    "fieldname": "gravite",
+    "fieldtype": "Select",
+    "label": "Gravité",
+    "mandatory": 0,
+    "options": "\nCritique\nHaute\nMoyenne\nFaible",
+    "wildcard_filter": 0
+   },
+   {
+    "default": "",
+    "fieldname": "statut",
+    "fieldtype": "Select",
+    "label": "Statut",
+    "mandatory": 0,
+    "options": "\nA faire\nEn Cours\nTerminer",
+    "wildcard_filter": 0
+   },
+   {
+    "default": "",
+    "fieldname": "type_violation",
+    "fieldtype": "Select",
+    "label": "Type",
+    "mandatory": 0,
+    "options": "\nRGPD\nSécurité\nOrganisationnelle\nTechnique\nLégale",
+    "wildcard_filter": 0
+   },
+   {
+    "default": "",
+    "fieldname": "from_date",
+    "fieldtype": "Date",
+    "label": "Du",
+    "mandatory": 0,
+    "options": null,
+    "wildcard_filter": 0
+   },
+   {
+    "default": "",
+    "fieldname": "to_date",
+    "fieldtype": "Date",
+    "label": "Au",
+    "mandatory": 0,
+    "options": null,
+    "wildcard_filter": 0
+   }
+  ],
+  "is_standard": "Yes",
+  "javascript": null,
+  "json": null,
+  "letter_head": null,
+  "modified": "2026-03-16 08:00:00",
+  "module": "GRC",
+  "name": "Violations GRC",
+  "prepared_report": 0,
+  "query": null,
+  "ref_doctype": "violation_grc",
+  "reference_report": null,
+  "report_name": "Violations GRC",
+  "report_script": null,
+  "report_type": "Script Report",
+  "roles": [
+   {
+    "role": "System Manager"
+   },
+   {
+    "role": "GRC Manager"
+   },
+   {
+    "role": "GRC Analyst"
+   }
+  ],
+  "timeout": 0
+ },
+ {
+  "add_total_row": 0,
+  "add_translate_data": 0,
+  "columns": [],
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Report",
+  "filters": [
+   {
+    "default": "",
+    "fieldname": "entreprise",
+    "fieldtype": "Link",
+    "label": "Entreprise",
+    "mandatory": 0,
+    "options": "customer_grc",
+    "wildcard_filter": 0
+   },
+   {
+    "default": "",
+    "fieldname": "statut",
+    "fieldtype": "Select",
+    "label": "Statut",
+    "mandatory": 0,
+    "options": "\nA faire\nEn cours\nTerminer",
+    "wildcard_filter": 0
+   },
+   {
+    "default": "",
+    "fieldname": "responsable",
+    "fieldtype": "Data",
+    "label": "Responsable",
+    "mandatory": 0,
+    "options": null,
+    "wildcard_filter": 0
+   },
+   {
+    "default": "",
+    "fieldname": "from_date",
+    "fieldtype": "Date",
+    "label": "Du",
+    "mandatory": 0,
+    "options": null,
+    "wildcard_filter": 0
+   },
+   {
+    "default": "",
+    "fieldname": "to_date",
+    "fieldtype": "Date",
+    "label": "Au",
+    "mandatory": 0,
+    "options": null,
+    "wildcard_filter": 0
+   }
+  ],
+  "is_standard": "Yes",
+  "javascript": null,
+  "json": null,
+  "letter_head": null,
+  "modified": "2026-03-16 08:00:00",
+  "module": "GRC",
+  "name": "Plans d'Action GRC",
+  "prepared_report": 0,
+  "query": null,
+  "ref_doctype": "action_plan_grc",
+  "reference_report": null,
+  "report_name": "Plans d'Action GRC",
+  "report_script": null,
+  "report_type": "Script Report",
+  "roles": [
+   {
+    "role": "System Manager"
+   },
+   {
+    "role": "GRC Manager"
+   },
+   {
+    "role": "GRC Analyst"
+   }
+  ],
+  "timeout": 0
+ },
+ {
+  "add_total_row": 0,
+  "add_translate_data": 0,
+  "columns": [],
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Report",
+  "filters": [
+   {
+    "default": "",
+    "fieldname": "entreprise",
+    "fieldtype": "Link",
+    "label": "Entreprise",
+    "mandatory": 0,
+    "options": "customer_grc",
+    "wildcard_filter": 0
+   },
+   {
+    "default": "",
+    "fieldname": "statut",
+    "fieldtype": "Select",
+    "label": "Statut",
+    "mandatory": 0,
+    "options": "\nEn cours d'intégration\nActif\nInactif",
+    "wildcard_filter": 0
+   },
+   {
+    "default": "",
+    "fieldname": "score_min",
+    "fieldtype": "Float",
+    "label": "Score minimum",
+    "mandatory": 0,
+    "options": null,
+    "wildcard_filter": 0
+   },
+   {
+    "default": "",
+    "fieldname": "score_max",
+    "fieldtype": "Float",
+    "label": "Score maximum",
+    "mandatory": 0,
+    "options": null,
+    "wildcard_filter": 0
+   }
+  ],
+  "is_standard": "Yes",
+  "javascript": null,
+  "json": null,
+  "letter_head": null,
+  "modified": "2026-03-16 08:00:00",
+  "module": "GRC",
+  "name": "Score Conformite GRC",
+  "prepared_report": 0,
+  "query": null,
+  "ref_doctype": "customer_grc",
+  "reference_report": null,
+  "report_name": "Score Conformite GRC",
+  "report_script": null,
+  "report_type": "Script Report",
+  "roles": [
+   {
+    "role": "System Manager"
+   },
+   {
+    "role": "GRC Manager"
+   },
+   {
+    "role": "GRC Analyst"
+   }
+  ],
+  "timeout": 0
+ },
+ {
+  "add_total_row": 0,
+  "add_translate_data": 0,
+  "columns": [],
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Report",
+  "filters": [
+   {
+    "default": "",
+    "fieldname": "entreprise",
+    "fieldtype": "Link",
+    "label": "Entreprise",
+    "mandatory": 0,
+    "options": "customer_grc",
+    "wildcard_filter": 0
+   },
+   {
+    "default": "",
+    "fieldname": "make_type",
+    "fieldtype": "Select",
+    "label": "Type de demande",
+    "mandatory": 0,
+    "options": "\nAccès aux données\nSuppression\nPortabilité\nRectification\nOpposition",
+    "wildcard_filter": 0
+   },
+   {
+    "default": "",
+    "fieldname": "statut",
+    "fieldtype": "Select",
+    "label": "Statut",
+    "mandatory": 0,
+    "options": "\nReçue\nVérifiée\nEn cours\nTerminée\nrejetée",
+    "wildcard_filter": 0
+   },
+   {
+    "default": "",
+    "fieldname": "from_date",
+    "fieldtype": "Date",
+    "label": "Du",
+    "mandatory": 0,
+    "options": null,
+    "wildcard_filter": 0
+   },
+   {
+    "default": "",
+    "fieldname": "to_date",
+    "fieldtype": "Date",
+    "label": "Au",
+    "mandatory": 0,
+    "options": null,
+    "wildcard_filter": 0
+   }
+  ],
+  "is_standard": "Yes",
+  "javascript": null,
+  "json": null,
+  "letter_head": null,
+  "modified": "2026-03-16 08:00:00",
+  "module": "GRC",
+  "name": "Droits des Personnes GRC",
+  "prepared_report": 0,
+  "query": null,
+  "ref_doctype": "make_right_grc",
+  "reference_report": null,
+  "report_name": "Droits des Personnes GRC",
+  "report_script": null,
+  "report_type": "Script Report",
+  "roles": [
+   {
+    "role": "System Manager"
+   },
+   {
+    "role": "GRC Manager"
+   },
+   {
+    "role": "GRC Analyst"
+   }
+  ],
+  "timeout": 0
+ },
+ {
+  "add_total_row": 0,
+  "add_translate_data": 0,
+  "columns": [],
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Report",
+  "filters": [
+   {
+    "default": "",
+    "fieldname": "entreprise",
+    "fieldtype": "Link",
+    "label": "Entreprise",
+    "mandatory": 0,
+    "options": "customer_grc",
+    "wildcard_filter": 0
+   },
+   {
+    "default": "",
+    "fieldname": "service",
+    "fieldtype": "Link",
+    "label": "Service",
+    "mandatory": 0,
+    "options": "service_grc",
+    "wildcard_filter": 0
+   }
+  ],
+  "is_standard": "Yes",
+  "javascript": null,
+  "json": null,
+  "letter_head": null,
+  "modified": "2026-03-16 08:00:00",
+  "module": "GRC",
+  "name": "Registre des Traitements GRC",
+  "prepared_report": 0,
+  "query": null,
+  "ref_doctype": "traitement_grc",
+  "reference_report": null,
+  "report_name": "Registre des Traitements GRC",
+  "report_script": null,
+  "report_type": "Script Report",
+  "roles": [
+   {
+    "role": "System Manager"
+   },
+   {
+    "role": "GRC Manager"
+   },
+   {
+    "role": "GRC Analyst"
+   }
+  ],
+  "timeout": 0
+ }
+]

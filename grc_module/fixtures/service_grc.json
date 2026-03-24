@@ -1,26 +1,38 @@
 [
  {
+  "departement": null,
+  "docstatus": 0,
   "doctype": "service_grc",
+  "entreprise": "Client-2026-00182-00106",
+  "modified": "2026-03-23 16:53:59.869582",
   "name": "Ressources Humaines-0001",
-  "name_service": "Ressources Humaines",
-  "entreprise": "Client-2026-00182-00106"
+  "name_service": "Ressources Humaines"
  },
  {
+  "departement": null,
+  "docstatus": 0,
   "doctype": "service_grc",
+  "entreprise": "Client-2026-00182-00106",
+  "modified": "2026-03-23 16:53:59.880475",
   "name": "Direction Commerciale-0001",
-  "name_service": "Direction Commerciale",
-  "entreprise": "Client-2026-00182-00106"
+  "name_service": "Direction Commerciale"
  },
  {
+  "departement": null,
+  "docstatus": 0,
   "doctype": "service_grc",
+  "entreprise": "Client-2026-00182-00106",
+  "modified": "2026-03-23 16:53:59.884342",
   "name": "Direction Informatique-0001",
-  "name_service": "Direction Informatique",
-  "entreprise": "Client-2026-00182-00106"
+  "name_service": "Direction Informatique"
  },
  {
+  "departement": null,
+  "docstatus": 0,
   "doctype": "service_grc",
+  "entreprise": "Client-2026-00182-00106",
+  "modified": "2026-03-23 16:53:59.888072",
   "name": "Direction Générale-0001",
-  "name_service": "Direction Générale",
-  "entreprise": "Client-2026-00182-00106"
+  "name_service": "Direction Générale"
  }
 ]
