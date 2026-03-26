@@ -1,0 +1,21 @@
+{
+ "creation": "2026-03-26 00:00:00.000000",
+ "docstatus": 0,
+ "doctype": "Number Card",
+ "document_type": "violation_grc",
+ "filters_json": "[[\"violation_grc\",\"statut\",\"in\",\"A faire,En Cours\"]]",
+ "function": "Count",
+ "idx": 0,
+ "is_public": 1,
+ "is_standard": 1,
+ "label": "Violations ouvertes",
+ "modified": "2026-03-26 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "GRC",
+ "name": "GRC - Violations ouvertes",
+ "owner": "Administrator",
+ "show_full_number": 0,
+ "show_percentage_stats": 1,
+ "stats_time_interval": "Monthly",
+ "type": "Document Type"
+}
