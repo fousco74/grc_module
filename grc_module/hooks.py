@@ -39,10 +39,6 @@ portal_menu_items = [
 	{"title": "Audit", "route": "/grc/audit", "role": "GRC Client"},
 ]
 
-# Website routes
-website_route_rules = [
-	{"from_route": "/grc", "to_route": "/grc/dashboard"},
-]
 
 # Row-level security: GRC Clients only see their company's data
 permission_query_conditions = {
@@ -66,6 +62,9 @@ has_permission = {
 
 # Document event hooks
 doc_events = {
+	"User": {
+		"validate": "grc_module.utils.on_user_validate",
+	},
 	"violation_grc": {
 		"after_insert": "grc_module.utils.on_violation_created",
 		"on_update": "grc_module.utils.on_violation_updated",

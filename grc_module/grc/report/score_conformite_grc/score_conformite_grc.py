@@ -101,8 +101,8 @@ def get_summary(data):
 	good = sum(1 for s in scores if s >= 80)
 	at_risk = sum(1 for s in scores if s < 50)
 	return [
-		{"label": _("Entreprises"), "value": len(data), "indicator": "Blue"},
-		{"label": _("Score moyen"), "value": avg, "indicator": "Green" if avg >= 70 else "Orange"},
-		{"label": _("Conformes (≥80)"), "value": good, "indicator": "Green"},
-		{"label": _("À risque (<50)"), "value": at_risk, "indicator": "Red"},
+		{"label": _("Entreprises"), "value": len(data), "indicator": "blue"},
+		{"label": _("Score moyen"), "value": avg, "indicator": "green" if avg >= 70 else "orange"},
+		{"label": _("Conformes (≥80)"), "value": good, "indicator": "green"},
+		{"label": _("À risque (<50)"), "value": at_risk, "indicator": "red"},
 	]

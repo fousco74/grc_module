@@ -63,13 +63,13 @@ def get_data(filters):
 			gravite,
 			type_violation,
 			statut,
-			`date_de_création` AS date_creation,
+			date_de_creation AS date_creation,
 			responsable
 		FROM `tabviolation_grc`
 		WHERE {where}
 		ORDER BY
 			FIELD(gravite, 'Critique', 'Haute', 'Moyenne', 'Faible'),
-			`date_de_création` DESC
+			date_de_creation DESC
 	""", values, as_dict=True)
 
 	return rows
@@ -92,7 +92,7 @@ def get_summary(data):
 	open_count = sum(1 for r in data if r.get("statut") != "Terminer")
 	critical = sum(1 for r in data if r.get("gravite") == "Critique")
 	return [
-		{"label": _("Total"), "value": len(data), "indicator": "Blue"},
-		{"label": _("Ouvertes"), "value": open_count, "indicator": "Orange"},
-		{"label": _("Critiques"), "value": critical, "indicator": "Red"},
+		{"label": _("Total"), "value": len(data), "indicator": "blue"},
+		{"label": _("Ouvertes"), "value": open_count, "indicator": "orange"},
+		{"label": _("Critiques"), "value": critical, "indicator": "red"},
 	]

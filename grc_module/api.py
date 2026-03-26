@@ -11,11 +11,19 @@ from grc_module.utils import (
 
 
 def _require_grc_access():
-	"""Raise PermissionError if user has no GRC access."""
+	"""Raise PermissionError if user is not a GRC client (portal APIs)."""
 	if frappe.session.user == "Guest":
 		frappe.throw(_("Authentification requise"), frappe.AuthenticationError)
-	if not (is_grc_client() or is_grc_internal_user()):
+	if not is_grc_client():
 		frappe.throw(_("Accès non autorisé"), frappe.PermissionError)
+
+
+def _require_grc_internal_access():
+	"""Raise PermissionError if user is not a GRC internal user (desk APIs)."""
+	if frappe.session.user == "Guest":
+		frappe.throw(_("Authentification requise"), frappe.AuthenticationError)
+	if not is_grc_internal_user():
+		frappe.throw(_("Accès réservé aux gestionnaires GRC"), frappe.PermissionError)
 
 
 def _get_company_filter():
@@ -322,9 +330,7 @@ def _count_by(items, field):
 @frappe.whitelist()
 def get_company_stats(company):
 	"""Return detailed stats for a specific company — GRC Manager only."""
-	_require_grc_access()
-	if not is_grc_internal_user():
-		frappe.throw(_("Accès réservé aux gestionnaires GRC"), frappe.PermissionError)
+	_require_grc_internal_access()
 
 	f = {"entreprise": company}
 	today = frappe.utils.today()

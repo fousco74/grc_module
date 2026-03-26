@@ -246,12 +246,16 @@
    "type": "Link"
   }
  ],
- "modified": "2026-03-17 14:00:00.000000",
+ "modified": "2026-03-25 10:00:00.000000",
  "modified_by": "Administrator",
  "module": "GRC",
  "module_onboarding": "Onboarding GRC",
  "name": "GRC",
  "owner": "Administrator",
+ "roles": [
+  {"role": "GRC Manager"},
+  {"role": "System Manager"}
+ ],
  "standard": 1,
  "title": "GRC"
 }

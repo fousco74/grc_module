@@ -88,8 +88,8 @@ def get_summary(data):
 	done = sum(1 for r in data if r.get("statut") == "Terminée")
 	rejected = sum(1 for r in data if r.get("statut") == "rejetée")
 	return [
-		{"label": _("Total"), "value": total, "indicator": "Blue"},
-		{"label": _("En attente"), "value": pending, "indicator": "Orange"},
-		{"label": _("Traitées"), "value": done, "indicator": "Green"},
-		{"label": _("Rejetées"), "value": rejected, "indicator": "Red"},
+		{"label": _("Total"), "value": total, "indicator": "blue"},
+		{"label": _("En attente"), "value": pending, "indicator": "orange"},
+		{"label": _("Traitées"), "value": done, "indicator": "green"},
+		{"label": _("Rejetées"), "value": rejected, "indicator": "red"},
 	]

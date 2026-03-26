@@ -70,7 +70,7 @@ def get_summary(data):
 	companies = len(set(r.get("entreprise") for r in data if r.get("entreprise")))
 	services = len(set(r.get("service") for r in data if r.get("service")))
 	return [
-		{"label": _("Total traitements"), "value": total, "indicator": "Blue"},
-		{"label": _("Entreprises"), "value": companies, "indicator": "Green"},
-		{"label": _("Services distincts"), "value": services, "indicator": "Purple"},
+		{"label": _("Total traitements"), "value": total, "indicator": "blue"},
+		{"label": _("Entreprises"), "value": companies, "indicator": "green"},
+		{"label": _("Services distincts"), "value": services, "indicator": "purple"},
 	]

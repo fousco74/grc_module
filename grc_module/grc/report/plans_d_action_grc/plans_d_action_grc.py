@@ -100,8 +100,8 @@ def get_summary(data):
 	done = sum(1 for r in data if r.get("statut") == "Terminer")
 	overdue = sum(1 for r in data if r.get("_overdue"))
 	return [
-		{"label": _("Total"), "value": total, "indicator": "Blue"},
-		{"label": _("En cours / À faire"), "value": open_count, "indicator": "Orange"},
-		{"label": _("Terminés"), "value": done, "indicator": "Green"},
-		{"label": _("En retard"), "value": overdue, "indicator": "Red"},
+		{"label": _("Total"), "value": total, "indicator": "blue"},
+		{"label": _("En cours / À faire"), "value": open_count, "indicator": "orange"},
+		{"label": _("Terminés"), "value": done, "indicator": "green"},
+		{"label": _("En retard"), "value": overdue, "indicator": "red"},
 	]

@@ -7,28 +7,44 @@ from frappe import _
 # ── Portal access guard ──────────────────────────────────────────────────────
 
 def require_portal_access():
-	"""Redirect to /login for guests, to / for non-GRC authenticated users."""
+	"""Redirect to /login for guests; show access denied for non-GRC authenticated users."""
 	if frappe.session.user == "Guest":
-		frappe.local.flags.redirect_location = "/login"
-		raise frappe.Redirect
-	if not (is_grc_client() or is_grc_internal_user()):
-		frappe.local.flags.redirect_location = "/"
-		raise frappe.Redirect
+		path = frappe.local.request.path if frappe.local.request else ""
+		frappe.redirect("/login?redirect-to=" + path)
+	if not is_grc_client():
+		frappe.throw(_("Vous n'avez pas les accès nécessaires pour accéder à cette page."), frappe.PermissionError)
 
 # ── Role helpers ────────────────────────────────────────────────────────────
 
+GRC_INTERNAL_ROLES = {"GRC Manager", "GRC Analyst"}
+GRC_CLIENT_ROLES = {"GRC Client", "customer grc"}
+GRC_ALL_ROLES = GRC_INTERNAL_ROLES | GRC_CLIENT_ROLES
+
+
+def _get_assigned_roles(user):
+	"""Return roles explicitly assigned to the user (ignores Administrator all-roles inheritance)."""
+	return {r.role for r in frappe.get_all("Has Role", filters={"parent": user, "parenttype": "User"}, fields=["role"])}
+
+
 def is_grc_internal_user(user=None):
 	user = user or frappe.session.user
-	if user == "Administrator":
-		return True
-	roles = set(frappe.get_roles(user))
-	return bool(roles & {"GRC Manager", "GRC Analyst", "System Manager"})
+	return bool(_get_assigned_roles(user) & GRC_INTERNAL_ROLES)
 
 
 def is_grc_client(user=None):
 	user = user or frappe.session.user
-	roles = set(frappe.get_roles(user))
-	return bool(roles & {"GRC Client", "customer grc"})
+	return bool(_get_assigned_roles(user) & GRC_CLIENT_ROLES)
+
+
+# ── User type enforcement ────────────────────────────────────────────────────
+
+def on_user_validate(doc, method=None):
+	"""Force Website User type for users who only have GRC client roles."""
+	assigned = _get_assigned_roles(doc.name)
+	has_client_role = bool(assigned & GRC_CLIENT_ROLES)
+	has_internal_role = bool(assigned & GRC_INTERNAL_ROLES)
+	if has_client_role and not has_internal_role:
+		doc.user_type = "Website User"
 
 
 # ── Company resolution ───────────────────────────────────────────────────────

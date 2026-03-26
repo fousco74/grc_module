@@ -2,7 +2,7 @@
  "add_total_row": 0,
  "add_translate_data": 0,
  "columns": [],
- "creation": "2026-03-26 00:43:49.472565",
+ "creation": "2026-03-26 00:43:49.399114",
  "disabled": 0,
  "docstatus": 0,
  "doctype": "Report",
@@ -22,22 +22,30 @@
    "fieldtype": "Select",
    "label": "Statut",
    "mandatory": 0,
-   "options": "\nEn cours d'int\u00e9gration\nActif\nInactif",
+   "options": "\nA faire\nEn cours\nTerminer",
    "wildcard_filter": 0
   },
   {
    "default": "",
-   "fieldname": "score_min",
-   "fieldtype": "Float",
-   "label": "Score minimum",
+   "fieldname": "responsable",
+   "fieldtype": "Data",
+   "label": "Responsable",
    "mandatory": 0,
    "wildcard_filter": 0
   },
   {
    "default": "",
-   "fieldname": "score_max",
-   "fieldtype": "Float",
-   "label": "Score maximum",
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "label": "Du",
+   "mandatory": 0,
+   "wildcard_filter": 0
+  },
+  {
+   "default": "",
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "label": "Au",
    "mandatory": 0,
    "wildcard_filter": 0
   }
@@ -45,14 +53,14 @@
  "idx": 0,
  "is_standard": "Yes",
  "letter_head": null,
- "modified": "2026-03-26 07:43:29.058451",
+ "modified": "2026-03-26 07:43:44.988685",
  "modified_by": "Administrator",
  "module": "GRC",
- "name": "Score Conformite GRC",
+ "name": "Plans d'Action GRC",
  "owner": "Administrator",
  "prepared_report": 0,
- "ref_doctype": "customer_grc",
- "report_name": "Score Conformite GRC",
+ "ref_doctype": "action_plan_grc",
+ "report_name": "Plans d'Action GRC",
  "report_type": "Script Report",
  "roles": [
   {
