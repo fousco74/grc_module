@@ -14,7 +14,7 @@ fixtures = [
 	{"dt": "Print Format", "filters": [["module", "=", "GRC"]]},
 	{"dt": "Client Script", "filters": [["module", "=", "GRC"]]},
 	{"dt": "Server Script", "filters": [["module", "=", "GRC"]]},
-	{"dt": "Role", "filters": [["name", "in", ["GRC Manager", "GRC Analyst", "GRC Client"]]]},
+	{"dt": "Role", "filters": [["name", "in", ["GRC Manager", "GRC Client"]]]},
 	{"dt": "Number Card", "filters": [["module", "=", "GRC"]]},
 	# Demo data — client Client-2026-00182-00106
 	"customer_grc",

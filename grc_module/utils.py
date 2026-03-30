@@ -16,8 +16,8 @@ def require_portal_access():
 
 # ── Role helpers ────────────────────────────────────────────────────────────
 
-GRC_INTERNAL_ROLES = {"GRC Manager", "GRC Analyst"}
-GRC_CLIENT_ROLES = {"GRC Client", "customer grc"}
+GRC_INTERNAL_ROLES = {"GRC Manager"}
+GRC_CLIENT_ROLES = {"GRC Client"}
 GRC_ALL_ROLES = GRC_INTERNAL_ROLES | GRC_CLIENT_ROLES
 
 
