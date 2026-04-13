@@ -6,6 +6,11 @@ app_email = "hello@amoaman.com"
 app_license = "mit"
 
 fixtures = [
+	# Schema — DocTypes with all permissions (GRC Manager + GRC Client)
+	{"dt": "DocType", "filters": [["module", "=", "GRC"]]},
+	# Roles
+	{"dt": "Role", "filters": [["name", "in", ["GRC Manager", "GRC Client"]]]},
+	# Desk customizations
 	{"dt": "Custom Field", "filters": [["module", "=", "GRC"]]},
 	{"dt": "Property Setter", "filters": [["module", "=", "GRC"]]},
 	{"dt": "Web Form", "filters": [["module", "=", "GRC"]]},
@@ -14,7 +19,6 @@ fixtures = [
 	{"dt": "Print Format", "filters": [["module", "=", "GRC"]]},
 	{"dt": "Client Script", "filters": [["module", "=", "GRC"]]},
 	{"dt": "Server Script", "filters": [["module", "=", "GRC"]]},
-	{"dt": "Role", "filters": [["name", "in", ["GRC Manager", "GRC Client"]]]},
 	{"dt": "Number Card", "filters": [["module", "=", "GRC"]]},
 	# Demo data — client Client-2026-00182-00106
 	"customer_grc",
@@ -25,6 +29,11 @@ fixtures = [
 	"make_right_grc",
 	"grc_document",
 	"file_processing",
+]
+
+
+web_include_js = [
+    "/assets/grc_module/js/grc_error_buttons.js",   # adapte le chemin
 ]
 
 
