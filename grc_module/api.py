@@ -11,11 +11,15 @@ from grc_module.utils import (
 
 
 def _require_grc_access():
-	"""Raise PermissionError if user is not a GRC client (portal APIs)."""
+	"""Raise PermissionError if user is not a GRC client."""
 	if frappe.session.user == "Guest":
 		frappe.throw(_("Authentification requise"), frappe.AuthenticationError)
+
 	if not is_grc_client():
-		frappe.throw(_("Accès non autorisé"), frappe.PermissionError)
+		frappe.throw(
+			_("Vous n'avez pas les accès nécessaires. Cette ressource est réservée aux clients GRC."),
+			frappe.PermissionError,
+		)
 
 
 def _require_grc_internal_access():
@@ -23,7 +27,10 @@ def _require_grc_internal_access():
 	if frappe.session.user == "Guest":
 		frappe.throw(_("Authentification requise"), frappe.AuthenticationError)
 	if not is_grc_internal_user():
-		frappe.throw(_("Accès réservé aux gestionnaires GRC"), frappe.PermissionError)
+		frappe.throw(
+			_("Accès réservé aux gestionnaires GRC."),
+			frappe.PermissionError,
+		)
 
 
 def _get_company_filter():
@@ -100,6 +107,34 @@ def mark_all_notifications_read():
 
 
 # ── Documents ────────────────────────────────────────────────────────────────
+
+@frappe.whitelist(allow_guest=False)
+def upload_grc_file():
+	"""Upload a file for a GRC document — accessible to GRC clients via portal."""
+	_require_grc_access()
+
+	uploaded = frappe.request.files.get("file")
+	if not uploaded:
+		frappe.throw(_("Aucun fichier fourni"))
+
+	content = uploaded.read()
+	filename = uploaded.filename or "document"
+
+	if len(content) > 10 * 1024 * 1024:
+		frappe.throw(_("Fichier trop volumineux (max 10 Mo)"))
+
+	file_doc = frappe.get_doc({
+		"doctype": "File",
+		"file_name": filename,
+		"is_private": 0,
+		"content": content,
+		"decode": False,
+	})
+	file_doc.flags.ignore_permissions = True
+	file_doc.save()
+
+	return {"file_url": file_doc.file_url}
+
 
 @frappe.whitelist()
 def create_grc_document(entreprise, titre, type_document=None, description=None, fichier=None):

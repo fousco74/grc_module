@@ -242,10 +242,7 @@ function uploadDocument() {
     if (file) {
         var fd = new FormData();
         fd.append('file', file);
-        fd.append('is_private', 0);
-        fd.append('doctype', 'grc_document');
-        fd.append('docfield', 'fichier');
-        fetch('/api/method/upload_file', {
+        fetch('/api/method/grc_module.api.upload_grc_file', {
             method: 'POST',
             headers: { 'X-Frappe-CSRF-Token': frappe.csrf_token },
             body: fd,
@@ -253,6 +250,7 @@ function uploadDocument() {
         .then(function (r) { return r.json(); })
         .then(function (data) {
             var url = data.message && data.message.file_url ? data.message.file_url : '';
+            if (!url) { showToast('Fichier non sauvegardé', 'warning'); }
             createDoc(url);
         })
         .catch(function () { createDoc(''); });

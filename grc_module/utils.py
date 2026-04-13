@@ -11,8 +11,11 @@ def require_portal_access():
 	if frappe.session.user == "Guest":
 		path = frappe.local.request.path if frappe.local.request else ""
 		frappe.redirect("/login?redirect-to=" + path)
-	if not is_grc_client():
-		frappe.throw(_("Vous n'avez pas les accès nécessaires pour accéder à cette page."), frappe.PermissionError)
+	if not is_grc_client() and not is_grc_internal_user():
+		frappe.throw(
+			_("Vous n'avez pas les accès nécessaires. Cette ressource est réservée aux clients GRC."),
+			frappe.PermissionError,
+		)
 
 # ── Role helpers ────────────────────────────────────────────────────────────
 
@@ -168,6 +171,12 @@ def has_grc_document_permission(doc, user=None, permission_type=None):
 		return True
 	if is_grc_client(user):
 		company = get_client_company(user)
+		if not company:
+			return False
+		# doc is None or has no entreprise when Frappe does a general permission check
+		# (e.g. during upload_file before the record is created) — allow create/write
+		if not doc or not doc.get("entreprise"):
+			return permission_type in (None, "create", "write", "select", "read")
 		if doc.get("entreprise") != company:
 			return False
 		if permission_type == "read":
