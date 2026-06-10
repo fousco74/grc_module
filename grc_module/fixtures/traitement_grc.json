@@ -2,6 +2,33 @@
  {
   "docstatus": 0,
   "doctype": "traitement_grc",
+  "entreprise": "t6q3tjps83",
+  "modified": "2026-03-25 21:07:56.578171",
+  "name": "name_service-0106",
+  "service": "Service RH-0103",
+  "traitement": "Gestion du personnel"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "traitement_grc",
+  "entreprise": "t6q3tjps83",
+  "modified": "2026-03-25 21:07:56.580508",
+  "name": "name_service-0107",
+  "service": "Service DSI-0102",
+  "traitement": "Gestion des accès systèmes"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "traitement_grc",
+  "entreprise": "t6q3tjps83",
+  "modified": "2026-03-25 21:07:56.582665",
+  "name": "name_service-0108",
+  "service": "Service Comptabilité-0104",
+  "traitement": "Traitement des salaires"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "traitement_grc",
   "entreprise": "Client-2026-00182-00106",
   "modified": "2026-03-23 16:53:59.911457",
   "name": "Gestion-de-la-paie-0001",

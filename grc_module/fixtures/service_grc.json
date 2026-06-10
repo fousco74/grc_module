@@ -1,5 +1,41 @@
 [
  {
+  "departement": "nom_du_département-0100",
+  "docstatus": 0,
+  "doctype": "service_grc",
+  "entreprise": "t6q3tjps83",
+  "modified": "2026-03-25 21:07:56.568274",
+  "name": "Service DSI-0102",
+  "name_service": "Service DSI"
+ },
+ {
+  "departement": "nom_du_département-0099",
+  "docstatus": 0,
+  "doctype": "service_grc",
+  "entreprise": "t6q3tjps83",
+  "modified": "2026-03-25 21:07:56.570805",
+  "name": "Service RH-0103",
+  "name_service": "Service RH"
+ },
+ {
+  "departement": "nom_du_département-0101",
+  "docstatus": 0,
+  "doctype": "service_grc",
+  "entreprise": "t6q3tjps83",
+  "modified": "2026-03-25 21:07:56.573024",
+  "name": "Service Comptabilité-0104",
+  "name_service": "Service Comptabilité"
+ },
+ {
+  "departement": "nom_du_département-0098",
+  "docstatus": 0,
+  "doctype": "service_grc",
+  "entreprise": "t6q3tjps83",
+  "modified": "2026-03-25 21:07:56.574982",
+  "name": "Direction Générale-0105",
+  "name_service": "Direction Générale"
+ },
+ {
   "departement": null,
   "docstatus": 0,
   "doctype": "service_grc",

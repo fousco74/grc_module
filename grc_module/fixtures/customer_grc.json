@@ -1,6 +1,6 @@
 [
  {
-  "compliance_score": 0.0,
+  "compliance_score": 11.1,
   "docstatus": 0,
   "doctype": "customer_grc",
   "email_company": "customer@sith.com",
@@ -19,7 +19,7 @@
   "statut": "En cours d'intégration"
  },
  {
-  "compliance_score": 14.0,
+  "compliance_score": 55.6,
   "docstatus": 0,
   "doctype": "customer_grc",
   "email_company": "contact@techsolutions182.ci",
@@ -29,7 +29,7 @@
   "first_name_legal": "Koné",
   "grc_manager": null,
   "last_name_legal": "Amadou",
-  "modified": "2026-03-23 16:54:00.009550",
+  "modified": "2026-05-18 12:11:21.538124",
   "name": "Client-2026-00182-00106",
   "number_company": "CI-2026-00182",
   "onboarding_date": "2026-01-15",

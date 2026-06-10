@@ -1,5 +1,47 @@
 [
  {
+  "creation_date": "2026-03-25",
+  "description": "Document : Rapport d'audit initial SITH",
+  "docstatus": 0,
+  "doctype": "grc_document",
+  "entreprise": "t6q3tjps83",
+  "fichier": null,
+  "modified": "2026-03-25 21:07:56.743017",
+  "name": "GRC-DOC-0005",
+  "televerse_par": "cyao@amoaman.com",
+  "titre": "Rapport d'audit initial SITH",
+  "type_document": "Rapport d'audit",
+  "visibilite": "Interne"
+ },
+ {
+  "creation_date": "2026-03-25",
+  "description": "Document : Politique de protection des données",
+  "docstatus": 0,
+  "doctype": "grc_document",
+  "entreprise": "t6q3tjps83",
+  "fichier": null,
+  "modified": "2026-03-25 21:07:56.753573",
+  "name": "GRC-DOC-0006",
+  "televerse_par": "cyao@amoaman.com",
+  "titre": "Politique de protection des données",
+  "type_document": "Politique de conformité",
+  "visibilite": "Client"
+ },
+ {
+  "creation_date": "2026-03-25",
+  "description": "Document : Formulaire de consentement type",
+  "docstatus": 0,
+  "doctype": "grc_document",
+  "entreprise": "t6q3tjps83",
+  "fichier": null,
+  "modified": "2026-03-25 21:07:56.783676",
+  "name": "GRC-DOC-0007",
+  "televerse_par": "cyao@amoaman.com",
+  "titre": "Formulaire de consentement type",
+  "type_document": "Formulaire RGPD",
+  "visibilite": "Public"
+ },
+ {
   "creation_date": "2026-02-20",
   "description": "Rapport d'audit initial couvrant les processus de collecte et de traitement des données personnelles.",
   "docstatus": 0,

@@ -1,5 +1,47 @@
 [
  {
+  "description": "Demande de accès aux données soumise par Jean Koné.",
+  "docstatus": 0,
+  "doctype": "make_right_grc",
+  "email_maker": "jean.kone@sith.com",
+  "entreprise": "t6q3tjps83",
+  "make_type": "Accès aux données",
+  "modified": "2026-03-25 21:07:56.704832",
+  "name": "4lvfce2ecg",
+  "name_maker": "Jean Koné",
+  "phone_maker": "+225 07 11 22 33",
+  "statut": "Reçue",
+  "updated_at": null
+ },
+ {
+  "description": "Demande de suppression soumise par Awa Diabaté.",
+  "docstatus": 0,
+  "doctype": "make_right_grc",
+  "email_maker": "awa.d@sith.com",
+  "entreprise": "t6q3tjps83",
+  "make_type": "Suppression",
+  "modified": "2026-03-25 21:07:56.720026",
+  "name": "4lvot08cr7",
+  "name_maker": "Awa Diabaté",
+  "phone_maker": "+225 05 44 55 66",
+  "statut": "En cours",
+  "updated_at": null
+ },
+ {
+  "description": "Demande de rectification soumise par Moussa Traoré.",
+  "docstatus": 0,
+  "doctype": "make_right_grc",
+  "email_maker": "moussa.t@gmail.com",
+  "entreprise": "t6q3tjps83",
+  "make_type": "Rectification",
+  "modified": "2026-03-25 21:07:56.733675",
+  "name": "4lv8f02hqr",
+  "name_maker": "Moussa Traoré",
+  "phone_maker": "+225 01 77 88 99",
+  "statut": "Reçue",
+  "updated_at": null
+ },
+ {
   "description": "Demande d'accès à l'ensemble des données personnelles détenues par l'entreprise conformément à l'article 15 du RGPD.",
   "docstatus": 0,
   "doctype": "make_right_grc",
